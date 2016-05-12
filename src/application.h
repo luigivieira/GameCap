@@ -73,6 +73,12 @@ namespace gc
 		*/
 		void setLogLevel(QtMsgType eLevel);
 
+		/**
+		 * Gets the style sheet to be used by the application interface.
+		 * @return QString with the style sheet to be used.
+		 */
+		QString getStyleSheet();
+
 	protected:
 
 		/**
@@ -110,6 +116,12 @@ namespace gc
 
 		/** Keyboard shortcut used by the OBS windows to toggle the recording. */
 		QKeySequence m_oOBSShortcut;
+
+		/**
+		 * String with the stylesheet to be used by the application interface
+		 * (loaded from an external .css file).
+		 */
+		QString m_sStyleSheet;
 	};
 }
 

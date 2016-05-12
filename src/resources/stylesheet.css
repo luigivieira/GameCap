@@ -15,18 +15,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
-#include "application.h"
-#include "window.h"
 
-using namespace gc;
-
-int main(int argc, char** argv)
+QAbstractButton
 {
-    Application oApp(argc, argv);
+    font-size: 25px;
+    border: 2px solid #8f8f91;
+	width: 200px; height: 100px; border-radius: 20px;
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #f6f7fa, stop: 1 #dadbde);
+}
 
-    Window oMain;
-	oMain.show();
-    
-	return oApp.exec();
+QLabel
+{
+    font-size: 50px;
 }

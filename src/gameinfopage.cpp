@@ -15,18 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
-#include "application.h"
-#include "window.h"
 
-using namespace gc;
+#include "gameinfopage.h"
 
-int main(int argc, char** argv)
+// +-----------------------------------------------------------
+gc::GameInfoPage::GameInfoPage(QWidget *pParent) : QWizardPage(pParent)
 {
-    Application oApp(argc, argv);
-
-    Window oMain;
-	oMain.show();
     
-	return oApp.exec();
 }

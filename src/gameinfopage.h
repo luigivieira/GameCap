@@ -15,18 +15,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
-#include "application.h"
-#include "window.h"
 
-using namespace gc;
+#ifndef GAME_INFO_PAGE_H
+#define GAME_INFO_PAGE_H
 
-int main(int argc, char** argv)
+#include <QWizardPage>
+
+namespace gc
 {
-    Application oApp(argc, argv);
+	/**
+	* Page class in the wizard application used to display information on the selected game.
+	*/
+	class GameInfoPage : public QWizardPage
+	{
+		Q_OBJECT
+	public:
 
-    Window oMain;
-	oMain.show();
-    
-	return oApp.exec();
+        /**
+         * Class constructor.
+         * @param pParent Instance of a QWidget with the parent of this page.
+         * The default is NULL.
+         */
+		GameInfoPage(QWidget *pParent = NULL);
+	};
 }
+
+#endif // GAME_INFO_PAGE_H

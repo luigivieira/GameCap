@@ -18,6 +18,7 @@
 
 #include "application.h"
 #include <typeinfo>
+#include <QDebug>
 #include <QDateTime>
 #include <QFileInfo>
 #include <QMessageBox>
@@ -48,10 +49,14 @@ gc::Application::Application(int argc, char* argv[]): QApplication(argc, argv)
 
     m_oLogFile.open(qPrintable(sLogFile), ios::app);
     if(!m_oLogFile.is_open())
-    {
-        QString sError = QString("Error opening log file [%1] for writing").arg(sLogFile);
-        throw runtime_error(qPrintable(sError));
-    }
+		qFatal(qPrintable(QString("Error opening log file [%1] for writing").arg(sLogFile)));
+
+	// Load the style sheet file
+	QFile oFile(":/resources/stylesheet.css");
+	if (oFile.open(QIODevice::ReadOnly | QIODevice::Text))
+		m_sStyleSheet = oFile.readAll();
+	else
+		qFatal("Error reading style sheet from resources.");
 
 	// Setup the log message handler
     qInstallMessageHandler(&gc::Application::handleLogOutput);
@@ -66,6 +71,12 @@ gc::Application::~Application()
 	// Update and close the log file
     m_oLogFile.flush();
 	m_oLogFile.close();
+}
+
+// +-----------------------------------------------------------
+QString gc::Application::getStyleSheet()
+{
+	return m_sStyleSheet;
 }
 
 // +-----------------------------------------------------------

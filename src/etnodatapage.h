@@ -15,18 +15,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
-#include "application.h"
-#include "window.h"
 
-using namespace gc;
+#ifndef ETNO_DATA_PAGE_H
+#define ETNO_DATA_PAGE_H
 
-int main(int argc, char** argv)
+#include <QWizardPage>
+
+namespace gc
 {
-    Application oApp(argc, argv);
+	/**
+	* Page class in the wizard application used to capture etnographic data.
+	*/
+	class EtnoDataPage : public QWizardPage
+	{
+		Q_OBJECT
+	public:
 
-    Window oMain;
-	oMain.show();
-    
-	return oApp.exec();
+        /**
+         * Class constructor.
+         * @param pParent Instance of a QWidget with the parent of this page.
+         * The default is NULL.
+         */
+		EtnoDataPage(QWidget *pParent = NULL);
+	};
 }
+
+#endif // ETNO_DATA_PAGE_H

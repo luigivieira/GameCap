@@ -15,18 +15,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
-#include "application.h"
-#include "window.h"
 
-using namespace gc;
+#ifndef WINDOW_H
+#define WINDOW_H
 
-int main(int argc, char** argv)
+#include <QWizard>
+
+namespace gc
 {
-    Application oApp(argc, argv);
+	/**
+	* Custom Wizard class for the main window in the application.
+	*/
+	class Window : public QWizard
+	{
+		Q_OBJECT
+	public:
 
-    Window oMain;
-	oMain.show();
-    
-	return oApp.exec();
+		/**
+		 * Class constructor.
+		 * @param pParent QWidget instance of the parent of the window. Default is NULL.
+		 */
+		Window(QWidget *pParent = NULL);
+
+	private:
+
+		/** Enumerations of the page IDs. */
+		enum { Page_Main, Page_Intro, Page_GameInfo, Page_ReviewInfo, Page_GameReview, Page_EtnoData, Page_FunData, Page_End };
+	};
 }
+
+#endif // WINDOW_H
