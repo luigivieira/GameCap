@@ -25,6 +25,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QSettings>
+#include <QTranslator>
 #include <iostream>
 
 using namespace std;
@@ -51,12 +52,19 @@ gc::Application::Application(int argc, char* argv[]): QApplication(argc, argv)
     if(!m_oLogFile.is_open())
 		qFatal(qPrintable(QString("Error opening log file [%1] for writing").arg(sLogFile)));
 
-	// Load the style sheet file
+	// Load the style sheet file from resources
 	QFile oFile(":/resources/stylesheet.css");
 	if (oFile.open(QIODevice::ReadOnly | QIODevice::Text))
 		m_sStyleSheet = oFile.readAll();
 	else
 		qFatal("Error reading style sheet from resources.");
+
+	m_pCurrentTranslator = NULL; // The default language (English) does not require a translator
+
+	// Load the translations
+	m_pPTBRTranslator = new QTranslator(this);
+	if (!m_pPTBRTranslator->load(QLocale("pt"), ":/translations/pt_br.qm"))
+		qFatal("Could not load the pt_br translation from resource");
 
 	// Setup the log message handler
     qInstallMessageHandler(&gc::Application::handleLogOutput);
@@ -77,6 +85,32 @@ gc::Application::~Application()
 QString gc::Application::getStyleSheet()
 {
 	return m_sStyleSheet;
+}
+
+// +-----------------------------------------------------------
+void gc::Application::setLanguage(Language eLanguage)
+{
+	// Remove current translator (if any)
+	if (m_pCurrentTranslator)
+	{
+		qApp->removeTranslator(m_pCurrentTranslator);
+		m_pCurrentTranslator = NULL;
+	}
+
+	// Identify the translator according to the language
+	switch (eLanguage)
+	{
+		case Language::PT_BR:
+			m_pCurrentTranslator = m_pPTBRTranslator;
+			break;
+	}
+
+	// Istall the required translator and emit the change signal
+	if (m_pCurrentTranslator)
+	{
+		qApp->installTranslator(m_pPTBRTranslator);
+		//emit ...
+	}	
 }
 
 // +-----------------------------------------------------------

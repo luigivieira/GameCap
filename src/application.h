@@ -79,6 +79,16 @@ namespace gc
 		 */
 		QString getStyleSheet();
 
+		/** Enumeration of the available languages for this application. */
+		enum Language {EN_UK, PT_BR};
+
+		/**
+		 * Sets the current language for the application, in order to update
+		 * the translations.
+		 * @param eLanguage Value of the enumeration Language with the language identifier.
+		 */
+		void setLanguage(Language eLanguage);
+
 	protected:
 
 		/**
@@ -122,6 +132,12 @@ namespace gc
 		 * (loaded from an external .css file).
 		 */
 		QString m_sStyleSheet;
+
+		/** Current translator installed. */
+		QTranslator *m_pCurrentTranslator;
+
+		/** Translator used for Brazilian Portuguese. */
+		QTranslator *m_pPTBRTranslator;
 	};
 }
 

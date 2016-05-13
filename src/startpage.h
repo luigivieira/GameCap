@@ -38,6 +38,15 @@ namespace gc
          * The default is NULL.
          */
 		StartPage(QWidget *pParent = NULL);
+
+	protected slots:
+	
+		/**
+		 * Handles the toggling of the selected language.
+		 * @param iId Integer with the identifier of the language button toggled.
+		 * @param bChecked Boolean with the current status of the language button.
+		 */
+		void languageToggled(int iId, bool bChecked);
 	};
 }
 

@@ -46,16 +46,42 @@ set(CMAKE_AUTOMOC ON) # Instruct CMake to run moc automatically when needed
 set(CMAKE_AUTORCC ON) # Instruct CMake to run rcc automatically when needed
 set(CMAKE_AUTOUIC ON) # Instruct CMake to run uic automatically when needed
 find_package(Qt5Widgets REQUIRED)
+find_package(Qt5LinguistTools REQUIRED)
 
-# Add all source and resource files
-file(GLOB SRC src/*.cpp src/*.h)
-file(GLOB RSC src/*.qrc)
+# Add source files
+file(GLOB SRC_FILES src/*.cpp src/*.h)
+
+# Add translation files (via a dynamic resource file)
+file(GLOB TS_FILES src/translations/*.ts)
+set(QM_LIST "")
+foreach(TS_FILE ${TS_FILES})
+    get_filename_component (TS_FILE_WE ${TS_FILE} NAME_WE)
+    set(QM_LIST "${QM_LIST}<file>${TS_FILE_WE}.qm</file>\n")
+endforeach()
+configure_file (
+  "${PROJECT_SOURCE_DIR}/translations.qrc.in"
+  "${PROJECT_BINARY_DIR}/translations.qrc"
+)
+
+# Update the TS files
+option (UPDATE_TRANSLATIONS "Update source translation translations/*.ts")
+if (UPDATE_TRANSLATIONS)
+  QT5_CREATE_TRANSLATION(QM_FILES ${SRC_FILES} ${TS_FILES})
+else (UPDATE_TRANSLATIONS)
+  QT5_ADD_TRANSLATION(QM_FILES ${TS_FILES})
+endif (UPDATE_TRANSLATIONS)
+
+# prevent the generated files from being deleted during make clean
+set_directory_properties(PROPERTIES CLEAN_NO_CUSTOM true)
+
+# Add resource files
+file(GLOB RSC_FILES src/*.qrc ${PROJECT_BINARY_DIR}/*.qrc)
 
 # Add the executable
 if(WIN32)
-    add_executable(GameCap WIN32 ${SRC} ${RSC})
+    add_executable(GameCap WIN32 ${SRC_FILES} ${RSC_FILES})
 else()
-    add_executable(GameCap ${SRC} ${RSC})
+    add_executable(GameCap ${SRC_FILES} ${RSC_FILES})
 endif()
 set_target_properties(GameCap PROPERTIES OUTPUT_NAME gamecap)
 set_target_properties(GameCap PROPERTIES OUTPUT_NAME_DEBUG gamecapd)

@@ -22,13 +22,12 @@
 #include <QVBoxLayout>
 #include <QPixmap>
 #include <QLabel>
-#include <QScreen>
+#include <QPushbutton>
+#include <QButtonGroup>
 
 // +-----------------------------------------------------------
 gc::StartPage::StartPage(QWidget *pParent) : QWizardPage(pParent)
 {
-	QSize oMaxSize = QApplication::primaryScreen()->availableSize();
-
 	// Main page layout
 	QVBoxLayout *pLayout = new QVBoxLayout();
 	setLayout(pLayout);
@@ -75,20 +74,36 @@ gc::StartPage::StartPage(QWidget *pParent) : QWizardPage(pParent)
 
 	pFlagsLayout->addStretch();
 
-	QLabel *pFlagBR = new QLabel();
-	pFlagBR->setScaledContents(true);
-	pFlagBR->setPixmap(QPixmap(":/resources/br_flag.png"));
-	pFlagsLayout->addWidget(pFlagBR);
+	QPushButton *pFlagUK = new QPushButton();
+	pFlagUK->setObjectName("flagUK");
+	pFlagUK->setCursor(Qt::PointingHandCursor);
+	pFlagUK->setCheckable(true);
+	pFlagUK->setChecked(true);
+	pFlagsLayout->addWidget(pFlagUK);
 
 	pFlagsLayout->addStretch();
 
-	QLabel *pFlagUK = new QLabel();
-	pFlagUK->setScaledContents(true);
-	pFlagUK->setPixmap(QPixmap(":/resources/uk_flag.png"));
-	pFlagsLayout->addWidget(pFlagUK);
+	QPushButton *pFlagBR = new QPushButton();
+	pFlagBR->setObjectName("flagBR");
+	pFlagBR->setCursor(Qt::PointingHandCursor);
+	pFlagBR->setCheckable(true);
+	pFlagsLayout->addWidget(pFlagBR);
+
+	QButtonGroup *pGroup = new QButtonGroup();
+	pGroup->addButton(pFlagUK, Application::Language::EN_UK);
+	pGroup->addButton(pFlagBR, Application::Language::PT_BR);
+
+	connect(pGroup, SIGNAL(buttonToggled(int, bool)), this, SLOT(languageToggled(int, bool)));
 
 	pFlagsLayout->addStretch();
 	// ----------------------------------------------
 
 	pLayout->addStretch();
+}
+
+// +-----------------------------------------------------------
+void gc::StartPage::languageToggled(int iId, bool bChecked)
+{
+	if (bChecked)
+		((Application*)qApp)->setLanguage((Application::Language) iId);
 }
