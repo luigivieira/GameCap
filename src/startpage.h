@@ -19,8 +19,11 @@
 #ifndef START_PAGE_H
 #define START_PAGE_H
 
+#include "application.h"
 #include <QWizardPage>
 #include <QLabel>
+#include <QPushButton>
+#include <QList>
 
 namespace gc
 {
@@ -39,14 +42,42 @@ namespace gc
          */
 		StartPage(QWidget *pParent = NULL);
 
+		/**
+		 * Set the button corresponding for the given language to be checked.
+		 * This automatically triggers the application delivery of the language changed signal.
+		 * @param eLanguage Enumeration value with the language of the button to be checked.
+		 */
+		void checkLanguageButton(Application::Language eLanguage);
+	
 	protected slots:
 	
 		/**
-		 * Handles the toggling of the selected language.
+		 * Handles the toggling of the selected language through the page buttons.
 		 * @param iId Integer with the identifier of the language button toggled.
 		 * @param bChecked Boolean with the current status of the language button.
 		 */
 		void languageToggled(int iId, bool bChecked);
+
+		/**
+		 * Handles the notification of language changed from the application.
+		 * @param eLanguage Value of the Language enumeration indicating
+		 * the language that is now active.
+		 */
+		void languageChanged(gc::Application::Language eLanguage);
+
+	private:
+
+		/** Image with the university logo. */
+		QLabel *m_pLogo;
+
+		/** Message about selecting the language. */
+		QLabel *m_pMessage;
+
+		/**
+		 * List of pointers to the language buttons, stored in the same order of the
+		 * Application::Language enumeration.
+		 */
+		QList<QPushButton *> m_aFlagButtons;
 	};
 }
 

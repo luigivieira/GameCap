@@ -89,6 +89,15 @@ namespace gc
 		 */
 		void setLanguage(Language eLanguage);
 
+	signals:
+
+		/**
+		 * Signal to indicate that the application languaged changed.
+		 * @param eLanguage Value of the Language enumeration indicating
+		 * the language that is now active.
+		 */
+		void languageChanged(gc::Application::Language eLanguage);
+
 	protected:
 
 		/**

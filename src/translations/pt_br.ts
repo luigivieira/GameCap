@@ -4,12 +4,12 @@
 <context>
     <name>Main</name>
     <message>
-        <location filename="../application.cpp" line="268"/>
+        <location filename="../application.cpp" line="299"/>
         <source>Runtime Error</source>
         <translation>Erro de Execução</translation>
     </message>
     <message>
-        <location filename="../application.cpp" line="268"/>
+        <location filename="../application.cpp" line="299"/>
         <source>A fatal exception ocurred and the application must be terminated. Please check the log file for details.</source>
         <translation>Um erro fatal ocorreu e a aplicação precisará ser encerrada. Por favor, verifique o arquivo de log para detalhes.</translation>
     </message>
@@ -17,7 +17,7 @@
 <context>
     <name>gc::StartPage</name>
     <message>
-        <location filename="../startpage.cpp" line="59"/>
+        <location filename="../startpage.cpp" line="127"/>
         <source>Please choose the language to be used in the experiment:</source>
         <translation>Por favor, escolha o idioma a ser utilizado no experimento:</translation>
     </message>
@@ -25,22 +25,22 @@
 <context>
     <name>gc::Window</name>
     <message>
-        <location filename="../window.cpp" line="51"/>
+        <location filename="../window.cpp" line="76"/>
         <source>Go Back</source>
         <translation>Voltar</translation>
     </message>
     <message>
-        <location filename="../window.cpp" line="52"/>
+        <location filename="../window.cpp" line="77"/>
         <source>Continue</source>
         <translation>Continuar</translation>
     </message>
     <message>
-        <location filename="../window.cpp" line="53"/>
+        <location filename="../window.cpp" line="78"/>
         <source>Conclude</source>
         <translation>Concluir</translation>
     </message>
     <message>
-        <location filename="../window.cpp" line="54"/>
+        <location filename="../window.cpp" line="79"/>
         <source>Quit</source>
         <translation>Sair</translation>
     </message>

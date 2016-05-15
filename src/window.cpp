@@ -48,18 +48,13 @@ gc::Window::Window(QWidget *pParent) : QWizard(pParent)
 	button(QWizard::FinishButton)->setCursor(Qt::PointingHandCursor);
 	button(QWizard::CancelButton)->setCursor(Qt::PointingHandCursor);
 
-	setButtonText(QWizard::BackButton, tr("Go Back"));
-	setButtonText(QWizard::NextButton, tr("Continue"));
-	setButtonText(QWizard::FinishButton, tr("Conclude"));
-	setButtonText(QWizard::CancelButton, tr("Quit"));
-
 	QList<QWizard::WizardButton> lLayout;
 	lLayout << QWizard::CancelButton << QWizard::Stretch << QWizard::BackButton << QWizard::NextButton << QWizard::FinishButton;
 	setButtonLayout(lLayout);
 
 	setStyleSheet(((Application *) qApp)->getStyleSheet());
 
-	setPage(Page_Main, new StartPage(this));
+	setPage(Page_Start, new StartPage(this));
 	setPage(Page_Intro, new IntroPage(this));
 	setPage(Page_GameInfo, new GameInfoPage(this));
 	setPage(Page_ReviewInfo, new ReviewInfoPage(this));
@@ -68,5 +63,18 @@ gc::Window::Window(QWidget *pParent) : QWizard(pParent)
 	setPage(Page_FunData, new FunDataPage(this));
 	setPage(Page_End, new EndPage(this));
 
-	setStartId(Page_Main);
+	setStartId(Page_Start);
+
+	// Connect to the application to receive notifications on language changes
+	connect(qApp, SIGNAL(languageChanged(gc::Application::Language)), this, SLOT(languageChanged(gc::Application::Language)));
+	((StartPage *)page(Page_Start))->checkLanguageButton(Application::Language::EN_UK);
+}
+
+// +-----------------------------------------------------------
+void gc::Window::languageChanged(gc::Application::Language eLanguage)
+{
+	setButtonText(QWizard::BackButton, tr("Go Back"));
+	setButtonText(QWizard::NextButton, tr("Continue"));
+	setButtonText(QWizard::FinishButton, tr("Conclude"));
+	setButtonText(QWizard::CancelButton, tr("Quit"));
 }

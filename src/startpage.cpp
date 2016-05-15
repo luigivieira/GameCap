@@ -22,28 +22,26 @@
 #include <QVBoxLayout>
 #include <QPixmap>
 #include <QLabel>
-#include <QPushbutton>
 #include <QButtonGroup>
 
 // +-----------------------------------------------------------
 gc::StartPage::StartPage(QWidget *pParent) : QWizardPage(pParent)
 {
 	// Main page layout
-	QVBoxLayout *pLayout = new QVBoxLayout();
+	QVBoxLayout *pLayout = new QVBoxLayout(this);
 	setLayout(pLayout);
 
 	// ----------------------------------------------
 	// Create the header with the logo
 	// ----------------------------------------------
-	QHBoxLayout *pLogoLayout = new QHBoxLayout();
+	QHBoxLayout *pLogoLayout = new QHBoxLayout(this);
 	pLayout->addLayout(pLogoLayout);
 
 	pLogoLayout->addStretch();
 
-	QLabel *pLogo = new QLabel();
-	pLogo->setScaledContents(false);
-	pLogo->setPixmap(QPixmap(":/resources/uk_logo.png"));
-	pLogoLayout->addWidget(pLogo);
+	m_pLogo = new QLabel(this);
+	m_pLogo->setScaledContents(false);
+	pLogoLayout->addWidget(m_pLogo);
 
 	pLogoLayout->addStretch();
 	// ----------------------------------------------
@@ -53,14 +51,14 @@ gc::StartPage::StartPage(QWidget *pParent) : QWizardPage(pParent)
 	// ----------------------------------------------
 	// Create the message header
 	// ----------------------------------------------
-	QHBoxLayout *pHeaderLayout = new QHBoxLayout();
+	QHBoxLayout *pHeaderLayout = new QHBoxLayout(this);
 	pLayout->addLayout(pHeaderLayout);
 
-	QLabel *pLabel = new QLabel(tr("Please choose the language to be used in the experiment:"));
-	pLabel->setWordWrap(true);
-	pLabel->setAlignment(Qt::AlignCenter);
+	m_pMessage = new QLabel(this);
+	m_pMessage->setWordWrap(true);
+	m_pMessage->setAlignment(Qt::AlignCenter);
 	pHeaderLayout->addStretch();
-	pHeaderLayout->addWidget(pLabel);
+	pHeaderLayout->addWidget(m_pMessage);
 	pHeaderLayout->addStretch();
 	// ----------------------------------------------
 
@@ -78,7 +76,6 @@ gc::StartPage::StartPage(QWidget *pParent) : QWizardPage(pParent)
 	pFlagUK->setObjectName("flagUK");
 	pFlagUK->setCursor(Qt::PointingHandCursor);
 	pFlagUK->setCheckable(true);
-	pFlagUK->setChecked(true);
 	pFlagsLayout->addWidget(pFlagUK);
 
 	pFlagsLayout->addStretch();
@@ -92,6 +89,8 @@ gc::StartPage::StartPage(QWidget *pParent) : QWizardPage(pParent)
 	QButtonGroup *pGroup = new QButtonGroup();
 	pGroup->addButton(pFlagUK, Application::Language::EN_UK);
 	pGroup->addButton(pFlagBR, Application::Language::PT_BR);
+	m_aFlagButtons.append(pFlagUK);
+	m_aFlagButtons.append(pFlagBR);
 
 	connect(pGroup, SIGNAL(buttonToggled(int, bool)), this, SLOT(languageToggled(int, bool)));
 
@@ -99,6 +98,20 @@ gc::StartPage::StartPage(QWidget *pParent) : QWizardPage(pParent)
 	// ----------------------------------------------
 
 	pLayout->addStretch();
+
+	// ----------------------------------------------
+	// Other initializations
+	// ----------------------------------------------
+	// Connect to the application to receive notifications on language changes
+	connect(qApp, SIGNAL(languageChanged(gc::Application::Language)), this, SLOT(languageChanged(gc::Application::Language)));
+}
+
+// +-----------------------------------------------------------
+void gc::StartPage::checkLanguageButton(Application::Language eLanguage)
+{
+	QPushButton *pButton = m_aFlagButtons.at((int)eLanguage);
+	if (pButton)
+		pButton->setChecked(true);
 }
 
 // +-----------------------------------------------------------
@@ -106,4 +119,20 @@ void gc::StartPage::languageToggled(int iId, bool bChecked)
 {
 	if (bChecked)
 		((Application*)qApp)->setLanguage((Application::Language) iId);
+}
+
+// +-----------------------------------------------------------
+void gc::StartPage::languageChanged(gc::Application::Language eLanguage)
+{
+	m_pMessage->setText(tr("Please choose the language to be used in the experiment:"));
+	switch (eLanguage)
+	{
+	case Application::Language::EN_UK:
+		m_pLogo->setPixmap(QPixmap(":/resources/uk_logo.png"));
+		break;
+
+	case Application::Language::PT_BR:
+		m_pLogo->setPixmap(QPixmap(":/resources/br_logo.png"));
+		break;
+	}
 }

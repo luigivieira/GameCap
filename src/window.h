@@ -20,6 +20,7 @@
 #define WINDOW_H
 
 #include <QWizard>
+#include "application.h"
 
 namespace gc
 {
@@ -37,10 +38,19 @@ namespace gc
 		 */
 		Window(QWidget *pParent = NULL);
 
+	protected slots:
+
+		/**
+		* Handles the notification of language changed from the application.
+		* @param eLanguage Value of the Language enumeration indicating
+		* the language that is now active.
+		*/
+		void languageChanged(gc::Application::Language eLanguage);
+
 	private:
 
 		/** Enumerations of the page IDs. */
-		enum { Page_Main, Page_Intro, Page_GameInfo, Page_ReviewInfo, Page_GameReview, Page_EtnoData, Page_FunData, Page_End };
+		enum { Page_Start, Page_Intro, Page_GameInfo, Page_ReviewInfo, Page_GameReview, Page_EtnoData, Page_FunData, Page_End };
 	};
 }
 
