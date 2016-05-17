@@ -27,4 +27,4 @@ The experiments performed with the help of this tool use the games described in 
 
 ## Copyright Notes
 
-- The Brazil and United Kingdom flags used in the application are from the website [Free Flag Icons website](www.freeflagicons.com).
+- The Brazil and United Kingdom flags used in the application are from the website [Free Flag Icons website](http://www.freeflagicons.com/).
