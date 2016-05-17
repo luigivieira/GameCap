@@ -18,3 +18,10 @@ The experiments performed with the help of this tool use the games described in 
 | [Infinite Mario Bros.](https://github.com/luigivieira/Infinite-Mario-Bros) | Platformer | IMB (Infinite Mario Bros.) is an open-source clone of the classic [Super Mario Bros.](https://en.wikipedia.org/wiki/Super_Mario_Bros.) and largely used for research purposes. It is implemented in Java, and hence available for any platform providing a Java Runtime Environment (JRE) intalled. |
 | [Slender](http://slendergame.com/) | Horror | Slender is a free but non-open source horror game, very popular among the independent (indie) game community. It is implemented in Unity 3D, but it is only available for Windows and Mac OS X. |
 [0 A.D.](https://play0ad.com/) | Real Time Strategy | 0 A.D. is an open source RTS (Real Time Strategy) game. It is implemented in C++ and available for Windows, Linux and Mac OS X. |
+
+## Building Notes
+
+- The translations are handled by the CMake configuration process via a target called "Translations" and a configuration option named `CREATE_TRANSLATIONS`. If that option is turned on during configuration, when that target is built the translation files (*.ts) will be either created (if not existing) or updated (with new strings found in the source files and marked with a call to `tr`), and then the binary translation files (*.qm) will be compiled. If that option is turned off during configuration, when that target is built the existing translation files will simply be used to compile the binary translation files (i.e. no translation update will be performed).
+
+>> A very important remark is that if the CREATE_TRANSLATIONS is turned on during configuration/generation time, the clean of the "Translations" target (either by issuing `make clean` or cleaning the project on Visual Studio) during build time will **delete** the translation files in the source directory!
+
