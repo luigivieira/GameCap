@@ -25,3 +25,6 @@ The experiments performed with the help of this tool use the games described in 
 
 >> A **very important** remark is that if the CREATE_TRANSLATIONS is turned on during configuration/generation time, the clean of the "Translations" target (either by issuing `make clean` or cleaning the project on Visual Studio) during build time will **delete** the translation files in the source directory!
 
+## Copyright Notes
+
+- The Brazil and United Kingdom flags used in the application are from the website [Free Flag Icons website](www.freeflagicons.com).
