@@ -73,8 +73,8 @@ gc::Application::Application(int argc, char* argv[]): QApplication(argc, argv)
 
 	// Load the translations
 	m_pPTBRTranslator = new QTranslator(this);
-	if (!m_pPTBRTranslator->load(QLocale("pt"), ":/translations/pt_br.qm"))
-		qFatal("Could not load the pt_br translation from resource");
+	if (!m_pPTBRTranslator->load(QLocale("pt"), ":/translations/pt-br.qm"))
+		qFatal("Could not load the pt-br translation from resource");
 
 	// Setup the log message handler
     qInstallMessageHandler(&gc::Application::handleLogOutput);

@@ -19,7 +19,9 @@
 #ifndef INTRO_PAGE_H
 #define INTRO_PAGE_H
 
+#include "application.h"
 #include <QWizardPage>
+#include <QLabel>
 
 namespace gc
 {
@@ -37,6 +39,21 @@ namespace gc
          * The default is NULL.
          */
 		IntroPage(QWidget *pParent = NULL);
+
+	protected slots:
+	
+		/**
+		 * Handles the notification of language changed from the application.
+		 * @param eLanguage Value of the Language enumeration indicating
+		 * the language that is now active.
+		 */
+		void languageChanged(gc::Application::Language eLanguage);
+
+	private:
+
+		/** Text presented in this page. */
+		QLabel *m_pText;
+
 	};
 }
 

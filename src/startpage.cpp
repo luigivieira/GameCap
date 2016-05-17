@@ -127,12 +127,12 @@ void gc::StartPage::languageChanged(gc::Application::Language eLanguage)
 	m_pMessage->setText(tr("Please choose the language to be used in the experiment:"));
 	switch (eLanguage)
 	{
-	case Application::Language::EN_UK:
-		m_pLogo->setPixmap(QPixmap(":/resources/uk_logo.png"));
-		break;
+		case Application::Language::EN_UK:
+			m_pLogo->setPixmap(QPixmap(":/resources/uk_logo.png"));
+			break;
 
-	case Application::Language::PT_BR:
-		m_pLogo->setPixmap(QPixmap(":/resources/br_logo.png"));
-		break;
+		case Application::Language::PT_BR:
+			m_pLogo->setPixmap(QPixmap(":/resources/br_logo.png"));
+			break;
 	}
 }

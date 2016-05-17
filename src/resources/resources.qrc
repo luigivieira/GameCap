@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/resources">
+        <file>br_flag.png</file>
+        <file>uk_flag.png</file>
+        <file>br_logo.png</file>
+        <file>uk_logo.png</file>
+        <file>stylesheet.css</file>
+    </qresource>
+</RCC>

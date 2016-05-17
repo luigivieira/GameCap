@@ -4,6 +4,6 @@
 -->
 <RCC>
     <qresource prefix="/translations">
-        @QM_LIST@
+@QM_LIST@
     </qresource>
 </RCC>
