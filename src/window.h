@@ -41,11 +41,30 @@ namespace gc
 	protected slots:
 
 		/**
-		* Handles the notification of language changed from the application.
+		* Captures the notification of language changed from the application.
 		* @param eLanguage Value of the Language enumeration indicating
 		* the language that is now active.
 		*/
 		void languageChanged(gc::Application::Language eLanguage);
+
+		/**
+		 * Captures the changes in the current page.
+		 * @param iPageID Integer with the ID of the page the application is now on.
+		 */
+		void pageChanged(int iPageID);
+
+	protected:
+
+		/**
+		 * Captures the dialog reject event.
+		 */
+		void reject() Q_DECL_OVERRIDE;
+
+		/**
+		* Captures the dialog done event.
+		* @param iRet Integer with the return code.
+		*/
+		void done(int iRet) Q_DECL_OVERRIDE;
 
 	private:
 

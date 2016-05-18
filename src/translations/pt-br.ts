@@ -15,6 +15,19 @@
     </message>
 </context>
 <context>
+    <name>MessageBox</name>
+    <message>
+        <location filename="../messagebox.cpp" line="26"/>
+        <source>Yes</source>
+        <translation>Sim</translation>
+    </message>
+    <message>
+        <location filename="../messagebox.cpp" line="27"/>
+        <source>No</source>
+        <translation>Não</translation>
+    </message>
+</context>
+<context>
     <name>gc::IntroPage</name>
     <message>
         <location filename="../intropage.cpp" line="42"/>
@@ -48,24 +61,34 @@ imagens das bandeiras de %2</translation>
 <context>
     <name>gc::Window</name>
     <message>
-        <location filename="../window.cpp" line="76"/>
+        <location filename="../window.cpp" line="81"/>
         <source>Go Back</source>
         <translation>Voltar</translation>
     </message>
     <message>
-        <location filename="../window.cpp" line="77"/>
+        <location filename="../window.cpp" line="82"/>
         <source>Continue</source>
         <translation>Continuar</translation>
     </message>
     <message>
-        <location filename="../window.cpp" line="78"/>
+        <location filename="../window.cpp" line="83"/>
         <source>Conclude</source>
         <translation>Concluir</translation>
     </message>
     <message>
-        <location filename="../window.cpp" line="79"/>
+        <location filename="../window.cpp" line="84"/>
         <source>Quit</source>
-        <translation>Sair</translation>
+        <translation>Desistir</translation>
+    </message>
+    <message>
+        <location filename="../window.cpp" line="90"/>
+        <source>Quit the experiment</source>
+        <translation>Desistir do experimento</translation>
+    </message>
+    <message>
+        <location filename="../window.cpp" line="90"/>
+        <source>Are you sure you want to quit the experiment?</source>
+        <translation>Tem certeza de que você deseja desistir do experimento?</translation>
     </message>
 </context>
 </TS>

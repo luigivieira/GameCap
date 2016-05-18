@@ -26,6 +26,7 @@
 #include "fundatapage.h"
 #include "endpage.h"
 #include "application.h"
+#include "messagebox.h"
 #include <QDir>
 #include <QFile>
 #include <QCoreApplication>
@@ -68,6 +69,18 @@ gc::Window::Window(QWidget *pParent) : QWizard(pParent)
 	// Connect to the application to receive notifications on language changes
 	connect(qApp, SIGNAL(languageChanged(gc::Application::Language)), this, SLOT(languageChanged(gc::Application::Language)));
 	((StartPage *)page(Page_Start))->checkLanguageButton(Application::Language::EN_UK);
+
+	// Capture the signal of page changed
+	connect(this, SIGNAL(currentIdChanged(int)), this, SLOT(pageChanged(int)));
+}
+
+// +-----------------------------------------------------------
+void gc::Window::pageChanged(int iPageID)
+{
+	if (iPageID == Page_Start)
+		button(QWizard::CancelButton)->setVisible(false);
+	else
+		button(QWizard::CancelButton)->setVisible(true);
 }
 
 // +-----------------------------------------------------------
@@ -77,4 +90,19 @@ void gc::Window::languageChanged(gc::Application::Language eLanguage)
 	setButtonText(QWizard::NextButton, tr("Continue"));
 	setButtonText(QWizard::FinishButton, tr("Conclude"));
 	setButtonText(QWizard::CancelButton, tr("Quit"));
+}
+
+// +-----------------------------------------------------------
+void gc::Window::reject()
+{
+	if (MessageBox::yesNoQuestion(tr("Quit the experiment"), tr("Are you sure you want to quit the experiment?")))
+	{
+		restart();
+	}
+}
+
+// +-----------------------------------------------------------
+void gc::Window::done(int iRet)
+{
+	restart();
 }
