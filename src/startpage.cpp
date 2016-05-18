@@ -18,6 +18,7 @@
 
 #include "startpage.h"
 #include "application.h"
+#include "version.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPixmap>
@@ -99,6 +100,10 @@ gc::StartPage::StartPage(QWidget *pParent) : QWizardPage(pParent)
 
 	pLayout->addStretch();
 
+	m_pInfo = new QLabel(this);
+	m_pInfo->setObjectName("info");
+	pLayout->addWidget(m_pInfo);
+
 	// ----------------------------------------------
 	// Other initializations
 	// ----------------------------------------------
@@ -125,6 +130,7 @@ void gc::StartPage::languageToggled(int iId, bool bChecked)
 void gc::StartPage::languageChanged(gc::Application::Language eLanguage)
 {
 	m_pMessage->setText(tr("Please choose the language to be used in the experiment:"));
+	m_pInfo->setText(tr("version %1\nflag images from %2").arg(GC_VERSION).arg("http://www.freeflagicons.com/"));
 	switch (eLanguage)
 	{
 		case Application::Language::EN_UK:

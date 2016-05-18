@@ -4,12 +4,12 @@
 <context>
     <name>Main</name>
     <message>
-        <location filename="../application.cpp" line="299"/>
+        <location filename="../application.cpp" line="300"/>
         <source>Runtime Error</source>
         <translation>Erro de Execução</translation>
     </message>
     <message>
-        <location filename="../application.cpp" line="299"/>
+        <location filename="../application.cpp" line="300"/>
         <source>A fatal exception ocurred and the application must be terminated. Please check the log file for details.</source>
         <translation>Um erro fatal ocorreu e a aplicação precisará ser encerrada. Por favor, verifique o arquivo de log para detalhes.</translation>
     </message>
@@ -33,9 +33,16 @@ Você deve ter recebido, lido e assinado um termo de consentimento explicando os
 <context>
     <name>gc::StartPage</name>
     <message>
-        <location filename="../startpage.cpp" line="127"/>
+        <location filename="../startpage.cpp" line="132"/>
         <source>Please choose the language to be used in the experiment:</source>
         <translation>Por favor, escolha o idioma a ser utilizado no experimento:</translation>
+    </message>
+    <message>
+        <location filename="../startpage.cpp" line="133"/>
+        <source>version %1
+flag images from %2</source>
+        <translation>versão %1
+imagens das bandeiras de %2</translation>
     </message>
 </context>
 <context>

@@ -73,6 +73,9 @@ namespace gc
 		/** Message about selecting the language. */
 		QLabel *m_pMessage;
 
+		/** Version and copyright information. */
+		QLabel *m_pInfo;
+
 		/**
 		 * List of pointers to the language buttons, stored in the same order of the
 		 * Application::Language enumeration.

@@ -17,6 +17,7 @@
  */
 
 #include "application.h"
+#include "version.h"
 #include <typeinfo>
 #include <QDebug>
 #include <QDateTime>
@@ -199,7 +200,7 @@ void gc::Application::updateSettings()
 // +-----------------------------------------------------------
 int gc::Application::exec()
 {
-	qInfo("GameCap started.");
+	qInfo(qPrintable(QString("GameCap (v%1) started.").arg(GC_VERSION)));
 	qDebug("Running from %s", qPrintable(QCoreApplication::applicationFilePath()));
 
 	int iRet = QApplication::exec();

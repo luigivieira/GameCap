@@ -30,7 +30,7 @@ configure_file (
   "${PROJECT_SOURCE_DIR}/src/version.h.in"
   "${PROJECT_BINARY_DIR}/src/version.h"
 )
-include_directories("${PROJECT_BINARY_DIR}")
+include_directories("${PROJECT_BINARY_DIR}/src/")
 
 # Default build type if none was specified
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -48,7 +48,7 @@ set(CMAKE_AUTOUIC ON) # Instruct CMake to run uic automatically when needed
 find_package(Qt5Widgets REQUIRED)
 
 # Add source files
-file(GLOB SRC_FILES src/*.cpp src/*.h)
+file(GLOB SRC_FILES src/*.cpp src/*.h ${PROJECT_BINARY_DIR}/src/version.h)
 
 # Add translations
 add_subdirectory(src/translations)
