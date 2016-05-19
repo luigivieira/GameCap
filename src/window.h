@@ -80,6 +80,7 @@ namespace gc
 		/** Enumerations of the page IDs. */
 		enum { Page_Start, Page_Intro, Page_GameInfo, Page_ReviewInfo, Page_GameReview, Page_EtnoData, Page_FunData, Page_End };
 
+		/** Stores the hooked keys for the secret key combination used to close the application. */
 		QString m_sHookedKeys;
 	};
 }
