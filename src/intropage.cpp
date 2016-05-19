@@ -40,23 +40,21 @@ gc::IntroPage::IntroPage(QWidget *pParent) : QWizardPage(pParent)
 void gc::IntroPage::languageChanged(gc::Application::Language eLanguage)
 {
 	QString sText = tr("\
-Welcome and thank you for your help.\
+Welcome.\
 \n\
 \n\
-You are about to join an experiment to help producing a tool to support \
-the design of video games. The whole experiment will take around 20 minutes \
-to complete. To participate you will have to play a game for 10 minutes, \
-then review a video of the last 5 minutes of the game session you just played \
-while answering 3 simple questions. Finally you will also have to answer a \
-short questionnaire of multiple choices.\
+Thank you for your participation. The whole experiment will take around 20 minutes to complete, \
+in which you will have to play a game (10 minutes), review a video of your game session (5 minutes) \
+and then answer a short questionnaire (5 minutes).\
 \n\
 \n\
-You should have received, read and signed a term of consent explaining the \
-details of this experiment and the ethics rules applicable. If you have not \
-received this document or if you still have any doubt regarding anything, \
-then please do not proceed. Also, please remember that you can quit whenever \
-you want if you no longer wish to participate, with no explaining or \
-justification required.\
+You should have received, read and signed a term of consent explaining the details of this \
+experiment and the ethics rules applicable. If you have not received it or if you still have \
+any doubts, then please do not proceed.\
+\n\
+\n\
+Finally, please remember that if you no longer wish to participate you can quit at any moment, \
+with no explanation or justification required.\
 ");
 
 	m_pText->setText(sText);

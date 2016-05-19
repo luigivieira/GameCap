@@ -31,16 +31,20 @@
     <name>gc::IntroPage</name>
     <message>
         <location filename="../intropage.cpp" line="42"/>
-        <source>Welcome and thank you for your help.
+        <source>Welcome.
 
-You are about to join an experiment to help producing a tool to support the design of video games. The whole experiment will take around 20 minutes to complete. To participate you will have to play a game for 10 minutes, then review a video of the last 5 minutes of the game session you just played while answering 3 simple questions. Finally you will also have to answer a short questionnaire of multiple choices.
+Thank you for your participation. The whole experiment will take around 20 minutes to complete, in which you will have to play a game (10 minutes), review a video of your game session (5 minutes) and then answer a short questionnaire (5 minutes).
 
-You should have received, read and signed a term of consent explaining the details of this experiment and the ethics rules applicable. If you have not received this document or if you still have any doubt regarding anything, then please do not proceed. Also, please remember that you can quit whenever you want if you no longer wish to participate, with no explaining or justification required.</source>
-        <translation>Bem-vindo(a) e obrigado por sua ajuda.
+You should have received, read and signed a term of consent explaining the details of this experiment and the ethics rules applicable. If you have not received it or if you still have any doubts, then please do not proceed.
 
-Em instantes você participará de um experimento com o objetivo de auxiliar na produção de uma ferramenta de apoio ao projeto de jogos digitais (video games). Todo o experimento levará cerca de 20 minutos para ser completado. Para participar você deverá jogar um jogo por 10 minutos, e então revisar o vídeo dos últimos 5 minutos a sessão de jogo que acabou de jogar enquanto responde a 3 perguntas simples. Finalmente, você deverá responder a um questionário curto de múltipla escolha.
+Finally, please remember that if you no longer wish to participate you can quit at any moment, with no explanation or justification required.</source>
+        <translation>Bem vindo(a).
 
-Você deve ter recebido, lido e assinado um termo de consentimento explicando os detalhes deste experimento e as regras de ética aplicáveis. Se você não recebeu esse documento ou se você ainda tem qualquer tipo de dúvida, então, por favor, não prossiga. Adicionalmente, lembre-se, por favor, de que você pode desistir a qualquer momento se não mais desejar participar, sem que qualquer explicação ou justificativa seja necessária.</translation>
+Obrigado por sua participação. Todo o experimento levará cerca de 20 minutos para ser completado, em que você deverá jogar um jogo (10 minutos), revisar um vídeo da sua sessão de jogo (5 minutos) and então responder a um questionário curto (5 minutos).
+
+Você deve ter recebido, lido e assinado um termo de consentimento explicando os detalhes deste experimento e as regras éticas aplicáveis. Se você não o recebeu ou se ainda tem qualquer dúvida, então, por favor, não prossiga.
+
+Finalmente, lembre-se, por favor, que se você não mais desejar participar você pode desistir a qualquer momento, sem precisar fornecer qualquer explicação ou justificativa.</translation>
     </message>
 </context>
 <context>
@@ -61,32 +65,32 @@ imagens das bandeiras de %2</translation>
 <context>
     <name>gc::Window</name>
     <message>
-        <location filename="../window.cpp" line="81"/>
+        <location filename="../window.cpp" line="94"/>
         <source>Go Back</source>
         <translation>Voltar</translation>
     </message>
     <message>
-        <location filename="../window.cpp" line="82"/>
+        <location filename="../window.cpp" line="95"/>
         <source>Continue</source>
         <translation>Continuar</translation>
     </message>
     <message>
-        <location filename="../window.cpp" line="83"/>
+        <location filename="../window.cpp" line="96"/>
         <source>Conclude</source>
         <translation>Concluir</translation>
     </message>
     <message>
-        <location filename="../window.cpp" line="84"/>
+        <location filename="../window.cpp" line="97"/>
         <source>Quit</source>
         <translation>Desistir</translation>
     </message>
     <message>
-        <location filename="../window.cpp" line="90"/>
+        <location filename="../window.cpp" line="108"/>
         <source>Quit the experiment</source>
         <translation>Desistir do experimento</translation>
     </message>
     <message>
-        <location filename="../window.cpp" line="90"/>
+        <location filename="../window.cpp" line="108"/>
         <source>Are you sure you want to quit the experiment?</source>
         <translation>Tem certeza de que você deseja desistir do experimento?</translation>
     </message>
