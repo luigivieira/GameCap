@@ -19,8 +19,8 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <QWizard>
 #include "application.h"
+#include <QWizard>
 
 namespace gc
 {
@@ -56,20 +56,31 @@ namespace gc
 	protected:
 
 		/**
-		 * Captures the dialog reject event.
+		 * Captures the dialog reject event to handle data elimination and restart.
 		 */
 		void reject() Q_DECL_OVERRIDE;
 
 		/**
-		* Captures the dialog done event.
+		* Captures the dialog done event to handle data storage and restart.
 		* @param iRet Integer with the return code.
 		*/
 		void done(int iRet) Q_DECL_OVERRIDE;
+
+		/**
+		 * Captures the events happening in this dialog to implement a
+		 * secret close shortcut.
+		 * @param pSender Instance of the QObject sending the event.
+		 * @param QEvent pEvent Instance of the QEvent with the event data.
+		 * @return Boolean value indicating if the event should be filtered or not.
+		 */
+		bool eventFilter(QObject *pSender, QEvent *pEvent) Q_DECL_OVERRIDE;
 
 	private:
 
 		/** Enumerations of the page IDs. */
 		enum { Page_Start, Page_Intro, Page_GameInfo, Page_ReviewInfo, Page_GameReview, Page_EtnoData, Page_FunData, Page_End };
+
+		QString m_sHookedKeys;
 	};
 }
 

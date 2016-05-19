@@ -31,6 +31,7 @@
 #include <QFile>
 #include <QCoreApplication>
 #include <QPushButton>
+#include <QKeyEvent>
 
  // +-----------------------------------------------------------
 gc::Window::Window(QWidget *pParent) : QWizard(pParent)
@@ -72,11 +73,15 @@ gc::Window::Window(QWidget *pParent) : QWizard(pParent)
 
 	// Capture the signal of page changed
 	connect(this, SIGNAL(currentIdChanged(int)), this, SLOT(pageChanged(int)));
+
+	// Captures the events in order to handle keypresses
+	installEventFilter(this);
 }
 
 // +-----------------------------------------------------------
 void gc::Window::pageChanged(int iPageID)
 {
+	// Hide the quit button on the first page
 	if (iPageID == Page_Start)
 		button(QWizard::CancelButton)->setVisible(false);
 	else
@@ -95,6 +100,11 @@ void gc::Window::languageChanged(gc::Application::Language eLanguage)
 // +-----------------------------------------------------------
 void gc::Window::reject()
 {
+	// Do nothing if the current page is the start
+	if (currentId() == Page_Start)
+		return;
+
+	// Confirm quiting the experiment
 	if (MessageBox::yesNoQuestion(tr("Quit the experiment"), tr("Are you sure you want to quit the experiment?")))
 	{
 		restart();
@@ -105,4 +115,34 @@ void gc::Window::reject()
 void gc::Window::done(int iRet)
 {
 	restart();
+}
+
+// +-----------------------------------------------------------
+bool gc::Window::eventFilter(QObject *pSender, QEvent *pEvent)
+{
+	if (pSender == this && pEvent->type() == QEvent::KeyPress)
+	{
+		QKeyEvent *pKeyEvent = (QKeyEvent*) pEvent;
+
+		// The Ctrl or the Q keys clean up the hooking buffer
+		if (pKeyEvent->key() == Qt::Key_Control || pKeyEvent->key() == Qt::Key_Q)
+			m_sHookedKeys = "";
+
+		// If Ctrl is pressed together with other keys, then search for
+		// the "Q-U-I-T" sequence by "hooking" the last 4 pressed letters
+		if (pKeyEvent->modifiers() & Qt::ControlModifier && 
+			(pKeyEvent->key() >= Qt::Key_0 && pKeyEvent->key() <= Qt::Key_Z))
+		{
+			QString sKey = QString(pKeyEvent->nativeVirtualKey());
+			m_sHookedKeys += sKey;
+			if (m_sHookedKeys.length() == 4)
+			{
+				if (m_sHookedKeys.left(4) == "QUIT")
+					Application::quit();
+				else // Wrong sequence
+					m_sHookedKeys = "";
+			}
+		}
+	}
+	return QWizard::eventFilter(pSender, pEvent);
 }
