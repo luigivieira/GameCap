@@ -16,42 +16,37 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "intropage.h"
+#include "gameplaypage.h"
 #include <QBoxLayout>
 
 // +-----------------------------------------------------------
-gc::IntroPage::IntroPage(QWidget *pParent) : QWizardPage(pParent)
+gc::GamePlayPage::GamePlayPage(QWidget *pParent) : QWizardPage(pParent)
 {
 	// Main page layout
 	QVBoxLayout *pLayout = new QVBoxLayout(this);
 	pLayout->setMargin(50);
+	pLayout->setAlignment(Qt::AlignCenter);
 
-	m_pText = new QLabel(this);
-	m_pText->setAlignment(Qt::AlignJustify);
-	m_pText->setWordWrap(true);
-	pLayout->addWidget(m_pText);
+	m_pMessage = new QLabel(this);
+	m_pMessage->setAlignment(Qt::AlignCenter);
+	m_pMessage->setWordWrap(true);
+
+	pLayout->addStretch();
+	pLayout->addWidget(m_pMessage);
+	pLayout->addStretch();
 }
 
 // +-----------------------------------------------------------
-void gc::IntroPage::initializePage()
+void gc::GamePlayPage::initializePage()
 {
+	Game *pGame = ((Application*)qApp)->gameControl()->currentGame();
+	QString sRemainingTime;
 	QString sText = tr("\
-Welcome.\
+You are now playing %1. If you wish to quit the experiment,\n\
+please quit from the game first.\
 \n\
 \n\
-Thank you for your participation. The whole experiment will take around 20 minutes to complete, \
-in which you will have to play a game (10 minutes), review a video of your game session (5 minutes) \
-and then answer a short questionnaire (5 minutes).\
-\n\
-\n\
-You should have received, read and signed a term of consent explaining the details of this \
-experiment and the ethics rules applicable. If you have not received it or if you still have \
-any doubts, then please do not proceed.\
-\n\
-\n\
-Finally, please remember that if you no longer wish to participate you can quit at any moment, \
-with no explanation or justification required.\
-");
-
-	m_pText->setText(sText);
+Remaining time playing: %2\
+").arg(pGame->name()).arg(sRemainingTime);
+	m_pMessage->setText(sText);
 }

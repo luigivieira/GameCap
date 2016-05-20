@@ -30,12 +30,11 @@ gc::StartPage::StartPage(QWidget *pParent) : QWizardPage(pParent)
 {
 	// Main page layout
 	QVBoxLayout *pLayout = new QVBoxLayout(this);
-	setLayout(pLayout);
 
 	// ----------------------------------------------
 	// Create the header with the logo
 	// ----------------------------------------------
-	QHBoxLayout *pLogoLayout = new QHBoxLayout(this);
+	QHBoxLayout *pLogoLayout = new QHBoxLayout();
 	pLayout->addLayout(pLogoLayout);
 
 	pLogoLayout->addStretch();
@@ -52,7 +51,7 @@ gc::StartPage::StartPage(QWidget *pParent) : QWizardPage(pParent)
 	// ----------------------------------------------
 	// Create the message header
 	// ----------------------------------------------
-	QHBoxLayout *pHeaderLayout = new QHBoxLayout(this);
+	QHBoxLayout *pHeaderLayout = new QHBoxLayout();
 	pLayout->addLayout(pHeaderLayout);
 
 	m_pMessage = new QLabel(this);

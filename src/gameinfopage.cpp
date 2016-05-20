@@ -25,7 +25,6 @@ gc::GameInfoPage::GameInfoPage(QWidget *pParent) : QWizardPage(pParent)
 	// Main page layout
 	QVBoxLayout *pLayout = new QVBoxLayout(this);
 	pLayout->setMargin(50);
-	setLayout(pLayout);
 
 	m_pMessage = new QLabel(this);
 	m_pMessage->setAlignment(Qt::AlignJustify);
