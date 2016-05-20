@@ -31,25 +31,23 @@ gc::GameInfoPage::GameInfoPage(QWidget *pParent) : QWizardPage(pParent)
 	m_pMessage->setAlignment(Qt::AlignJustify);
 	m_pMessage->setWordWrap(true);
 	pLayout->addWidget(m_pMessage);
-
-	// Connect to the application to receive notifications on language changes
-	connect(qApp, SIGNAL(languageChanged(gc::Application::Language)), this, SLOT(languageChanged(gc::Application::Language)));
 }
 
 // +-----------------------------------------------------------
-void gc::GameInfoPage::languageChanged(gc::Application::Language eLanguage)
+void gc::GameInfoPage::initializePage()
 {
+	Game *pGame = ((Application*)qApp)->gameControl()->currentGame();
 	QString sText = tr("\
-You will now play %1, %2 game. You will have 10 minutes to play it as you wish and as many \
+You will now play %1, a %2 game. You will have 10 minutes to play it as you wish and as many \
 times as you want to. If you wish to interrupt your participation in the experiment before that \
 period expires, simply quit or close the game.\
 \n\
 \n\
-The objective of the game is %3. It is played by %4.\
+The objective of the game is %3. To play %1, do as follows: %4.\
 \n\
 \n\
 When you are ready to start playing, click on \"Continue\".\
-");
+").arg(pGame->name()).arg(pGame->genre()).arg(pGame->goal()).arg(pGame->howToPlay());
 
 	m_pMessage->setText(sText);
 }

@@ -129,6 +129,12 @@ void gc::Application::setLanguage(Language eLanguage)
 }
 
 // +-----------------------------------------------------------
+gc::GameControl* gc::Application::gameControl()
+{
+	return m_pGameControl;
+}
+
+// +-----------------------------------------------------------
 void gc::Application::readSettings()
 {
 	QFileInfo oAppFile = QFileInfo(QCoreApplication::applicationFilePath());

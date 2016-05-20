@@ -39,11 +39,11 @@ QString gc::GameSlender::genre()
 // +-----------------------------------------------------------
 QString gc::GameSlender::goal()
 {
-	return tr("to collect all letters without looking at or being caught by the Slender Man");
+	return tr("to collect all 8 letters without looking at or being caught by the Slender Man");
 }
 
 // +-----------------------------------------------------------
 QString gc::GameSlender::howToPlay()
 {
-	return tr("moving around with the W-A-S-D keys in the keyboard (shift used to run), turning the torch on and off with the left mouse button, and collecting the letters with the right mouse button");
+	return tr("move around with the W-A-S-D keys (press shift to run), turn the torch on and off with the left mouse button, and collect the letters by clicking them with right mouse button");
 }

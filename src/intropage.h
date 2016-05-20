@@ -40,14 +40,12 @@ namespace gc
          */
 		IntroPage(QWidget *pParent = NULL);
 
-	protected slots:
-	
+	protected:
+
 		/**
-		 * Handles the notification of language changed from the application.
-		 * @param eLanguage Value of the Language enumeration indicating
-		 * the language that is now active.
+		 * Initialization method called everytime the page is displayed.
 		 */
-		void languageChanged(gc::Application::Language eLanguage);
+		void initializePage();
 
 	private:
 

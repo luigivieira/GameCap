@@ -90,6 +90,13 @@ namespace gc
 		 */
 		void setLanguage(Language eLanguage);
 
+		/**
+		 * Gets the instance of the game control, used to access the games used in the
+		 * experiment.
+		 * @return Instance of the GameControl.
+		 */
+		GameControl* gameControl();
+
 	signals:
 
 		/**

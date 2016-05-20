@@ -56,12 +56,12 @@ namespace gc
 	protected:
 
 		/**
-		 * Captures the dialog reject event to handle data elimination and restart.
+		 * Captures the application reject event to handle data elimination and restart.
 		 */
 		void reject() Q_DECL_OVERRIDE;
 
 		/**
-		* Captures the dialog done event to handle data storage and restart.
+		* Captures the application done event to handle data storage and restart.
 		* @param iRet Integer with the return code.
 		*/
 		void done(int iRet) Q_DECL_OVERRIDE;

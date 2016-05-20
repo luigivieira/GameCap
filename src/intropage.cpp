@@ -31,13 +31,10 @@ gc::IntroPage::IntroPage(QWidget *pParent) : QWizardPage(pParent)
 	m_pText->setAlignment(Qt::AlignJustify);
 	m_pText->setWordWrap(true);
 	pLayout->addWidget(m_pText);
-
-	// Connect to the application to receive notifications on language changes
-	connect(qApp, SIGNAL(languageChanged(gc::Application::Language)), this, SLOT(languageChanged(gc::Application::Language)));
 }
 
 // +-----------------------------------------------------------
-void gc::IntroPage::languageChanged(gc::Application::Language eLanguage)
+void gc::IntroPage::initializePage()
 {
 	QString sText = tr("\
 Welcome.\

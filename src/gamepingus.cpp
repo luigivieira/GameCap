@@ -45,5 +45,5 @@ QString gc::GamePingus::goal()
 // +-----------------------------------------------------------
 QString gc::GamePingus::howToPlay()
 {
-	return tr("interacting with the penguins (using the mouse cursor) in order to trigger their different abilities and overcome the environment challenges");
+	return tr("with the right button of the mouse, select an ability and then select a penguin to do it");
 }
