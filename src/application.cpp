@@ -79,6 +79,11 @@ gc::Application::Application(int argc, char* argv[]): QApplication(argc, argv)
 
 	// Setup the log message handler
     qInstallMessageHandler(&gc::Application::handleLogOutput);
+	qInfo(qPrintable(QString("GameCap (v%1) started.").arg(GC_VERSION)));
+	qDebug("Running from %s", qPrintable(QCoreApplication::applicationFilePath()));
+
+	// Creates the access to the games
+	m_pGameControl = new GameControl(this);
 }
 
 // +-----------------------------------------------------------
@@ -200,11 +205,7 @@ void gc::Application::updateSettings()
 // +-----------------------------------------------------------
 int gc::Application::exec()
 {
-	qInfo(qPrintable(QString("GameCap (v%1) started.").arg(GC_VERSION)));
-	qDebug("Running from %s", qPrintable(QCoreApplication::applicationFilePath()));
-
 	int iRet = QApplication::exec();
-
 	if (iRet == 0)
 		qInfo("GameCap terminated successfully.");
 	else

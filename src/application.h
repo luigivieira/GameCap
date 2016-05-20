@@ -19,6 +19,7 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
+#include "gamecontrol.h"
 #include <QApplication>
 #include <QKeySequence>
 #include <QDebug>
@@ -147,6 +148,9 @@ namespace gc
 
 		/** Translator used for Brazilian Portuguese. */
 		QTranslator *m_pPTBRTranslator;
+
+		/** Controls the access to the games played in the experiment. */
+		GameControl *m_pGameControl;
 	};
 }
 

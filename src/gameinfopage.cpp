@@ -17,9 +17,39 @@
  */
 
 #include "gameinfopage.h"
+#include <QBoxLayout>
 
 // +-----------------------------------------------------------
 gc::GameInfoPage::GameInfoPage(QWidget *pParent) : QWizardPage(pParent)
 {
-    
+	// Main page layout
+	QVBoxLayout *pLayout = new QVBoxLayout(this);
+	pLayout->setMargin(50);
+	setLayout(pLayout);
+
+	m_pMessage = new QLabel(this);
+	m_pMessage->setAlignment(Qt::AlignJustify);
+	m_pMessage->setWordWrap(true);
+	pLayout->addWidget(m_pMessage);
+
+	// Connect to the application to receive notifications on language changes
+	connect(qApp, SIGNAL(languageChanged(gc::Application::Language)), this, SLOT(languageChanged(gc::Application::Language)));
+}
+
+// +-----------------------------------------------------------
+void gc::GameInfoPage::languageChanged(gc::Application::Language eLanguage)
+{
+	QString sText = tr("\
+You will now play %1, %2 game. You will have 10 minutes to play it as you wish and as many \
+times as you want to. If you wish to interrupt your participation in the experiment before that \
+period expires, simply quit or close the game.\
+\n\
+\n\
+The objective of the game is %3. It is played by %4.\
+\n\
+\n\
+When you are ready to start playing, click on \"Continue\".\
+");
+
+	m_pMessage->setText(sText);
 }
