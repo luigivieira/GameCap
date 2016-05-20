@@ -30,8 +30,10 @@ gc::GameControl::GameControl(QObject *pParent): QObject(pParent)
 	m_pCurrentGame = NULL; // No game initially assigned as current
 
 	// Add the available games
-	m_vGames.push_back(new GamePingus("C:\\Program Files(x86)\\Pingus\\pingus.exe", this));
-	m_vGames.push_back(new GameSlender("C:\\Users\\Luiz\\Dropbox\\Doutorado\\Games\\Slender v0.9.7\\Slender - The Eight Pages.exe", this));
+	//m_vGames.push_back(new GamePingus("C:\\Program Files(x86)\\Pingus\\pingus.exe", this));
+	//m_vGames.push_back(new GameSlender("C:\\Users\\Luiz\\Dropbox\\Doutorado\\Games\\Slender v0.9.7\\Slender - The Eight Pages.exe", this));
+
+	m_vGames.push_back(new GameSlender("C:\\Windows\\notepad.exe", this));
 
 	// Randomly permutes the games so they are assigned to new participants in a non-ordered fashion.
 	random_shuffle(m_vGames.begin(), m_vGames.end());

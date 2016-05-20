@@ -20,6 +20,7 @@
 #define GAME_H
 
 #include <QProcess>
+#include <QTimer>
 
 namespace gc
 {
@@ -41,11 +42,11 @@ namespace gc
 
 		/**
 		 * Runs the game by starting a new process for its executable.
-		 * @param iTimeout Integer value with the timeout (in seconds) to be used for the game.
+		 * @param iTimeLimit Integer value with the time (in seconds) to limit the game session.
 		 * The default is 600 seconds (10 minutes). After that time expires, if the game is still
 		 * running it will be forcefully stopped.
 		 */
-		virtual void run(int iTimeout = 600);
+		virtual void run(int iTimeLimit = 600);
 
 		/**
 		 * Queries the name of the game. Must be implemented by subclasses.
@@ -71,26 +72,55 @@ namespace gc
 		 */
 		virtual QString howToPlay() = 0;
 
+		/** Reasons for the gameplay session to end. */
+		enum EndReason {Concluded, Cancelled, Failed};
+
+		/**
+		 * Indicates if the game is running.
+		 */
+		bool running();
+
+	signals:
+
+		/**
+		 * Indicates the termination of the game process.
+		 * @param eReason Value of the EndReason enumeration indicating the reason
+		 * for the game to end: failure/crash, premature exiting by the participant
+		 * or correct conclusion in the given time.
+		 */
+		void gameEnded(gc::Game::EndReason eReason);
+
+		/**
+		 * Indicates the remaining time for the participant to play the game.
+		 * @param iSeconds Integer with the remaining time of gameplay in seconds.
+		 */
+		void gameRemainingTime(int iSeconds);
+
 	protected slots:
 
 		/**
-		 * Captures the signal of game started.
+		 * Captures the signal of process started.
 		 */
-		void onGameStarted();
+		void onProcessStarted();
 
 		/**
-		 * Captures the signal of game finished.
+		 * Captures the signal of process finished.
 		 * @param iExitCode Integer with the exit code given by the process.
 		 * @param eExitStatus QProcess::ExitStatus enumeration with the status of the
 		 * application when it exited (either normal or crashed).
 		 */
-		void onGameFinished(int iExitCode, QProcess::ExitStatus eExitStatus);
+		void onProcessFinished(int iExitCode, QProcess::ExitStatus eExitStatus);
 
 		/**
-		 * Captures the signal of game error.
+		 * Captures the signal of process error.
 		 * @param eError QProcess::ProcessError enumeration with the reason for the error.
 		 */
-		void onGameError(QProcess::ProcessError eError);
+		void onProcessError(QProcess::ProcessError eError);
+
+		/**
+		 * Captures the timer timeout signal (each second).
+		 */
+		void onTimeout();
 
 	protected:
 
@@ -109,6 +139,12 @@ namespace gc
 
 		/** Handles the process used to run the game. */
 		QProcess m_oProcess;
+
+		/** Remaining time (in seconds) for the game session. */
+		int m_iRemainingTime;
+
+		/** Timer used to limit the game session. */
+		QTimer m_oTimer;
 	};
 }
 

@@ -41,8 +41,6 @@ gc::Window::Window(QWidget *pParent) : QWizard(pParent)
 	setWindowState(windowState() | Qt::WindowFullScreen);
 	
 	setOption(HaveHelpButton, false);
-	setOption(NoBackButtonOnStartPage, true);
-	setOption(NoBackButtonOnLastPage, true);
 	setOption(HaveNextButtonOnLastPage, false);
 	setOption(HaveFinishButtonOnEarlyPages, false);
 
@@ -52,7 +50,7 @@ gc::Window::Window(QWidget *pParent) : QWizard(pParent)
 	button(QWizard::CancelButton)->setCursor(Qt::PointingHandCursor);
 
 	QList<QWizard::WizardButton> lLayout;
-	lLayout << QWizard::CancelButton << QWizard::Stretch << QWizard::BackButton << QWizard::NextButton << QWizard::FinishButton;
+	lLayout << QWizard::CancelButton << QWizard::Stretch << QWizard::NextButton << QWizard::FinishButton;
 	setButtonLayout(lLayout);
 
 	setStyleSheet(((Application *) qApp)->getStyleSheet());
@@ -83,11 +81,22 @@ gc::Window::Window(QWidget *pParent) : QWizard(pParent)
 // +-----------------------------------------------------------
 void gc::Window::pageChanged(int iPageID)
 {
-	// Hide the quit button on the first page
-	if (iPageID == Page_Start)
-		button(QWizard::CancelButton)->setVisible(false);
-	else
-		button(QWizard::CancelButton)->setVisible(true);
+	switch (iPageID)
+	{
+		case Page_GamePlay:
+			button(QWizard::NextButton)->setVisible(false);
+			button(QWizard::NextButton)->setEnabled(false);
+		case Page_Start:
+			button(QWizard::CancelButton)->setVisible(false);
+			button(QWizard::CancelButton)->setEnabled(false);
+			break;
+
+		default:
+			button(QWizard::CancelButton)->setVisible(true);
+			button(QWizard::CancelButton)->setEnabled(true);
+			button(QWizard::NextButton)->setVisible(true);
+			button(QWizard::NextButton)->setEnabled(true);
+	}
 }
 
 // +-----------------------------------------------------------
@@ -106,11 +115,19 @@ void gc::Window::reject()
 	if (currentId() == Page_Start)
 		return;
 
-	// Confirm quiting the experiment
-	if (MessageBox::yesNoQuestion(tr("Quit the experiment"), tr("Are you sure you want to quit the experiment?")))
+	// If current page is GamePlay, check if the game is still running.
+	// If it is not, then an error happened.
+	if (currentId() == Page_GamePlay)
 	{
-		restart();
+		if (((Application *)qApp)->gameControl()->currentGame()->running())
+			return;
+		else
+			restart();
 	}
+
+	// Confirm quiting the experiment only if not in any of the previous conditions
+	if (currentId() == Page_GamePlay || MessageBox::yesNoQuestion(tr("Quit the experiment"), tr("Are you sure you want to quit the experiment?")))
+		restart();
 }
 
 // +-----------------------------------------------------------

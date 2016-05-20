@@ -19,17 +19,25 @@
 #include "game.h"
 #include <QFileInfo>
 
+ // Declare the enum so it can be used with signals
+Q_DECLARE_METATYPE(gc::Game::EndReason);
+
 // +-----------------------------------------------------------
 gc::Game::Game(QString sExecutable, QObject *pParent): QObject(pParent)
 {
+	// Register the enum so it can be used with signals and slots.
+	// IMPORTANT: The full qualified name (i.e. "gc::Game::EndReason") must be
+	// used EVERYWHERE (that is, in the signal/slot signatures and in the calls to
+	// QObject::connect), in order for the signal delivery to work!
+	qRegisterMetaType<gc::Game::EndReason>("gc::Game::EndReason");
+
 	m_sFileName = sExecutable;
 
-	QString sPath = QFileInfo(m_sFileName).absolutePath();
-	m_oProcess.setWorkingDirectory(sPath);
+	connect(&m_oProcess, &QProcess::started, this, &Game::onProcessStarted);
+	connect(&m_oProcess, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished), this, &Game::onProcessFinished);
+	connect(&m_oProcess, &QProcess::errorOccurred, this, &Game::onProcessError);
 
-	connect(&m_oProcess, &QProcess::started, this, &Game::onGameStarted);
-	connect(&m_oProcess, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished), this, &Game::onGameFinished);
-	connect(&m_oProcess, &QProcess::errorOccurred, this, &Game::onGameError);
+	connect(&m_oTimer, &QTimer::timeout, this, &Game::onTimeout);
 }
 
 // +-----------------------------------------------------------
@@ -39,29 +47,53 @@ void gc::Game::logInfo()
 }
 
 // +-----------------------------------------------------------
-void gc::Game::run(int iTimeout)
+void gc::Game::run(int iTimeLimit)
 {
 	// Run only if not already running
 	if (m_oProcess.state() != QProcess::NotRunning)
 		return;
 
+	m_iRemainingTime = iTimeLimit;
+
+	QString sCommand = QFileInfo(m_sFileName).fileName();
+	QString sPath = QFileInfo(m_sFileName).absolutePath();
+	m_oProcess.setWorkingDirectory(sPath);
 	m_oProcess.start(m_sFileName);
 }
 
 // +-----------------------------------------------------------
-void gc::Game::onGameStarted()
+bool gc::Game::running()
+{
+	return m_oProcess.isOpen();
+}
+
+// +-----------------------------------------------------------
+void gc::Game::onProcessStarted()
 {
 	qInfo("Game %s started.", qPrintable(name()));
+	m_oTimer.start(1000);
 }
 
 // +-----------------------------------------------------------
-void gc::Game::onGameFinished(int iExitCode, QProcess::ExitStatus eExitStatus)
+void gc::Game::onProcessFinished(int iExitCode, QProcess::ExitStatus eExitStatus)
 {
 	qInfo("Game %s finished with exit code [%d] and exit status [%s]", qPrintable(name()), iExitCode, (eExitStatus == QProcess::NormalExit ? "normal" : "crashed"));
+
+	if (m_oTimer.isActive())
+		m_oTimer.stop();
+	if (eExitStatus == QProcess::NormalExit)
+	{
+		if (m_iRemainingTime > 0)
+			emit gameEnded(Cancelled);
+		else
+			emit gameEnded(Concluded);
+	}
+	else
+		emit gameEnded(Failed);
 }
 
 // +-----------------------------------------------------------
-void gc::Game::onGameError(QProcess::ProcessError eError)
+void gc::Game::onProcessError(QProcess::ProcessError eError)
 {
 	QString sReason;
 	switch (eError)
@@ -87,6 +119,23 @@ void gc::Game::onGameError(QProcess::ProcessError eError)
 			sReason = "an unknown error ocurred";
 			break;
 	}
+	qInfo("Game %s ended with error: %s", qPrintable(name()), qPrintable(sReason));
 
-	qInfo("Game %s closed with error [%d]", qPrintable(name()), qPrintable(sReason));
+	if (m_oTimer.isActive())
+		m_oTimer.stop();
+	m_iRemainingTime = 0;
+	emit gameEnded(Failed);
+}
+
+// +-----------------------------------------------------------
+void gc::Game::onTimeout()
+{
+	m_iRemainingTime--;
+	if (m_iRemainingTime <= 0)
+	{
+		m_oProcess.kill();
+		m_oTimer.stop();
+	}
+	else
+		emit gameRemainingTime(m_iRemainingTime);
 }

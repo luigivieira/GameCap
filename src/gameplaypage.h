@@ -40,6 +40,16 @@ namespace gc
          */
 		GamePlayPage(QWidget *pParent = NULL);
 
+	protected slots:
+
+		/**
+		 * Captures the remaining game time, once the game is running.
+		 * @param iSeconds Remaining time in seconds.
+		 */
+		void onGameTime(int iSeconds);
+
+		void onGameEnded(gc::Game::EndReason eReason);
+
 	protected:
 
 		/**
@@ -51,6 +61,9 @@ namespace gc
 
 		/** Info message presented in this page. */
 		QLabel *m_pMessage;
+
+		/** Remaining gameplay time displayed in the page. */
+		QLabel *m_pRemainingTime;
 	};
 }
 
