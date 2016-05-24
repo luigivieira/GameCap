@@ -69,7 +69,7 @@ gc::Window::Window(QWidget *pParent) : QWizard(pParent)
 
 	// Connect to the application to receive notifications on language changes
 	connect(qApp, SIGNAL(languageChanged(gc::Application::Language)), this, SLOT(languageChanged(gc::Application::Language)));
-	((StartPage *)page(Page_Start))->checkLanguageButton(Application::Language::EN_UK);
+	((StartPage *)page(Page_Start))->checkLanguageButton(gc::Application::Language::EN_UK);
 
 	// Capture the signal of page changed
 	connect(this, SIGNAL(currentIdChanged(int)), this, SLOT(pageChanged(int)));
