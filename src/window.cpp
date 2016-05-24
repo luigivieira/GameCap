@@ -68,9 +68,8 @@ gc::Window::Window(QWidget *pParent) : QWizard(pParent)
 	setStartId(Page_Start);
 
 	// Connect to the application to receive notifications on language changes
-	connect(qApp, SIGNAL(languageChanged(gc::Application::Language)), this, SLOT(languageChanged(gc::Application::Language)));
-	gc::Application::Language eLang = Application::Language::EN_UK;
-	((StartPage *)page(Page_Start))->checkLanguageButton(eLang);
+	connect(qApp, SIGNAL(languageChanged(Application::Language)), this, SLOT(languageChanged(Application::Language)));
+	((StartPage *)page(Page_Start))->checkLanguageButton(Application::EN_UK);
 
 	// Capture the signal of page changed
 	connect(this, SIGNAL(currentIdChanged(int)), this, SLOT(pageChanged(int)));
@@ -101,7 +100,7 @@ void gc::Window::pageChanged(int iPageID)
 }
 
 // +-----------------------------------------------------------
-void gc::Window::languageChanged(gc::Application::Language eLanguage)
+void gc::Window::languageChanged(Application::Language eLanguage)
 {
 	setButtonText(QWizard::BackButton, tr("Go Back"));
 	setButtonText(QWizard::NextButton, tr("Continue"));

@@ -87,8 +87,8 @@ gc::StartPage::StartPage(QWidget *pParent) : QWizardPage(pParent)
 	pFlagsLayout->addWidget(pFlagBR);
 
 	QButtonGroup *pGroup = new QButtonGroup();
-	pGroup->addButton(pFlagUK, Application::Language::EN_UK);
-	pGroup->addButton(pFlagBR, Application::Language::PT_BR);
+	pGroup->addButton(pFlagUK, Application::EN_UK);
+	pGroup->addButton(pFlagBR, Application::PT_BR);
 	m_aFlagButtons.append(pFlagUK);
 	m_aFlagButtons.append(pFlagBR);
 
@@ -107,7 +107,7 @@ gc::StartPage::StartPage(QWidget *pParent) : QWizardPage(pParent)
 	// Other initializations
 	// ----------------------------------------------
 	// Connect to the application to receive notifications on language changes
-	connect(qApp, SIGNAL(languageChanged(gc::Application::Language)), this, SLOT(languageChanged(gc::Application::Language)));
+	connect(qApp, SIGNAL(languageChanged(Application::Language)), this, SLOT(languageChanged(Application::Language)));
 }
 
 // +-----------------------------------------------------------
@@ -126,17 +126,17 @@ void gc::StartPage::languageToggled(int iId, bool bChecked)
 }
 
 // +-----------------------------------------------------------
-void gc::StartPage::languageChanged(gc::Application::Language eLanguage)
+void gc::StartPage::languageChanged(Application::Language eLanguage)
 {
 	m_pMessage->setText(tr("Please choose the language to be used in the experiment:"));
 	m_pInfo->setText(tr("version %1\nflag images from %2").arg(GC_VERSION).arg("http://www.freeflagicons.com/"));
 	switch (eLanguage)
 	{
-		case Application::Language::EN_UK:
+		case Application::EN_UK:
 			m_pLogo->setPixmap(QPixmap(":/resources/uk_logo.png"));
 			break;
 
-		case Application::Language::PT_BR:
+		case Application::PT_BR:
 			m_pLogo->setPixmap(QPixmap(":/resources/br_logo.png"));
 			break;
 	}

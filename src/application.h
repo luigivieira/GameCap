@@ -37,6 +37,10 @@ namespace gc
 	{
 		Q_OBJECT
 	public:
+		/** Enumeration of the available languages for this application. */
+		enum Language { EN_UK, PT_BR };
+		Q_ENUM(Language)
+
 		/**
 		* Class constructor.
 		* @param argc Number of arguments received from the command line.
@@ -80,9 +84,6 @@ namespace gc
 		 */
 		QString getStyleSheet();
 
-		/** Enumeration of the available languages for this application. */
-		enum Language {EN_UK, PT_BR};
-
 		/**
 		 * Sets the current language for the application, in order to update
 		 * the translations.
@@ -104,7 +105,7 @@ namespace gc
 		 * @param eLanguage Value of the Language enumeration indicating
 		 * the language that is now active.
 		 */
-		void languageChanged(gc::Application::Language eLanguage);
+		void languageChanged(Application::Language eLanguage);
 
 	protected:
 

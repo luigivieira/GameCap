@@ -40,18 +40,9 @@ using namespace std;
 #define SETTING_WINDOW_TITLE "windowTitle"
 #define SETTING_TOGGLE_SHORTCUT "toggleShortcut"
 
-// Declare the enum so it can be used with signals
-Q_DECLARE_METATYPE(gc::Application::Language);
-
 // +-----------------------------------------------------------
 gc::Application::Application(int argc, char* argv[]): QApplication(argc, argv)
 {
-	// Register the enum so it can be used with signals and slots.
-	// IMPORTANT: The full qualified name (i.e. "gc::Application::Language") must be
-	// used EVERYWHERE (that is, in the signal/slot signatures and in the calls to
-	// QObject::connect), in order for the signal delivery to work!
-	qRegisterMetaType<gc::Application::Language>("gc::Application::Language");
-
 	// Read the INI file with the settings
 	readSettings();
 
@@ -116,7 +107,7 @@ void gc::Application::setLanguage(Language eLanguage)
 	// Identify the translator according to the language
 	switch (eLanguage)
 	{
-		case Language::PT_BR:
+		case PT_BR:
 			m_pCurrentTranslator = m_pPTBRTranslator;
 			break;
 	}

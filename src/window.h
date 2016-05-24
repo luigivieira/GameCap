@@ -45,7 +45,7 @@ namespace gc
 		* @param eLanguage Value of the Language enumeration indicating
 		* the language that is now active.
 		*/
-		void languageChanged(gc::Application::Language eLanguage);
+		void languageChanged(Application::Language eLanguage);
 
 		/**
 		 * Captures the changes in the current page.
