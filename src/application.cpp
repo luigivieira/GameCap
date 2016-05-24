@@ -52,7 +52,7 @@ gc::Application::Application(int argc, char* argv[]): QApplication(argc, argv)
 
     m_oLogFile.open(qPrintable(sLogFile), ios::app);
     if(!m_oLogFile.is_open())
-		qFatal(qPrintable(QString("Error opening log file [%1] for writing").arg(sLogFile)));
+		qFatal("Error opening log file %s for writing", sLogFile);
 
 	// Load the style sheet file from resources
 	QFile oFile(":/resources/stylesheet.css");
@@ -70,7 +70,7 @@ gc::Application::Application(int argc, char* argv[]): QApplication(argc, argv)
 
 	// Setup the log message handler
     qInstallMessageHandler(&gc::Application::handleLogOutput);
-	qInfo(qPrintable(QString("GameCap (v%1) started.").arg(GC_VERSION)));
+	qInfo("GameCap (v%s) started.", GC_VERSION);
 	qDebug("Running from %s", qPrintable(QCoreApplication::applicationFilePath()));
 
 	// Creates the access to the games
@@ -189,7 +189,7 @@ void gc::Application::updateSettings()
 	oSettings.beginGroup(GROUP_OBS);
 
 		// Save the titles of OBS windows
-		oSettings.setValue(SETTING_NUM_WINDOWS, m_vOBSWindows.size());
+		oSettings.setValue(SETTING_NUM_WINDOWS, (int) m_vOBSWindows.size());
 		for (unsigned int i = 0; i < m_vOBSWindows.size(); i++)
 			oSettings.setValue(QString("%1%2").arg(SETTING_WINDOW_TITLE).arg(i), m_vOBSWindows[i]);
 
