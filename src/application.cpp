@@ -41,7 +41,7 @@ using namespace std;
 #define SETTING_TOGGLE_SHORTCUT "toggleShortcut"
 
 // +-----------------------------------------------------------
-gc::Application::Application(int argc, char* argv[]): QApplication(argc, argv)
+gc::Application::Application(int& argc, char** argv): QApplication(argc, argv)
 {
 	// Read the INI file with the settings
 	readSettings();

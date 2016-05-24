@@ -46,7 +46,7 @@ namespace gc
 		* @param argc Number of arguments received from the command line.
 		* @param argv Array of char pointers with the arguments received from the command line.
 		*/
-		Application(int argc, char* argv[]);
+		Application(int& argc, char** argv);
 
 		/**
 		* Class destructor.
