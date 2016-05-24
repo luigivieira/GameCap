@@ -26,7 +26,7 @@ int main(int argc, char** argv)
     Application oApp(argc, argv);
 
     Window oMain;
-	oMain.show();
+	oMain.showFullScreen();
     
 	return oApp.exec();
 }

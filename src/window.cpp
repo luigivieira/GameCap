@@ -38,7 +38,6 @@
 gc::Window::Window(QWidget *pParent) : QWizard(pParent)
 {
 	setWizardStyle(ModernStyle);
-	setWindowState(windowState() | Qt::WindowFullScreen);
 	
 	setOption(HaveHelpButton, false);
 	setOption(HaveNextButtonOnLastPage, false);
