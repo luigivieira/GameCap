@@ -18,6 +18,7 @@
  
 #include "application.h"
 #include "window.h"
+#include <QScreen>
 
 using namespace gc;
 
@@ -26,7 +27,9 @@ int main(int argc, char** argv)
     Application oApp(argc, argv);
 
     Window oMain;
-	oMain.showFullScreen();
+	oMain.show();
+	oMain.resize(QApplication::primaryScreen()->size());
+	oMain.move(0, 0);
     
 	return oApp.exec();
 }

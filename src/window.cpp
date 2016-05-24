@@ -38,6 +38,7 @@
 gc::Window::Window(QWidget *pParent) : QWizard(pParent)
 {
 	setWizardStyle(ModernStyle);
+	setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
 	
 	setOption(HaveHelpButton, false);
 	setOption(HaveNextButtonOnLastPage, false);
