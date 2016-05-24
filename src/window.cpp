@@ -156,8 +156,7 @@ bool gc::Window::eventFilter(QObject *pSender, QEvent *pEvent)
 		if (pKeyEvent->modifiers() & Qt::ControlModifier && 
 			(pKeyEvent->key() >= Qt::Key_0 && pKeyEvent->key() <= Qt::Key_Z))
 		{
-			QString sKey = QString(pKeyEvent->nativeVirtualKey());
-			m_sHookedKeys += sKey;
+			m_sHookedKeys += (char) pKeyEvent->key();
 			if (m_sHookedKeys.length() == 4)
 			{
 				if (m_sHookedKeys.left(4) == "QUIT")
