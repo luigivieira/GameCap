@@ -48,8 +48,17 @@ namespace gc
 		 */
 		void onGameTime(int iSeconds);
 
-		void onGameEnded(gc::Game::EndReason eReason);
+		/**
+		 * Captures the indication that the game ended.
+		 * @param eReason Value of the EndReason enumeration with the reason for the
+		 * game to end (among Concluded, Cancelled and Failed).
+		 */
+		void onGameEnded(Game::EndReason eReason);
 
+		/**
+		 * Captures the timeout of the timer used to start the game outside
+		 * the initialization method.
+		 */
 		void onTimeout();
 
 	protected:

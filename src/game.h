@@ -33,6 +33,10 @@ namespace gc
 		Q_OBJECT
 	public:
 
+		/** Reasons for the gameplay session to end. */
+		enum EndReason { Concluded, Cancelled, Failed };
+		Q_ENUM(EndReason);
+
 		/**
 		 * Class constructor.
 		 * @param sExecutable QString with the path and filename of the game's executable.
@@ -72,9 +76,6 @@ namespace gc
 		 */
 		virtual QString howToPlay() = 0;
 
-		/** Reasons for the gameplay session to end. */
-		enum EndReason {Concluded, Cancelled, Failed};
-
 		/**
 		 * Indicates if the game is running.
 		 */
@@ -88,7 +89,7 @@ namespace gc
 		 * for the game to end: failure/crash, premature exiting by the participant
 		 * or correct conclusion in the given time.
 		 */
-		void gameEnded(gc::Game::EndReason eReason);
+		void gameEnded(Game::EndReason eReason);
 
 		/**
 		 * Indicates the remaining time for the participant to play the game.

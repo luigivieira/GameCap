@@ -56,6 +56,9 @@ gc::MessageBox::MessageBox(QWidget *pParent): QDialog(pParent)
 	pShadow->setColor(QColor(0, 0, 0, 160));
 	pShadow->setOffset(10.0);
 	pFrame->setGraphicsEffect(pShadow);
+
+	connect(m_pButtons, &QDialogButtonBox::accepted, this, &QDialog::accept);
+	connect(m_pButtons, &QDialogButtonBox::rejected, this, &QDialog::reject);
 }
 
  // +-----------------------------------------------------------
@@ -67,8 +70,8 @@ bool gc::MessageBox::yesNoQuestion(QWidget *pParent, QString sMessage)
 	QPushButton *pNo = oBox.m_pButtons->addButton(QDialogButtonBox::No);
 	pYes->setText(QApplication::translate("MessageBox", "Yes"));
 	pNo->setText(QApplication::translate("MessageBox", "No"));
-	connect(oBox.m_pButtons, &QDialogButtonBox::accepted, &oBox, &QDialog::accept);
-	connect(oBox.m_pButtons, &QDialogButtonBox::rejected, &oBox, &QDialog::reject);
+	pYes->setCursor(Qt::PointingHandCursor);
+	pNo->setCursor(Qt::PointingHandCursor);
 
 	return (oBox.exec() == QDialog::Accepted);
 }
@@ -79,7 +82,6 @@ void gc::MessageBox::infoMessage(QWidget *pParent, QString sMessage)
 	MessageBox oBox(pParent);
 	oBox.m_pMessage->setText(sMessage);
 	QPushButton *pOk = oBox.m_pButtons->addButton(QDialogButtonBox::Ok);
-	connect(oBox.m_pButtons, &QDialogButtonBox::accepted, &oBox, &QDialog::accept);
-	connect(oBox.m_pButtons, &QDialogButtonBox::rejected, &oBox, &QDialog::reject);
+	pOk->setCursor(Qt::PointingHandCursor);
 	oBox.exec();
 }

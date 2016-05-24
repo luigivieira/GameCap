@@ -18,19 +18,10 @@
 
 #include "game.h"
 #include <QFileInfo>
-
- // Declare the enum so it can be used with signals
-Q_DECLARE_METATYPE(gc::Game::EndReason);
-
+ 
 // +-----------------------------------------------------------
 gc::Game::Game(QString sExecutable, QObject *pParent): QObject(pParent)
 {
-	// Register the enum so it can be used with signals and slots.
-	// IMPORTANT: The full qualified name (i.e. "gc::Game::EndReason") must be
-	// used EVERYWHERE (that is, in the signal/slot signatures and in the calls to
-	// QObject::connect), in order for the signal delivery to work!
-	qRegisterMetaType<gc::Game::EndReason>("gc::Game::EndReason");
-
 	m_sFileName = sExecutable;
 
 	connect(&m_oProcess, &QProcess::started, this, &Game::onProcessStarted);

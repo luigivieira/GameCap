@@ -26,6 +26,16 @@ QAbstractButton
 	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #f6f7fa, stop: 1 #dadbde);
 }
 
+QAbstractButton:hover
+{
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #f6f7fa, stop: 1 #ced4e7);
+}
+
+QAbstractButton:pressed
+{
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #ced4e7, stop: 1 #f6f7fa);
+}
+
 QLabel
 {
     font-size: 40px;

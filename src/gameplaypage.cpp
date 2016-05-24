@@ -57,7 +57,7 @@ void gc::GamePlayPage::onGameTime(int iSeconds)
 }
 
 // +-----------------------------------------------------------
-void gc::GamePlayPage::onGameEnded(gc::Game::EndReason eReason)
+void gc::GamePlayPage::onGameEnded(Game::EndReason eReason)
 {
 	Game *pGame = ((Application*)qApp)->gameControl()->currentGame();
 	disconnect(pGame, &Game::gameRemainingTime, this, &GamePlayPage::onGameTime);
