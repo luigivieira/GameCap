@@ -122,11 +122,14 @@ void gc::Window::reject()
 		if (((Application *)qApp)->gameControl()->currentGame()->running())
 			return;
 		else
+		{
 			restart();
+			return;
+		}
 	}
 
 	// Confirm quiting the experiment only if not in any of the previous conditions
-	if (currentId() == Page_GamePlay || MessageBox::yesNoQuestion(tr("Quit the experiment"), tr("Are you sure you want to quit the experiment?")))
+	if (currentId() == Page_GamePlay || MessageBox::yesNoQuestion(this, tr("Are you sure you want to quit the experiment?")))
 		restart();
 }
 

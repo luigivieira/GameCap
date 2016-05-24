@@ -50,6 +50,8 @@ namespace gc
 
 		void onGameEnded(gc::Game::EndReason eReason);
 
+		void onTimeout();
+
 	protected:
 
 		/**

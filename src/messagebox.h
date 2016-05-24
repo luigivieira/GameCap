@@ -19,31 +19,47 @@
 #ifndef MESSAGE_BOX_H
 #define MESSAGE_BOX_H
 
-#include <QMessageBox>
+#include <QDialog>
+#include <QLabel>
+#include <QDialogButtonBox>
 
 namespace gc
 {
 	/**
-	 * Provides custom MessageBox methods to avoid having to use native Qt translations.
+	 * Provides custom MessageBox methods without title bars and locally translated
+	 * buttons (i.e. avoiding to have to include all other translations from Qt).
 	 */
-	class MessageBox
+	class MessageBox: QDialog
 	{
 	protected:
 
 		/**
 		 * Protected constructor, so this class can not be instantiated.
 		 */
-		MessageBox() {};
+		MessageBox(QWidget *pParent);
 
 	public:
 
 		/**
 		 * Asks an yes-no question with the given title and message.
-		 * @param sTitle String with the title for the dialog.
+		 * @param pParent Instance of the QWidget that will parent this dialog.
 		 * @param sMessage String with the message for the dialog.
 		 * @return Boolean with true if the user clicked "Yes", and false if the user clicked "No".
 		 */
-		static bool yesNoQuestion(QString sTitle, QString sMessage);
+		static bool yesNoQuestion(QWidget *pParent, QString sMessage);
+
+		/**
+		* Shows a message dialog with an Ok button.
+		* @param pParent Instance of the QWidget that will parent this dialog.
+		* @param sMessage String with the message for the dialog.
+		*/
+		static void infoMessage(QWidget *pParent, QString sMessage);
+
+	private:
+
+		QLabel *m_pMessage;
+
+		QDialogButtonBox *m_pButtons;
 	};
 }
 

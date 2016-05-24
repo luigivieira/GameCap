@@ -64,7 +64,7 @@ void gc::Game::run(int iTimeLimit)
 // +-----------------------------------------------------------
 bool gc::Game::running()
 {
-	return m_oProcess.isOpen();
+	return (m_oProcess.state() != QProcess::NotRunning);
 }
 
 // +-----------------------------------------------------------
@@ -77,54 +77,31 @@ void gc::Game::onProcessStarted()
 // +-----------------------------------------------------------
 void gc::Game::onProcessFinished(int iExitCode, QProcess::ExitStatus eExitStatus)
 {
-	qInfo("Game %s finished with exit code [%d] and exit status [%s]", qPrintable(name()), iExitCode, (eExitStatus == QProcess::NormalExit ? "normal" : "crashed"));
+	qDebug("Game %s finished with exit code [%d] and exit status [%s]", qPrintable(name()), iExitCode, (eExitStatus == QProcess::NormalExit ? "normal" : "crashed"));
 
 	if (m_oTimer.isActive())
 		m_oTimer.stop();
-	if (eExitStatus == QProcess::NormalExit)
+
+	if (m_iRemainingTime > 0)
 	{
-		if (m_iRemainingTime > 0)
-			emit gameEnded(Cancelled);
-		else
-			emit gameEnded(Concluded);
+		qInfo("Game %s closed earlier by participant", qPrintable(name()));
+		emit gameEnded(Cancelled);
 	}
 	else
-		emit gameEnded(Failed);
+	{
+		qInfo("Game %s concluded in the correct time", qPrintable(name()));
+		emit gameEnded(Concluded);
+	}
 }
 
 // +-----------------------------------------------------------
 void gc::Game::onProcessError(QProcess::ProcessError eError)
 {
-	QString sReason;
-	switch (eError)
+	if (eError == QProcess::FailedToStart)
 	{
-		case QProcess::FailedToStart: //### file not found, resource error
-			sReason = "the game failed to start (either the executable is missing or it lacks the correct permissions)";
-			break;
-
-		case QProcess::Crashed:
-			sReason = "the game crashed after it started successfully";
-			break;
-
-		case QProcess::Timedout:
-			sReason = "the game took to long to start";
-			break;
-
-		case QProcess::ReadError:
-		case QProcess::WriteError:
-			sReason = "it was not possible to communicate with the game after it started successfully";
-			break;
-
-		default: //case QProcess::UnknownError:
-			sReason = "an unknown error ocurred";
-			break;
+		qInfo("Game %s failed to start", qPrintable(name()));
+		emit gameEnded(Failed);
 	}
-	qInfo("Game %s ended with error: %s", qPrintable(name()), qPrintable(sReason));
-
-	if (m_oTimer.isActive())
-		m_oTimer.stop();
-	m_iRemainingTime = 0;
-	emit gameEnded(Failed);
 }
 
 // +-----------------------------------------------------------

@@ -17,14 +17,17 @@
  */
 
 #include "gameplaypage.h"
+#include "window.h"
 #include <QBoxLayout>
 #include <QDateTime>
 #include <QMessageBox>
+#include <QTimer>
+#include "messagebox.h"
 
 // +-----------------------------------------------------------
 gc::GamePlayPage::GamePlayPage(QWidget *pParent) : QWizardPage(pParent)
 {
-	// Main page layout
+	// Page layout and components
 	QVBoxLayout *pLayout = new QVBoxLayout(this);
 	pLayout->setMargin(50);
 	pLayout->setAlignment(Qt::AlignCenter);
@@ -44,7 +47,6 @@ gc::GamePlayPage::GamePlayPage(QWidget *pParent) : QWizardPage(pParent)
 	pLayout->addWidget(m_pRemainingTime);
 
 	pLayout->addStretch();
-
 }
 
 // +-----------------------------------------------------------
@@ -59,13 +61,16 @@ void gc::GamePlayPage::onGameEnded(gc::Game::EndReason eReason)
 {
 	Game *pGame = ((Application*)qApp)->gameControl()->currentGame();
 	disconnect(pGame, &Game::gameRemainingTime, this, &GamePlayPage::onGameTime);
+	disconnect(pGame, &Game::gameEnded, this, &GamePlayPage::onGameEnded);
 
 	if (eReason == Game::Concluded)
 		wizard()->next();
 	else
 	{
 		if (eReason == Game::Failed)
-			QMessageBox::warning(this, tr("Game failure"), tr("The game %1 seems not to be working. Please, inform the researcher in charge.").arg(pGame->name()));
+			MessageBox::infoMessage(this, tr("The game %1 seems not to be working. Please, inform the researcher in charge.").arg(pGame->name()));
+		else if(eReason == Game::Cancelled)
+			MessageBox::infoMessage(this, tr("You quit the game %1 before the required time, and hence your participation was cancelled.").arg(pGame->name()));
 		wizard()->reject();
 	}
 }
@@ -74,11 +79,20 @@ void gc::GamePlayPage::onGameEnded(gc::Game::EndReason eReason)
 void gc::GamePlayPage::initializePage()
 {
 	Game *pGame = ((Application*)qApp)->gameControl()->currentGame();
+	m_pMessage->setText(tr("You are now playing %1. If you wish to quit the experiment, please quit from the game first.").arg(pGame->name()));
+	m_pRemainingTime->setText("");
+
+	// Schedule the initialization of the game to right away
+	// (this is to avoid breaking up the initialization method due to
+	// immediate return from the game control class)
+	QTimer::singleShot(10, this, SLOT(onTimeout()));
+}
+
+// +-----------------------------------------------------------
+void gc::GamePlayPage::onTimeout()
+{
+	Game *pGame = ((Application*)qApp)->gameControl()->currentGame();
 	connect(pGame, &Game::gameRemainingTime, this, &GamePlayPage::onGameTime);
 	connect(pGame, &Game::gameEnded, this, &GamePlayPage::onGameEnded);
 	pGame->run(10);
-
-	QString sRemainingTime;
-	m_pMessage->setText(tr("You are now playing %1. If you wish to quit the experiment, please quit from the game first.").arg(pGame->name()));
-	m_pRemainingTime->setText("");
 }

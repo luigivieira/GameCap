@@ -18,12 +18,68 @@
 
 #include "messagebox.h"
 #include <QApplication>
+#include <QBoxLayout>
+#include <QFrame>
+#include <QPushButton>
+#include <QGraphicsDropShadowEffect>
 
  // +-----------------------------------------------------------
-bool gc::MessageBox::yesNoQuestion(QString sTitle, QString sMessage)
+gc::MessageBox::MessageBox(QWidget *pParent): QDialog(pParent)
 {
-	QMessageBox oMsgBox(QMessageBox::Question, sTitle, sMessage, QMessageBox::Yes | QMessageBox::No);
-	oMsgBox.setButtonText(QMessageBox::Yes, QApplication::translate("MessageBox", "Yes"));
-	oMsgBox.setButtonText(QMessageBox::No, QApplication::translate("MessageBox", "No"));
-	return (oMsgBox.exec() == QMessageBox::Yes);
+	setAttribute(Qt::WA_TranslucentBackground);
+	setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
+
+	QVBoxLayout *pLayout = new QVBoxLayout(this);
+	QFrame *pFrame = new QFrame(this);
+	pFrame->setAutoFillBackground(true);
+	QPalette oWhite(palette());
+	oWhite.setColor(QPalette::Background, Qt::white);
+	pFrame->setPalette(oWhite);
+	pFrame->setFrameStyle(QFrame::Box | QFrame::Plain);
+	pFrame->setLineWidth(2);
+	pLayout->addWidget(pFrame);
+
+	pLayout = new QVBoxLayout(pFrame);
+	m_pMessage = new QLabel(this);
+	m_pMessage->setWordWrap(true);
+	m_pMessage->setAlignment(Qt::AlignCenter);
+	pLayout->addWidget(m_pMessage);
+
+	m_pMessage->setText("This is a test for a very long message box, weird indeed.");
+
+	m_pButtons = new QDialogButtonBox(this);
+	m_pButtons->setCenterButtons(true);
+	pLayout->addWidget(m_pButtons);
+
+	QGraphicsDropShadowEffect *pShadow = new QGraphicsDropShadowEffect();
+	pShadow->setBlurRadius(9.0);
+	pShadow->setColor(QColor(0, 0, 0, 160));
+	pShadow->setOffset(10.0);
+	pFrame->setGraphicsEffect(pShadow);
+}
+
+ // +-----------------------------------------------------------
+bool gc::MessageBox::yesNoQuestion(QWidget *pParent, QString sMessage)
+{
+	MessageBox oBox(pParent);
+	oBox.m_pMessage->setText(sMessage);
+	QPushButton *pYes = oBox.m_pButtons->addButton(QDialogButtonBox::Yes);
+	QPushButton *pNo = oBox.m_pButtons->addButton(QDialogButtonBox::No);
+	pYes->setText(QApplication::translate("MessageBox", "Yes"));
+	pNo->setText(QApplication::translate("MessageBox", "No"));
+	connect(oBox.m_pButtons, &QDialogButtonBox::accepted, &oBox, &QDialog::accept);
+	connect(oBox.m_pButtons, &QDialogButtonBox::rejected, &oBox, &QDialog::reject);
+
+	return (oBox.exec() == QDialog::Accepted);
+}
+
+// +-----------------------------------------------------------
+void gc::MessageBox::infoMessage(QWidget *pParent, QString sMessage)
+{
+	MessageBox oBox(pParent);
+	oBox.m_pMessage->setText(sMessage);
+	QPushButton *pOk = oBox.m_pButtons->addButton(QDialogButtonBox::Ok);
+	connect(oBox.m_pButtons, &QDialogButtonBox::accepted, &oBox, &QDialog::accept);
+	connect(oBox.m_pButtons, &QDialogButtonBox::rejected, &oBox, &QDialog::reject);
+	oBox.exec();
 }
