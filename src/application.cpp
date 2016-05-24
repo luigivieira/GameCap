@@ -52,7 +52,7 @@ gc::Application::Application(int argc, char* argv[]): QApplication(argc, argv)
 
     m_oLogFile.open(qPrintable(sLogFile), ios::app);
     if(!m_oLogFile.is_open())
-		qFatal("Error opening log file %s for writing", sLogFile);
+		qFatal("Error opening log file %s for writing", qPrintable(sLogFile));
 
 	// Load the style sheet file from resources
 	QFile oFile(":/resources/stylesheet.css");
