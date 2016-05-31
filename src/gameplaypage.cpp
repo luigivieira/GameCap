@@ -68,9 +68,9 @@ void gc::GamePlayPage::onGameEnded(Game::EndReason eReason)
 	else
 	{
 		if (eReason == Game::Failed)
-			MessageBox::infoMessage(this, tr("The game %1 seems not to be working. Please, inform the researcher in charge.").arg(pGame->name()));
+			MessageBox::infoMessage(this, tr("The game %1 seems not to be working, so the experiment can not be continued. Please, inform the researcher in charge.\n\nNevertheless, thank you very much for your time.\n").arg(pGame->name()));
 		else if(eReason == Game::Cancelled)
-			MessageBox::infoMessage(this, tr("You quit the game %1 before the required time, and hence your participation was cancelled.").arg(pGame->name()));
+			MessageBox::infoMessage(this, tr("You quit the game %1 before the required play time, hence quitting the experiment.\n\nNevertheless, thank you very much for your time.\n").arg(pGame->name()));
 		wizard()->reject();
 	}
 }

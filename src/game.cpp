@@ -49,7 +49,7 @@ void gc::Game::run(int iTimeLimit)
 	QString sCommand = QFileInfo(m_sFileName).fileName();
 	QString sPath = QFileInfo(m_sFileName).absolutePath();
 	m_oProcess.setWorkingDirectory(sPath);
-	m_oProcess.start(m_sFileName);
+	m_oProcess.start(m_sFileName, QStringList());
 }
 
 // +-----------------------------------------------------------

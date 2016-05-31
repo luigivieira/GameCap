@@ -129,8 +129,11 @@ void gc::Window::reject()
 	}
 
 	// Confirm quiting the experiment only if not in any of the previous conditions
-	if (currentId() == Page_GamePlay || MessageBox::yesNoQuestion(this, tr("Are you sure you want to quit the experiment?")))
+	if (currentId() == Page_GamePlay || MessageBox::yesNoQuestion(this, tr("Do you confirm quitting the experiment?\n")))
+	{
+		MessageBox::infoMessage(this, tr("You have chosen to quit the experiment. Nevertheless, thank you very much for your time.\n"));
 		restart();
+	}
 }
 
 // +-----------------------------------------------------------
