@@ -22,9 +22,12 @@
 #include <QFrame>
 #include <QPushButton>
 #include <QGraphicsDropShadowEffect>
+#include <QGraphicsOpacityEffect>
+#include <QPropertyAnimation>
+#include <QScreen>
 
- // +-----------------------------------------------------------
-gc::MessageBox::MessageBox(QWidget *pParent): QDialog(pParent)
+// +-----------------------------------------------------------
+gc::MessageBox::MessageBox(QWizardPage *pParent): QDialog(pParent)
 {
 	setAttribute(Qt::WA_TranslucentBackground);
 	setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
@@ -59,29 +62,94 @@ gc::MessageBox::MessageBox(QWidget *pParent): QDialog(pParent)
 
 	connect(m_pButtons, &QDialogButtonBox::accepted, this, &QDialog::accept);
 	connect(m_pButtons, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
+	QScreen *pScreen = QApplication::primaryScreen();
+	QRect oDim = pScreen->availableGeometry();
+	setFixedSize(oDim.width() * 0.4, oDim.height() * 0.4);
+
+	fadeOut();
 }
 
- // +-----------------------------------------------------------
-bool gc::MessageBox::yesNoQuestion(QWidget *pParent, QString sMessage)
+// +-----------------------------------------------------------
+gc::MessageBox::~MessageBox()
+{
+	fadeIn();
+}
+
+// +-----------------------------------------------------------
+void gc::MessageBox::fadeOut()
+{
+	QWidget *pWidget = (QWidget *) ((QWidget *) parent())->parent();
+	if (!pWidget->graphicsEffect())
+	{
+		QGraphicsOpacityEffect *pEffect = new QGraphicsOpacityEffect(pWidget);
+		pWidget->setGraphicsEffect(pEffect);
+	}
+
+	QPropertyAnimation *pAnim = new QPropertyAnimation(pWidget->graphicsEffect(), "opacity");
+	pAnim->setDuration(350);
+	pAnim->setStartValue(1);
+	pAnim->setEndValue(0.1);
+	pAnim->setEasingCurve(QEasingCurve::OutBack);
+	pAnim->start(QPropertyAnimation::DeleteWhenStopped);
+}
+
+// +-----------------------------------------------------------
+void gc::MessageBox::fadeIn()
+{
+	QWidget *pWidget = (QWidget *)((QWidget *)parent())->parent();
+	if (!pWidget->graphicsEffect())
+	{
+		QGraphicsOpacityEffect *pEffect = new QGraphicsOpacityEffect(pWidget);
+		pWidget->setGraphicsEffect(pEffect);
+	}
+
+	QPropertyAnimation *pAnim = new QPropertyAnimation(pWidget->graphicsEffect(), "opacity");
+	pAnim->setDuration(350);
+	pAnim->setStartValue(0.1);
+	pAnim->setEndValue(1);
+	pAnim->setEasingCurve(QEasingCurve::InBack);
+	pAnim->start(QPropertyAnimation::DeleteWhenStopped);
+}
+
+// +-----------------------------------------------------------
+bool gc::MessageBox::yesNoQuestion(QWizardPage *pParent, QString sMessage)
 {
 	MessageBox oBox(pParent);
-	oBox.m_pMessage->setText(sMessage);
-	QPushButton *pYes = oBox.m_pButtons->addButton(QDialogButtonBox::Yes);
-	QPushButton *pNo = oBox.m_pButtons->addButton(QDialogButtonBox::No);
+	return oBox.yesNoQuestion(sMessage);
+}
+
+// +-----------------------------------------------------------
+bool gc::MessageBox::yesNoQuestion(QString sMessage)
+{
+	m_pMessage->setText(sMessage);
+
+	m_pButtons->clear();
+	QPushButton *pYes = m_pButtons->addButton(QDialogButtonBox::Yes);
+	QPushButton *pNo = m_pButtons->addButton(QDialogButtonBox::No);
 	pYes->setText(QApplication::translate("MessageBox", "Yes"));
 	pNo->setText(QApplication::translate("MessageBox", "No"));
 	pYes->setCursor(Qt::PointingHandCursor);
 	pNo->setCursor(Qt::PointingHandCursor);
 
-	return (oBox.exec() == QDialog::Accepted);
+	return (exec() == QDialog::Accepted);
 }
 
 // +-----------------------------------------------------------
-void gc::MessageBox::infoMessage(QWidget *pParent, QString sMessage)
+void gc::MessageBox::infoMessage(QWizardPage *pParent, QString sMessage)
 {
 	MessageBox oBox(pParent);
-	oBox.m_pMessage->setText(sMessage);
-	QPushButton *pOk = oBox.m_pButtons->addButton(QDialogButtonBox::Ok);
+	oBox.infoMessage(sMessage);
+}
+
+// +-----------------------------------------------------------
+void gc::MessageBox::infoMessage(QString sMessage)
+{
+	m_pMessage->setText(sMessage);
+
+	m_pButtons->clear();
+	QPushButton *pOk = m_pButtons->addButton(QDialogButtonBox::Ok);
 	pOk->setCursor(Qt::PointingHandCursor);
-	oBox.exec();
+
+	exec();
 }
