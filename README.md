@@ -6,7 +6,7 @@ This is a tool used to capture the gameplay data used in creation of the PhD pro
 
 This project depends on the following software:
 
- * **[Open Broadcaster Software (OBS Studio)](https://obsproject.com/)**. OBS Studio is a free (open-source) tool for streaming and recording gameplay videos. It is used in this project for recording both the player's face and the game screen in separated but syncronized videos.
+ * **[Open Broadcaster Software (OBS Studio)](https://obsproject.com/)**. OBS Studio is a free (open-source) tool for streaming and recording gameplay videos. It is used in this project for recording both the player's face and the game screen in separated but syncronized videos. The OBS Help Guide can be found at its [original site](https://drive.google.com/file/d/0B_jVUZcoOfCGR0VMSEpQTElYTDQ/view), or read directly from a [local copy made available in the docs folder](./docs/OBS Studio Help Guide 16-05-2016.pdf).
  * **[Qt](https://www.qt.io/)**. The tool is built in C++ with the Qt library in order to be easily portable.
  * **[CMake](https://cmake.org/)**. The CMake tool is used to easily configure the build environment in different platforms and generate the proper Visual Studio project or make file for building.
  
