@@ -23,23 +23,39 @@
 #include <algorithm>
 #include <QFileInfo>
 
+#define GROUP_OBS "OBS"
+#define SETTING_PATH "path"
+#define SETTING_GAMEPLAYPROFILE "gameplayProfile"
+#define SETTING_GAMEPLAYCOLLECTION "gameplayCollection"
+#define SETTING_GAMEPLAYSCENE "gameplayScene"
+#define SETTING_PLAYERPROFILE "playerProfile"
+#define SETTING_PLAYERCOLLECTION "playerCollection"
+#define SETTING_PLAYERSCENE "playerScene"
+
 using namespace std;
 
 // +-----------------------------------------------------------
 gc::GameControl::GameControl(QObject *pParent): QObject(pParent)
 {
-	m_pCurrentGame = NULL; // No game initially assigned as current
+	Game *pGame;
 
-	// Add the available games
-	//m_vGames.push_back(new GamePingus("C:\\Program Files (x86)\\Pingus\\pingus.exe", this));
-	//m_vGames.push_back(new GameSlender("C:\\Users\\Luiz\\Dropbox\\Doutorado\\Games\\Slender v0.9.7\\Slender - The Eight Pages.exe", this));
+	// Game: Pingus
+	pGame = new GamePingus(this);
+	connect(pGame, &Game::gameRemainingTime, this, &GameControl::onGameRemainingTime);
+	connect(pGame, &Game::gameEnded, this, &GameControl::onGameEnded);
+	m_vGames.push_back(pGame);
 
-	m_vGames.push_back(new GamePingus("C:\\Windows\\notepad.exe", this));
+	// Game: Slender
+	pGame = new GameSlender(this);
+	connect(pGame, &Game::gameRemainingTime, this, &GameControl::onGameRemainingTime);
+	connect(pGame, &Game::gameEnded, this, &GameControl::onGameEnded);
+	m_vGames.push_back(pGame);
 
 	// Randomly permutes the games so they are assigned to new participants in a non-ordered fashion.
 	random_shuffle(m_vGames.begin(), m_vGames.end());
 
-	// Starts with a game selected
+	// Randomly select a game to start
+	m_pCurrentGame = NULL;
 	selectNextGame();
 }
 
@@ -64,4 +80,16 @@ gc::Game* gc::GameControl::selectNextGame()
 gc::Game* gc::GameControl::currentGame()
 {
 	return m_pCurrentGame;
+}
+
+// +-----------------------------------------------------------
+void gc::GameControl::onGameRemainingTime(int iSeconds)
+{
+	emit gameRemainingTime(iSeconds);	
+}
+
+// +-----------------------------------------------------------
+void gc::GameControl::onGameEnded(Game::EndReason eReason)
+{
+	emit gameEnded(eReason);
 }

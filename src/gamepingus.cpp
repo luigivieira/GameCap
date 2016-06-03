@@ -19,9 +19,9 @@
 #include "gamepingus.h"
 
  // +-----------------------------------------------------------
-gc::GamePingus::GamePingus(QString sExecutable, QObject *pParent): Game(sExecutable, pParent)
+gc::GamePingus::GamePingus(QObject *pParent): Game(pParent)
 {
-	logInfo();
+	setup();
 }
 
 // +-----------------------------------------------------------

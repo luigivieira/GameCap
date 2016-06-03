@@ -34,10 +34,9 @@ namespace gc
 
 		/**
 		 * Class constructor.
-		 * @param sExecutable QString with the path and filename of the game's executable.
 		 * @param pParent Instance for the QObject that is the parent of this one. Default is NULL.
 		 */
-		GameSlender(QString sExecutable, QObject *pParent = NULL);
+		GameSlender(QObject *pParent = NULL);
 
 		/**
 		 * Queries the name of the game.

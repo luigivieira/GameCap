@@ -39,10 +39,9 @@ namespace gc
 
 		/**
 		 * Class constructor.
-		 * @param sExecutable QString with the path and filename of the game's executable.
 		 * @param pParent Instance for the QObject that is the parent of this one. Default is NULL.
 		 */
-		Game(QString sExecutable, QObject *pParent = NULL);
+		Game(QObject *pParent = NULL);
 
 		/**
 		 * Runs the game by starting a new process for its executable.
@@ -126,12 +125,12 @@ namespace gc
 	protected:
 
 		/**
-		 * Prints to the log file information on the game created.
+		 * Sets up the game (reading needed data from the settings and logging game info).
 		 * This method must be called by the constructor of each inherited class
 		 * because it calls pure virtual methods that can not be called on the base
 		 * abstract class.
 		 */
-		void logInfo();
+		void setup();
 
 	private:
 

@@ -17,24 +17,42 @@
  */
 
 #include "game.h"
+#include "application.h"
 #include <QFileInfo>
- 
-// +-----------------------------------------------------------
-gc::Game::Game(QString sExecutable, QObject *pParent): QObject(pParent)
-{
-	m_sFileName = sExecutable;
 
+#define SETTING_FILE_NAME "fileName"
+
+// +-----------------------------------------------------------
+gc::Game::Game(QObject *pParent): QObject(pParent)
+{
 	connect(&m_oProcess, &QProcess::started, this, &Game::onProcessStarted);
 	connect(&m_oProcess, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished), this, &Game::onProcessFinished);
 	connect(&m_oProcess, &QProcess::errorOccurred, this, &Game::onProcessError);
-
 	connect(&m_oTimer, &QTimer::timeout, this, &Game::onTimeout);
 }
 
 // +-----------------------------------------------------------
-void gc::Game::logInfo()
+void gc::Game::setup()
 {
-	qInfo("Game %s (%s) configured from path %s", qPrintable(name()), qPrintable(genre()), qPrintable(m_sFileName));
+	QSettings *pSettings = ((Application*) qApp)->getSettings();
+
+	// Read the game settings
+	pSettings->beginGroup(name());
+	m_sFileName = pSettings->value(SETTING_FILE_NAME).toString();
+	pSettings->endGroup();
+
+	if (!m_sFileName.length())
+	{
+		QString sMsg = QString("the group/key [%1/%2] is missing in the configuration file.").arg(name()).arg(SETTING_FILE_NAME);
+		qFatal(qPrintable(sMsg));
+	}
+	else if(!QFileInfo::exists(m_sFileName))
+	{
+		QString sMsg = QString("the file name [%1] configured for the game %1 does not exist.").arg(m_sFileName).arg(name());
+		qFatal(qPrintable(sMsg));
+	}
+
+	qInfo("Game %s (%s) configured to run from %s", qPrintable(name()), qPrintable(genre()), qPrintable(m_sFileName));
 }
 
 // +-----------------------------------------------------------

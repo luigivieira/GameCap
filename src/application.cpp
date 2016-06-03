@@ -25,26 +25,26 @@
 #include <QMessageBox>
 #include <QDir>
 #include <QFileInfo>
-#include <QSettings>
 #include <QTranslator>
 #include <iostream>
 #include <QMetaType>
 
 using namespace std;
 
-#define GROUP_MAIN "main"
+#define GROUP_GENERAL "General"
 #define SETTING_LOG_LEVEL "logLevel"
-
-#define GROUP_OBS "OBS"
-#define SETTING_NUM_WINDOWS "numberOfWindows"
-#define SETTING_WINDOW_TITLE "windowTitle"
-#define SETTING_TOGGLE_SHORTCUT "toggleShortcut"
 
 // +-----------------------------------------------------------
 gc::Application::Application(int& argc, char** argv): QApplication(argc, argv)
 {
-	// Read the INI file with the settings
-	readSettings();
+	// Create the QSettings from the configuration.ini file
+	QString sIniFile = QString("%1%2configuration.ini").arg(QCoreApplication::applicationDirPath()).arg(QDir::separator());
+	m_pSettings = new QSettings(sIniFile, QSettings::IniFormat);
+
+	// Read the general settings
+	m_pSettings->beginGroup(GROUP_GENERAL);
+	m_eLogLevel = (QtMsgType)m_pSettings->value(SETTING_LOG_LEVEL, QtInfoMsg).toInt();
+	m_pSettings->endGroup();
 
 	// Create the log file
 	QFileInfo oAppFile = QFileInfo(QCoreApplication::applicationFilePath());
@@ -80,12 +80,15 @@ gc::Application::Application(int& argc, char** argv): QApplication(argc, argv)
 // +-----------------------------------------------------------
 gc::Application::~Application()
 {
-	// Update the INI file with the settings
-	updateSettings();
-
 	// Update and close the log file
     m_oLogFile.flush();
 	m_oLogFile.close();
+}
+
+// +-----------------------------------------------------------
+QSettings* gc::Application::getSettings()
+{
+	return m_pSettings;
 }
 
 // +-----------------------------------------------------------
@@ -123,80 +126,6 @@ void gc::Application::setLanguage(Language eLanguage)
 gc::GameControl* gc::Application::gameControl()
 {
 	return m_pGameControl;
-}
-
-// +-----------------------------------------------------------
-void gc::Application::readSettings()
-{
-	QFileInfo oAppFile = QFileInfo(QCoreApplication::applicationFilePath());
-	QString sIniFile = QString("%1%2%3.ini").arg(QCoreApplication::applicationDirPath()).arg(QDir::separator()).arg(oAppFile.baseName());
-
-	QSettings oSettings(sIniFile, QSettings::IniFormat);
-
-	// Main settings
-	oSettings.beginGroup(GROUP_MAIN);
-
-		// Read the log level
-		m_eLogLevel = (QtMsgType) oSettings.value(SETTING_LOG_LEVEL, QtInfoMsg).toInt();
-
-	oSettings.endGroup();
-
-	// OBS integration settings
-	oSettings.beginGroup(GROUP_OBS);
-
-		// Read the titles of OBS windows
-		if (!oSettings.value(SETTING_NUM_WINDOWS).isValid())
-		{
-			m_vOBSWindows.push_back("Game Capture");
-			m_vOBSWindows.push_back("Player Capture");
-		}
-		else
-		{
-			int iTitles = oSettings.value(SETTING_NUM_WINDOWS).toInt();
-			QString sTitle;
-			for (int i = 0; i < iTitles; i++)
-			{
-				sTitle = oSettings.value(QString("%1%2").arg(SETTING_WINDOW_TITLE).arg(i), "").toString();
-				m_vOBSWindows.push_back(sTitle);
-			}
-		}
-
-		// Read the recording shortcut
-		m_oOBSShortcut = QKeySequence(oSettings.value(SETTING_TOGGLE_SHORTCUT, "Ctrl+Shift+R").toString());
-
-	oSettings.endGroup();
-}
-
-// +-----------------------------------------------------------
-void gc::Application::updateSettings()
-{
-	QFileInfo oAppFile = QFileInfo(QCoreApplication::applicationFilePath());
-	QString sIniFile = QString("%1%2%3.ini").arg(QCoreApplication::applicationDirPath()).arg(QDir::separator()).arg(oAppFile.baseName());
-	QSettings oSettings(sIniFile, QSettings::IniFormat);
-
-	// Clear all existing settings (they will be overwritten)
-	oSettings.clear();
-
-	// Main settings
-	oSettings.beginGroup(GROUP_MAIN);
-
-		// Save the log level
-		oSettings.setValue(SETTING_LOG_LEVEL, m_eLogLevel);
-
-	oSettings.endGroup();
-
-	// OBS integration settings
-	oSettings.beginGroup(GROUP_OBS);
-
-		// Save the titles of OBS windows
-		oSettings.setValue(SETTING_NUM_WINDOWS, (int) m_vOBSWindows.size());
-		for (unsigned int i = 0; i < m_vOBSWindows.size(); i++)
-			oSettings.setValue(QString("%1%2").arg(SETTING_WINDOW_TITLE).arg(i), m_vOBSWindows[i]);
-
-		// Save the recording shortcut
-		oSettings.setValue(SETTING_TOGGLE_SHORTCUT, m_oOBSShortcut.toString());
-
-	oSettings.endGroup();
 }
 
 // +-----------------------------------------------------------

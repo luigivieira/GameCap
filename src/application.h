@@ -21,6 +21,7 @@
 
 #include "gamecontrol.h"
 #include <QApplication>
+#include <QSettings>
 #include <QKeySequence>
 #include <QDebug>
 #include <QObject>
@@ -92,6 +93,12 @@ namespace gc
 		void setLanguage(Language eLanguage);
 
 		/**
+		 * Gets the settings loaded for the application.
+		 * @return Instance of a QSettings with the application settings.
+		 */
+		QSettings* getSettings();
+
+		/**
 		 * Gets the instance of the game control, used to access the games used in the
 		 * experiment.
 		 * @return Instance of the GameControl.
@@ -118,36 +125,20 @@ namespace gc
 		 */
 		static void handleLogOutput(QtMsgType eType, const QMessageLogContext& oContext, const QString& sMsg);
 
-		/**
-		 * Helper method for reading the settings from the INI file.
-		 */
-		void readSettings();
-
-		/**
-		* Helper method for updating the settings to the INI file.
-		*/
-		void updateSettings();
-
 	private:
     
 		/** File stream used to log application messages. */
 		std::ofstream m_oLogFile;
 
 		/**
-		 * Maximum level of the messages to log.
-		 * Ranges from 4 (only QtInfoMsg) downwards to 0 (all to QtDebugMsg).
+		 * Maximum level of the messages to log, ranging from 0 (all to QtDebugMsg)
+		 * to 4 (only QtInfoMsg).
 		 */
 		QtMsgType m_eLogLevel;
 
-		/** List of window titles for integration with OBS (used to capture player and game videos). */
-		std::vector<QString> m_vOBSWindows;
-
-		/** Keyboard shortcut used by the OBS windows to toggle the recording. */
-		QKeySequence m_oOBSShortcut;
-
 		/**
 		 * String with the stylesheet to be used by the application interface
-		 * (loaded from an external .css file).
+		 * (loaded from a .css file in the resource).
 		 */
 		QString m_sStyleSheet;
 
@@ -159,6 +150,9 @@ namespace gc
 
 		/** Controls the access to the games played in the experiment. */
 		GameControl *m_pGameControl;
+
+		/** Settings used by the application. */
+		QSettings *m_pSettings;
 	};
 }
 

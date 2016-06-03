@@ -19,9 +19,9 @@
 #include "gameslender.h"
 
  // +-----------------------------------------------------------
-gc::GameSlender::GameSlender(QString sExecutable, QObject *pParent): Game(sExecutable, pParent)
+gc::GameSlender::GameSlender(QObject *pParent): Game(pParent)
 {
-	logInfo();
+	setup();
 }
 
 // +-----------------------------------------------------------

@@ -22,11 +22,13 @@
 #include "game.h"
 #include <QObject>
 #include <vector>
+#include <QProcess>
 
 namespace gc
 {
 	/**
-	 * Class used to allow game selection, execution and termination.
+	 * Class used to handle game selection, execution and termination, as well as the
+	 * video capture of gameplay and player's face.
 	 */
 	class GameControl: public QObject
 	{
@@ -51,6 +53,36 @@ namespace gc
 		 */
 		Game* currentGame();
 
+	protected slots:
+
+		/**
+		 * Captures the remaining game time, once the game is running.
+		 * @param iSeconds Remaining time in seconds.
+		 */
+		void onGameRemainingTime(int iSeconds);
+
+		/**
+		 * Captures the indication that the game ended.
+		 * @param eReason Value of the EndReason enumeration with the reason for the
+		 * game to end (among Concluded, Cancelled and Failed).
+		 */
+		void onGameEnded(Game::EndReason eReason);
+
+	signals:
+
+		/**
+		 * Indicates the remaining game time, once the game is running.
+		 * @param iSeconds Remaining time in seconds.
+		 */
+		void gameRemainingTime(int iSeconds);
+
+		/**
+		 * Indicates that the game ended.
+		 * @param eReason Value of the EndReason enumeration with the reason for the
+		 * game to end (among Concluded, Cancelled and Failed).
+		 */
+		void gameEnded(Game::EndReason eReason);
+
 	private:
 
 		/** Current game being used in the experiment. */
@@ -58,6 +90,10 @@ namespace gc
 
 		/** List of available games. */
 		std::vector<Game*> m_vGames;
+
+		QProcess m_oGameplayCap;
+
+		QProcess m_oPlayerCap;
 	};
 }
 

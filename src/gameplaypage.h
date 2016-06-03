@@ -40,13 +40,20 @@ namespace gc
          */
 		GamePlayPage(QWidget *pParent = NULL);
 
+	protected:
+
+		/**
+		 * Initialization method called everytime the page is displayed.
+		 */
+		void initializePage();
+
 	protected slots:
 
 		/**
 		 * Captures the remaining game time, once the game is running.
 		 * @param iSeconds Remaining time in seconds.
 		 */
-		void onGameTime(int iSeconds);
+		void onGameRemainingTime(int iSeconds);
 
 		/**
 		 * Captures the indication that the game ended.
@@ -54,19 +61,6 @@ namespace gc
 		 * game to end (among Concluded, Cancelled and Failed).
 		 */
 		void onGameEnded(Game::EndReason eReason);
-
-		/**
-		 * Captures the timeout of the timer used to start the game outside
-		 * the initialization method.
-		 */
-		void onTimeout();
-
-	protected:
-
-		/**
-		 * Initialization method called everytime the page is displayed.
-		 */
-		void initializePage();
 
 	private:
 
