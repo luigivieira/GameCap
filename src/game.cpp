@@ -28,7 +28,6 @@ gc::Game::Game(QObject *pParent): QObject(pParent)
 	connect(&m_oProcess, &QProcess::started, this, &Game::onProcessStarted);
 	connect(&m_oProcess, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished), this, &Game::onProcessFinished);
 	connect(&m_oProcess, &QProcess::errorOccurred, this, &Game::onProcessError);
-	connect(&m_oTimer, &QTimer::timeout, this, &Game::onTimeout);
 }
 
 // +-----------------------------------------------------------
@@ -56,18 +55,22 @@ void gc::Game::setup()
 }
 
 // +-----------------------------------------------------------
-void gc::Game::run(int iTimeLimit)
+void gc::Game::start()
 {
-	// Run only if not already running
-	if (m_oProcess.state() != QProcess::NotRunning)
-		return;
+	if (!running())
+	{
+		QString sCommand = QFileInfo(m_sFileName).fileName();
+		QString sPath = QFileInfo(m_sFileName).absolutePath();
+		m_oProcess.setWorkingDirectory(sPath);
+		m_oProcess.start(m_sFileName, QStringList());
+	}
+}
 
-	m_iRemainingTime = iTimeLimit;
-
-	QString sCommand = QFileInfo(m_sFileName).fileName();
-	QString sPath = QFileInfo(m_sFileName).absolutePath();
-	m_oProcess.setWorkingDirectory(sPath);
-	m_oProcess.start(m_sFileName, QStringList());
+// +-----------------------------------------------------------
+void gc::Game::stop()
+{
+	if (running())
+		m_oProcess.kill();
 }
 
 // +-----------------------------------------------------------
@@ -80,27 +83,13 @@ bool gc::Game::running()
 void gc::Game::onProcessStarted()
 {
 	qInfo("Game %s started.", qPrintable(name()));
-	m_oTimer.start(1000);
 }
 
 // +-----------------------------------------------------------
 void gc::Game::onProcessFinished(int iExitCode, QProcess::ExitStatus eExitStatus)
 {
-	qDebug("Game %s finished with exit code [%d] and exit status [%s]", qPrintable(name()), iExitCode, (eExitStatus == QProcess::NormalExit ? "normal" : "crashed"));
-
-	if (m_oTimer.isActive())
-		m_oTimer.stop();
-
-	if (m_iRemainingTime > 0)
-	{
-		qInfo("Game %s closed earlier by participant", qPrintable(name()));
-		emit gameEnded(Cancelled);
-	}
-	else
-	{
-		qInfo("Game %s concluded in the correct time", qPrintable(name()));
-		emit gameEnded(Concluded);
-	}
+	qDebug("Game %s stopped with exit code [%d] and exit status [%s]", qPrintable(name()), iExitCode, (eExitStatus == QProcess::NormalExit ? "normal" : "closed"));
+	emit gameEnded(Concluded);
 }
 
 // +-----------------------------------------------------------
@@ -111,17 +100,4 @@ void gc::Game::onProcessError(QProcess::ProcessError eError)
 		qInfo("Game %s failed to start", qPrintable(name()));
 		emit gameEnded(Failed);
 	}
-}
-
-// +-----------------------------------------------------------
-void gc::Game::onTimeout()
-{
-	m_iRemainingTime--;
-	if (m_iRemainingTime <= 0)
-	{
-		m_oProcess.kill();
-		m_oTimer.stop();
-	}
-	else
-		emit gameRemainingTime(m_iRemainingTime);
 }

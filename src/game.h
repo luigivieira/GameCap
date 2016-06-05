@@ -25,6 +25,12 @@
 namespace gc
 {
 	/**
+	 * Indicates the existance of the GameControl class, without defining it, just to the
+	 * friend declaration above.
+	 */
+	class GameControl;
+
+	/**
 	 * Abstract class used to access the games. Must be inherited to create a concrete
 	 * class for each game used.
 	 */
@@ -33,8 +39,11 @@ namespace gc
 		Q_OBJECT
 	public:
 
+		/** Allows the GameControl class to access the protected method ::run(). */
+		friend GameControl;
+
 		/** Reasons for the gameplay session to end. */
-		enum EndReason { Concluded, Cancelled, Failed };
+		enum EndReason { Concluded, Failed };
 		Q_ENUM(EndReason);
 
 		/**
@@ -42,14 +51,6 @@ namespace gc
 		 * @param pParent Instance for the QObject that is the parent of this one. Default is NULL.
 		 */
 		Game(QObject *pParent = NULL);
-
-		/**
-		 * Runs the game by starting a new process for its executable.
-		 * @param iTimeLimit Integer value with the time (in seconds) to limit the game session.
-		 * The default is 600 seconds (10 minutes). After that time expires, if the game is still
-		 * running it will be forcefully stopped.
-		 */
-		virtual void run(int iTimeLimit = 600);
 
 		/**
 		 * Queries the name of the game. Must be implemented by subclasses.
@@ -75,11 +76,6 @@ namespace gc
 		 */
 		virtual QString howToPlay() = 0;
 
-		/**
-		 * Indicates if the game is running.
-		 */
-		bool running();
-
 	signals:
 
 		/**
@@ -89,12 +85,6 @@ namespace gc
 		 * or correct conclusion in the given time.
 		 */
 		void gameEnded(Game::EndReason eReason);
-
-		/**
-		 * Indicates the remaining time for the participant to play the game.
-		 * @param iSeconds Integer with the remaining time of gameplay in seconds.
-		 */
-		void gameRemainingTime(int iSeconds);
 
 	protected slots:
 
@@ -117,12 +107,22 @@ namespace gc
 		 */
 		void onProcessError(QProcess::ProcessError eError);
 
-		/**
-		 * Captures the timer timeout signal (each second).
-		 */
-		void onTimeout();
-
 	protected:
+
+		/**
+		 * Indicates if the game is running.
+		 */
+		bool running();
+
+		/**
+		 * Starts the game by creating a new process for its executable.
+		 */
+		void start();
+
+		/**
+		 * Forcibly stops the game by killing its process.
+		 */
+		void stop();
 
 		/**
 		 * Sets up the game (reading needed data from the settings and logging game info).
@@ -139,12 +139,6 @@ namespace gc
 
 		/** Handles the process used to run the game. */
 		QProcess m_oProcess;
-
-		/** Remaining time (in seconds) for the game session. */
-		int m_iRemainingTime;
-
-		/** Timer used to limit the game session. */
-		QTimer m_oTimer;
 	};
 }
 

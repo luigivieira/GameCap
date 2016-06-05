@@ -67,3 +67,6 @@ set_target_properties(GameCap PROPERTIES OUTPUT_NAME_DEBUG gamecapd)
 
 # Set up the required libraries
 target_link_libraries(GameCap Qt5::Widgets)
+
+# Copy configuration file to the build directory upon building
+ADD_CUSTOM_COMMAND(TARGET GameCap POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PROJECT_SOURCE_DIR}/src/configuration/configuration.ini $<TARGET_FILE_DIR:GameCap>)

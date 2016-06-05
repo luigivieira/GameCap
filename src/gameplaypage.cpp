@@ -50,7 +50,7 @@ gc::GamePlayPage::GamePlayPage(QWidget *pParent) : QWizardPage(pParent)
 
 	// Connect to the gameplay for the remaining time and game ended signals
 	connect(((Application*) qApp)->gameControl(), &GameControl::gameRemainingTime, this, &GamePlayPage::onGameRemainingTime);
-	connect(((Application*) qApp)->gameControl(), &GameControl::gameEnded, this, &GamePlayPage::onGameEnded);
+	connect(((Application*) qApp)->gameControl(), &GameControl::gameplayEnded, this, &GamePlayPage::onGameplayEnded);
 }
 
 // +-----------------------------------------------------------
@@ -69,16 +69,16 @@ void gc::GamePlayPage::onGameRemainingTime(int iSeconds)
 }
 
 // +-----------------------------------------------------------
-void gc::GamePlayPage::onGameEnded(Game::EndReason eReason)
+void gc::GamePlayPage::onGameplayEnded(GameControl::GameplaySessionResult eResult)
 {
-	if (eReason == Game::Concluded)
+	if (eResult == GameControl::Success)
 		wizard()->next();
 	else
 	{
 		Game *pGame = ((Application*)qApp)->gameControl()->currentGame();
-		if (eReason == Game::Failed)
+		if (eResult == GameControl::Error)
 			MessageBox::infoMessage(this, tr("The game %1 seems not to be working, so the experiment can not be continued. Please, inform the researcher in charge. Nevertheless, thank you very much for your time.").arg(pGame->name()));
-		else if (eReason == Game::Cancelled)
+		else if (eResult == GameControl::Cancelled)
 			MessageBox::infoMessage(this, tr("You quit the game %1 before the required play time, hence quitting the experiment. Nevertheless, thank you very much for your time.").arg(pGame->name()));
 		wizard()->reject();
 	}

@@ -88,7 +88,7 @@ void gc::Window::pageChanged(int iPageID)
 			button(QWizard::NextButton)->setEnabled(false);
 			button(QWizard::CancelButton)->setVisible(false);
 			button(QWizard::CancelButton)->setEnabled(false);
-			((Application*) qApp)->gameControl()->currentGame()->run(10);
+			((Application*) qApp)->gameControl()->run(10);
 			break;
 
 		case Page_Start:
@@ -124,7 +124,7 @@ void gc::Window::reject()
 	// If it is not, then an error happened.
 	if (currentId() == Page_GamePlay)
 	{
-		if (((Application*) qApp)->gameControl()->currentGame()->running())
+		if (((Application*) qApp)->gameControl()->running())
 			return;
 		else
 		{

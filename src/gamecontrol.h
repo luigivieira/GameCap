@@ -23,6 +23,7 @@
 #include <QObject>
 #include <vector>
 #include <QProcess>
+#include <QTimer>
 
 namespace gc
 {
@@ -34,6 +35,10 @@ namespace gc
 	{
 		Q_OBJECT
 	public:
+
+		/** Enumeration with the possible results for the gameplay session. */
+		enum GameplaySessionResult { Success, Cancelled, Error };
+		Q_ENUM(GameplaySessionResult)
 
 		/**
 		* Class constructor.
@@ -53,18 +58,30 @@ namespace gc
 		 */
 		Game* currentGame();
 
+		/**
+		 * Indicates if the game is running.
+		 */
+		bool running();
+
+		/**
+		 * Runs the current game.
+		 * @param iTimeLimit Integer value with the time (in seconds) to limit the game session.
+		 * The default is 600 seconds (10 minutes). After that time expires, if the game is still
+		 * running it will be forcefully stopped.
+		 */
+		void run(int iTimeLimit = 600);
+
 	protected slots:
 
 		/**
-		 * Captures the remaining game time, once the game is running.
-		 * @param iSeconds Remaining time in seconds.
+		 * Captures the timer timeout signal (each second).
 		 */
-		void onGameRemainingTime(int iSeconds);
+		void onTimeout();
 
 		/**
 		 * Captures the indication that the game ended.
 		 * @param eReason Value of the EndReason enumeration with the reason for the
-		 * game to end (among Concluded, Cancelled and Failed).
+		 * game to end (among Concluded and Failed).
 		 */
 		void onGameEnded(Game::EndReason eReason);
 
@@ -77,11 +94,11 @@ namespace gc
 		void gameRemainingTime(int iSeconds);
 
 		/**
-		 * Indicates that the game ended.
-		 * @param eReason Value of the EndReason enumeration with the reason for the
-		 * game to end (among Concluded, Cancelled and Failed).
+		 * Indicates that the gameplay ended.
+		 * @param eResult Value of the GameplaySessionResult enumeration with the gameplay
+		 * session result (among Success, Cancelled and Error).
 		 */
-		void gameEnded(Game::EndReason eReason);
+		void gameplayEnded(GameControl::GameplaySessionResult eResult);
 
 	private:
 
@@ -90,6 +107,12 @@ namespace gc
 
 		/** List of available games. */
 		std::vector<Game*> m_vGames;
+
+		/** Remaining time (in seconds) for the game session. */
+		int m_iRemainingTime;
+
+		/** Timer used to limit the game session. */
+		QTimer m_oTimer;
 
 		QProcess m_oGameplayCap;
 

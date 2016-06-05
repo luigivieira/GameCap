@@ -57,10 +57,10 @@ namespace gc
 
 		/**
 		 * Captures the indication that the game ended.
-		 * @param eReason Value of the EndReason enumeration with the reason for the
-		 * game to end (among Concluded, Cancelled and Failed).
+		 * @param eResult Value of the GameplaySessionResult enumeration with the gameplay
+		 * session result (among Success, Cancelled and Error).
 		 */
-		void onGameEnded(Game::EndReason eReason);
+		void onGameplayEnded(GameControl::GameplaySessionResult eResult);
 
 	private:
 

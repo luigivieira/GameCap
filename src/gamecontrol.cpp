@@ -23,15 +23,6 @@
 #include <algorithm>
 #include <QFileInfo>
 
-#define GROUP_OBS "OBS"
-#define SETTING_PATH "path"
-#define SETTING_GAMEPLAYPROFILE "gameplayProfile"
-#define SETTING_GAMEPLAYCOLLECTION "gameplayCollection"
-#define SETTING_GAMEPLAYSCENE "gameplayScene"
-#define SETTING_PLAYERPROFILE "playerProfile"
-#define SETTING_PLAYERCOLLECTION "playerCollection"
-#define SETTING_PLAYERSCENE "playerScene"
-
 using namespace std;
 
 // +-----------------------------------------------------------
@@ -41,13 +32,11 @@ gc::GameControl::GameControl(QObject *pParent): QObject(pParent)
 
 	// Game: Pingus
 	pGame = new GamePingus(this);
-	connect(pGame, &Game::gameRemainingTime, this, &GameControl::onGameRemainingTime);
 	connect(pGame, &Game::gameEnded, this, &GameControl::onGameEnded);
 	m_vGames.push_back(pGame);
 
 	// Game: Slender
 	pGame = new GameSlender(this);
-	connect(pGame, &Game::gameRemainingTime, this, &GameControl::onGameRemainingTime);
 	connect(pGame, &Game::gameEnded, this, &GameControl::onGameEnded);
 	m_vGames.push_back(pGame);
 
@@ -57,6 +46,9 @@ gc::GameControl::GameControl(QObject *pParent): QObject(pParent)
 	// Randomly select a game to start
 	m_pCurrentGame = NULL;
 	selectNextGame();
+
+	// Connect to the timer used to limit the gameplay session
+	connect(&m_oTimer, &QTimer::timeout, this, &GameControl::onTimeout);
 }
 
 // +-----------------------------------------------------------
@@ -83,13 +75,46 @@ gc::Game* gc::GameControl::currentGame()
 }
 
 // +-----------------------------------------------------------
-void gc::GameControl::onGameRemainingTime(int iSeconds)
+void gc::GameControl::onTimeout()
 {
-	emit gameRemainingTime(iSeconds);	
+	m_iRemainingTime--;
+	if (m_iRemainingTime <= 0)
+	{
+		m_pCurrentGame->stop();
+		m_oTimer.stop();
+		m_iRemainingTime = 0;
+	}
+	else
+		emit gameRemainingTime(m_iRemainingTime);
 }
 
 // +-----------------------------------------------------------
 void gc::GameControl::onGameEnded(Game::EndReason eReason)
 {
-	emit gameEnded(eReason);
+	if (m_oTimer.isActive())
+		m_oTimer.stop();
+	
+	if(eReason == Game::Failed)
+		emit gameplayEnded(Error);
+	else if (m_iRemainingTime > 0)
+		emit gameplayEnded(Cancelled);
+	else
+		emit gameplayEnded(Success);
+
+	m_iRemainingTime = 0;
+}
+
+// +-----------------------------------------------------------
+bool gc::GameControl::running()
+{
+	return m_pCurrentGame->running();
+}
+
+// +-----------------------------------------------------------
+void gc::GameControl::run(int iTimeLimit)
+{
+	m_pCurrentGame->start();
+	m_oTimer.start(1000);
+	m_iRemainingTime = iTimeLimit;
+	emit gameRemainingTime(m_iRemainingTime);
 }
