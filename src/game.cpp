@@ -59,9 +59,7 @@ void gc::Game::start()
 {
 	if (!running())
 	{
-		QString sCommand = QFileInfo(m_sFileName).fileName();
-		QString sPath = QFileInfo(m_sFileName).absolutePath();
-		m_oProcess.setWorkingDirectory(sPath);
+		m_oProcess.setWorkingDirectory(QFileInfo(m_sFileName).absolutePath());
 		m_oProcess.start(m_sFileName, QStringList());
 	}
 }
@@ -83,6 +81,7 @@ bool gc::Game::running()
 void gc::Game::onProcessStarted()
 {
 	qInfo("Game %s started.", qPrintable(name()));
+	emit gameStarted();
 }
 
 // +-----------------------------------------------------------

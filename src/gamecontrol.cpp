@@ -25,6 +25,11 @@
 
 using namespace std;
 
+// Macro for easy repetition of required code for new game handling
+#define ADD_GAME(GAMEPTR, VECTOR) connect(GAMEPTR, &Game::gameStarted, this, &GameControl::onGameStarted); \
+				                  connect(GAMEPTR, &Game::gameEnded, this, &GameControl::onGameEnded); \
+								  VECTOR.push_back(GAMEPTR);
+
 // +-----------------------------------------------------------
 gc::GameControl::GameControl(QObject *pParent): QObject(pParent)
 {
@@ -32,13 +37,11 @@ gc::GameControl::GameControl(QObject *pParent): QObject(pParent)
 
 	// Game: Pingus
 	pGame = new GamePingus(this);
-	connect(pGame, &Game::gameEnded, this, &GameControl::onGameEnded);
-	m_vGames.push_back(pGame);
-
+	ADD_GAME(pGame, m_vGames)
+	
 	// Game: Slender
 	pGame = new GameSlender(this);
-	connect(pGame, &Game::gameEnded, this, &GameControl::onGameEnded);
-	m_vGames.push_back(pGame);
+	ADD_GAME(pGame, m_vGames)
 
 	// Randomly permutes the games so they are assigned to new participants in a non-ordered fashion.
 	random_shuffle(m_vGames.begin(), m_vGames.end());
@@ -89,6 +92,17 @@ void gc::GameControl::onTimeout()
 }
 
 // +-----------------------------------------------------------
+void gc::GameControl::onGameStarted()
+{
+	// Start the one second timer to control the remaining time
+	m_oTimer.start(1000);
+	emit gameRemainingTime(m_iRemainingTime);
+
+	// Start the video capturing of the gameplay and player's face
+	m_oVideoControl.startCapture();
+}
+
+// +-----------------------------------------------------------
 void gc::GameControl::onGameEnded(Game::EndReason eReason)
 {
 	if (m_oTimer.isActive())
@@ -100,6 +114,8 @@ void gc::GameControl::onGameEnded(Game::EndReason eReason)
 		emit gameplayEnded(Cancelled);
 	else
 		emit gameplayEnded(Success);
+
+	m_oVideoControl.stopCapture();
 
 	m_iRemainingTime = 0;
 }
@@ -113,8 +129,7 @@ bool gc::GameControl::running()
 // +-----------------------------------------------------------
 void gc::GameControl::run(int iTimeLimit)
 {
+	// Start the game
 	m_pCurrentGame->start();
-	m_oTimer.start(1000);
 	m_iRemainingTime = iTimeLimit;
-	emit gameRemainingTime(m_iRemainingTime);
 }

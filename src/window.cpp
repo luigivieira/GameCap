@@ -88,7 +88,7 @@ void gc::Window::pageChanged(int iPageID)
 			button(QWizard::NextButton)->setEnabled(false);
 			button(QWizard::CancelButton)->setVisible(false);
 			button(QWizard::CancelButton)->setEnabled(false);
-			((Application*) qApp)->gameControl()->run(10);
+			((Application*) qApp)->gameControl()->run(100);
 			break;
 
 		case Page_Start:

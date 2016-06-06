@@ -79,7 +79,12 @@ namespace gc
 	signals:
 
 		/**
-		 * Indicates the termination of the game process.
+		 * Indicates the starting of the game process.
+		 */
+		void gameStarted();
+
+		/**
+		 * Indicates the ending of the game process.
 		 * @param eReason Value of the EndReason enumeration indicating the reason
 		 * for the game to end: failure/crash, premature exiting by the participant
 		 * or correct conclusion in the given time.

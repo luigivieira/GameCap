@@ -20,9 +20,9 @@
 #define GAME_CONTROL_H
 
 #include "game.h"
+#include "videocontrol.h"
 #include <QObject>
 #include <vector>
-#include <QProcess>
 #include <QTimer>
 
 namespace gc
@@ -64,7 +64,7 @@ namespace gc
 		bool running();
 
 		/**
-		 * Runs the current game.
+		 * Runs the current game, automatically performing all the video capture required.
 		 * @param iTimeLimit Integer value with the time (in seconds) to limit the game session.
 		 * The default is 600 seconds (10 minutes). After that time expires, if the game is still
 		 * running it will be forcefully stopped.
@@ -77,6 +77,11 @@ namespace gc
 		 * Captures the timer timeout signal (each second).
 		 */
 		void onTimeout();
+
+		/**
+		 * Captures the indication that the game started.
+		 */
+		void onGameStarted();
 
 		/**
 		 * Captures the indication that the game ended.
@@ -114,9 +119,11 @@ namespace gc
 		/** Timer used to limit the game session. */
 		QTimer m_oTimer;
 
-		QProcess m_oGameplayCap;
-
-		QProcess m_oPlayerCap;
+		/**
+		 * Object responsible for handling the execution and access to the
+		 * gameplay and player's face video recordings.
+		 */
+		VideoControl m_oVideoControl;
 	};
 }
 
