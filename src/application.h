@@ -38,6 +38,10 @@ namespace gc
 	{
 		Q_OBJECT
 	public:
+		/** Enumeration with the levels of log for the application. */
+		enum LOG_LEVEL { Fatal, Critical, Warning, Info, Debug };
+		Q_ENUM(LOG_LEVEL)
+
 		/** Enumeration of the available languages for this application. */
 		enum Language { EN_UK, PT_BR };
 		Q_ENUM(Language)
@@ -69,15 +73,15 @@ namespace gc
 
 		/**
 		 * Gets the current maximum log level.
-		 * @return QtMsgType with the maximum log level.
+		 * @return LOG_LEVEL with the maximum log level.
 		 */
-		QtMsgType getLogLevel();
+		LOG_LEVEL getLogLevel();
 
 		/**
 		* Sets the maximum log level.
-		* @param eLevel QtMsgType with the maximum log level.
+		* @param eLevel LOG_LEVEL with the maximum log level.
 		*/
-		void setLogLevel(QtMsgType eLevel);
+		void setLogLevel(LOG_LEVEL eLevel);
 
 		/**
 		 * Gets the style sheet to be used by the application interface.
@@ -131,10 +135,9 @@ namespace gc
 		std::ofstream m_oLogFile;
 
 		/**
-		 * Maximum level of the messages to log, ranging from 0 (all to QtDebugMsg)
-		 * to 4 (only QtInfoMsg).
+		 * Maximum level of the messages to log.
 		 */
-		QtMsgType m_eLogLevel;
+		LOG_LEVEL m_eLogLevel;
 
 		/**
 		 * String with the stylesheet to be used by the application interface

@@ -87,7 +87,8 @@ void gc::Game::onProcessStarted()
 // +-----------------------------------------------------------
 void gc::Game::onProcessFinished(int iExitCode, QProcess::ExitStatus eExitStatus)
 {
-	qDebug("Game %s stopped with exit code [%d] and exit status [%s]", qPrintable(name()), iExitCode, (eExitStatus == QProcess::NormalExit ? "normal" : "closed"));
+	qInfo("Game %s ended.", qPrintable(name()));
+	qDebug("Game %s ended with exit code [%d] and exit status [%s]", qPrintable(name()), iExitCode, (eExitStatus == QProcess::NormalExit ? "normal" : "closed"));
 	emit gameEnded(Concluded);
 }
 
@@ -96,7 +97,7 @@ void gc::Game::onProcessError(QProcess::ProcessError eError)
 {
 	if (eError == QProcess::FailedToStart)
 	{
-		qInfo("Game %s failed to start", qPrintable(name()));
+		qWarning("Game %s failed to start", qPrintable(name()));
 		emit gameEnded(Failed);
 	}
 }

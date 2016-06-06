@@ -87,6 +87,10 @@ gc::VideoControl::VideoControl(QObject *pParent): QObject(pParent)
 	connect(&m_oGameplayCap, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished), this, &VideoControl::onProcessFinished);
 	connect(&m_oGameplayCap, &QProcess::errorOccurred, this, &VideoControl::onProcessError);
 
+	connect(&m_oPlayerCap, &QProcess::started, this, &VideoControl::onProcessStarted);
+	connect(&m_oPlayerCap, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished), this, &VideoControl::onProcessFinished);
+	connect(&m_oPlayerCap, &QProcess::errorOccurred, this, &VideoControl::onProcessError);
+
 	qInfo("OBS configured from path [%s]", qPrintable(m_sOBSFileName));
 	qInfo("Gameplay capture settings: profile [%s], collection [%s], scene [%s]", qPrintable(m_sGameplayProfile), qPrintable(m_sGameplayCollection), qPrintable(m_sGameplayScene));
 	qInfo("Player capture settings: profile [%s], collection [%s], scene [%s]", qPrintable(m_sPlayerProfile), qPrintable(m_sPlayerCollection), qPrintable(m_sPlayerScene));
@@ -97,6 +101,8 @@ void gc::VideoControl::startCapture()
 {
 	if (m_eState == Stopped)
 	{
+		m_eState = Starting;
+
 		m_aStartingFlags[0] = m_aStartingFlags[1] = false;
 		QStringList lGameplayParams;
 		lGameplayParams << "--profile" << m_sGameplayProfile <<
@@ -105,7 +111,6 @@ void gc::VideoControl::startCapture()
 						   "--startrecording";
 		m_oGameplayCap.setWorkingDirectory(QFileInfo(m_sOBSFileName).absolutePath());
 		m_oGameplayCap.start(m_sOBSFileName, lGameplayParams);
-		qInfo("starting OBS for Gameplay capture with parameters: %s", qPrintable(lGameplayParams.join(" ")));
 
 		QStringList lPlayerParams;
 		lPlayerParams << "--profile" << m_sPlayerProfile <<
@@ -114,9 +119,6 @@ void gc::VideoControl::startCapture()
 						 "--startrecording";
 		m_oPlayerCap.setWorkingDirectory(QFileInfo(m_sOBSFileName).absolutePath());
 		m_oPlayerCap.start(m_sOBSFileName, lPlayerParams);
-		qInfo("starting OBS for Gameplay capture with parameters: %s", qPrintable(lPlayerParams.join(" ")));
-
-		m_eState = Starting;
 	}
 }
 
@@ -134,25 +136,41 @@ void gc::VideoControl::stopCapture()
 // +-----------------------------------------------------------
 void gc::VideoControl::onProcessStarted()
 {
-	if (sender() == &m_oGameplayCap)
+	QProcess *pSender = qobject_cast<QProcess*>(sender());
+	QProcess *pTest = &m_oGameplayCap;
+	QProcess *pTest2 = &m_oPlayerCap;
+
+	if (pSender == &m_oGameplayCap)
 		m_aStartingFlags[0] = true;
 	else
 		m_aStartingFlags[1] = true;
 
 	if (m_aStartingFlags[0] && m_aStartingFlags[1])
+	{
+		qInfo() << "Video recording started.";
 		m_eState = Started;
+	}
 }
 
 // +-----------------------------------------------------------
 void gc::VideoControl::onProcessFinished(int iExitCode, QProcess::ExitStatus eExitStatus)
 {
 	if (sender() == &m_oGameplayCap)
+	{
+		qDebug("OBS for gameplay capture ended with exit code [%d] and exit status [%s]", iExitCode, (eExitStatus == QProcess::NormalExit ? "normal" : "closed"));
 		m_aStartingFlags[0] = false;
+	}
 	else
+	{
+		qDebug("OBS for player capture ended with exit code [%d] and exit status [%s]", iExitCode, (eExitStatus == QProcess::NormalExit ? "normal" : "closed"));
 		m_aStartingFlags[1] = false;
+	}
 
-	if (m_aStartingFlags[0] && m_aStartingFlags[1])
+	if (!m_aStartingFlags[0] && !m_aStartingFlags[1])
+	{
+		qInfo() << "Video recording ended.";
 		m_eState = Stopped;
+	}
 }
 
 // +-----------------------------------------------------------
@@ -162,11 +180,13 @@ void gc::VideoControl::onProcessError(QProcess::ProcessError eError)
 	{
 		if (sender() == &m_oGameplayCap && m_oPlayerCap.state() == QProcess::Running)
 		{
+			qWarning() << "OBS for gameplay capture failed to start.";
 			m_eState = Stopping;
 			m_oPlayerCap.kill();
 		}
 		else if (m_oGameplayCap.state() == QProcess::Running)
 		{
+			qWarning() << "OBS for player's face capture failed to start.";
 			m_eState = Stopping;
 			m_oGameplayCap.kill();
 		}
