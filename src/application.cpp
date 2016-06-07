@@ -33,31 +33,36 @@ using namespace std;
 
 #define GROUP_MAIN "Main"
 #define SETTING_LOG_LEVEL "logLevel"
+#define SETTING_DATA_PATH "dataPath"
 
 // +-----------------------------------------------------------
 gc::Application::Application(int& argc, char** argv): QApplication(argc, argv)
 {
-	// Create the QSettings from the configuration.ini file
+	// Create/Open the log file
+	m_eLogLevel = Fatal;
+	QFileInfo oAppFile = QFileInfo(QCoreApplication::applicationFilePath());
+	QString sLogFile = QString("%1%2%3.log").arg(QCoreApplication::applicationDirPath()).arg(QDir::separator()).arg(oAppFile.baseName());
+
+#ifdef _DEBUG
+	// Remove the existing log file if compiled in debug
+	QFile::remove(sLogFile);
+#endif
+
+	m_oLogFile.open(qPrintable(sLogFile), ios::app);
+	if (!m_oLogFile.is_open())
+		qFatal("Error opening log file %s for writing", qPrintable(sLogFile));
+	qInstallMessageHandler(&gc::Application::handleLogOutput);
+
+	// Read the configuration file
 	QString sIniFile = QString("%1%2configuration.ini").arg(QCoreApplication::applicationDirPath()).arg(QDir::separator());
+	if (!QFileInfo::exists(sIniFile))
+		qFatal("Configuration file %s does not exist", qPrintable(sIniFile));
 	m_pSettings = new QSettings(sIniFile, QSettings::IniFormat);
 
-	// Read the general settings
 	m_pSettings->beginGroup(GROUP_MAIN);
-	m_eLogLevel = (LOG_LEVEL) m_pSettings->value(SETTING_LOG_LEVEL, Info).toInt();
+	m_eLogLevel = (LOG_LEVEL)m_pSettings->value(SETTING_LOG_LEVEL, Fatal).toInt();
+	m_sDataPath = m_pSettings->value(SETTING_DATA_PATH, "").toString();
 	m_pSettings->endGroup();
-
-	if (m_eLogLevel < Fatal)
-		m_eLogLevel = Fatal;
-	else if (m_eLogLevel > Debug)
-		m_eLogLevel = Debug;
-
-	// Create the log file
-	QFileInfo oAppFile = QFileInfo(QCoreApplication::applicationFilePath());
-    QString sLogFile = QString("%1%2%3.log").arg(QCoreApplication::applicationDirPath()).arg(QDir::separator()).arg(oAppFile.baseName());
-
-    m_oLogFile.open(qPrintable(sLogFile), ios::app);
-    if(!m_oLogFile.is_open())
-		qFatal("Error opening log file %s for writing", qPrintable(sLogFile));
 
 	// Load the style sheet file from resources
 	QFile oFile(":/resources/stylesheet.css");
@@ -65,18 +70,35 @@ gc::Application::Application(int& argc, char** argv): QApplication(argc, argv)
 		m_sStyleSheet = oFile.readAll();
 	else
 		qFatal("Error reading style sheet from resources.");
-
-	m_pCurrentTranslator = NULL; // The default language (English) does not require a translator
+	m_pCurrentTranslator = NULL;
 
 	// Load the translations
 	m_pPTBRTranslator = new QTranslator(this);
 	if (!m_pPTBRTranslator->load(QLocale("pt"), ":/translations/pt-br.qm"))
 		qFatal("Could not load the pt-br translation from resource");
 
-	// Setup the log message handler
-    qInstallMessageHandler(&gc::Application::handleLogOutput);
+
+
+
 	qInfo("GameCap (v%s) started.", GC_VERSION);
 	qDebug("Running from %s", qPrintable(QCoreApplication::applicationFilePath()));
+
+	if (m_eLogLevel < Fatal)
+		m_eLogLevel = Fatal;
+	else if (m_eLogLevel > Debug)
+		m_eLogLevel = Debug;
+
+	if (!m_sDataPath.length())
+		qFatal("The group/key [%s/%s] is missing in the configuration file.", GROUP_MAIN, SETTING_DATA_PATH);
+
+	if (!QDir(m_sDataPath).exists())
+	{
+		qDebug("Configured data path does not exist. Trying to create it...");
+		if (!QDir().mkpath(m_sDataPath))
+			qFatal("Data path %s does not exist and could not be created.", qPrintable(m_sDataPath));
+	}
+	qDebug() << "Configured log level is: " << m_eLogLevel;
+	qDebug() << "Configured data path is: " << m_sDataPath;
 
 	// Creates the access to the games
 	m_pGameControl = new GameControl(this);

@@ -41,8 +41,14 @@ namespace gc
 		 */
 		VideoControl(QObject *pParent = NULL);
 
+		/**
+		 * Starts the capture of the gameplay and player's face videos.
+		 */
 		void startCapture();
 
+		/**
+		 * Stops the capture of the gameplay and player's face videos.
+		 */
 		void stopCapture();
 
 	protected slots:
@@ -66,12 +72,33 @@ namespace gc
 		 */
 		void onProcessError(QProcess::ProcessError eError);
 
+	signals:
+
+		/**
+		 * Signal indicating that the capture started.
+		 */
+		void captureStarted();
+
+		/**
+		 * Signal indicating that the capture failed to start.
+		 */
+		void captureFailed();
+
 	private:
 
 		/** Current state of the video capturing process. */
 		State m_eState;
 
-		bool m_aStartingFlags[2];
+		/** Individual indications of process started for the two instances of OBS. */
+		bool m_aStartedFlags[2];
+
+		/**
+		 * Indication that the fail to start signal has been just sent.
+		 * This is used because when one instance of the OBS software fails to start
+		 * it is very likely that the other one will also fail to start. So, by using
+		 * this flag, the code can avoid emitting two signals in a row.
+		 */
+		bool m_bFailSignalSent;
 
 		/** Handles the OBS process used to capture the gameplay video. */
 		QProcess m_oGameplayCap;
@@ -91,6 +118,9 @@ namespace gc
 		/** Scene name used for recording the gameplay. */
 		QString m_sGameplayScene;
 
+		/** Path where OBS will store the gameplay videos captured. */
+		QString m_sGameplayPath;
+
 		/** Profile name used for recording the player. */
 		QString m_sPlayerProfile;
 
@@ -99,6 +129,9 @@ namespace gc
 
 		/** Scene name used for recording the player. */
 		QString m_sPlayerScene;
+
+		/** Path where OBS will store the player's face videos captured. */
+		QString m_sPlayerPath;
 	};
 }
 

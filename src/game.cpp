@@ -51,7 +51,7 @@ void gc::Game::setup()
 		qFatal(qPrintable(sMsg));
 	}
 
-	qInfo("Game %s (%s) configured to run from %s", qPrintable(name()), qPrintable(genre()), qPrintable(m_sFileName));
+	qDebug("Game %s (%s) configured to run from %s", qPrintable(name()), qPrintable(genre()), qPrintable(m_sFileName));
 }
 
 // +-----------------------------------------------------------
@@ -80,14 +80,13 @@ bool gc::Game::running()
 // +-----------------------------------------------------------
 void gc::Game::onProcessStarted()
 {
-	qInfo("Game %s started.", qPrintable(name()));
+	qDebug("Game %s started.", qPrintable(name()));
 	emit gameStarted();
 }
 
 // +-----------------------------------------------------------
 void gc::Game::onProcessFinished(int iExitCode, QProcess::ExitStatus eExitStatus)
 {
-	qInfo("Game %s ended.", qPrintable(name()));
 	qDebug("Game %s ended with exit code [%d] and exit status [%s]", qPrintable(name()), iExitCode, (eExitStatus == QProcess::NormalExit ? "normal" : "closed"));
 	emit gameEnded(Concluded);
 }

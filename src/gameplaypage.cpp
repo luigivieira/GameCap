@@ -76,8 +76,10 @@ void gc::GamePlayPage::onGameplayEnded(GameControl::GameplaySessionResult eResul
 	else
 	{
 		Game *pGame = ((Application*)qApp)->gameControl()->currentGame();
-		if (eResult == GameControl::Error)
+		if (eResult == GameControl::GameError)
 			MessageBox::infoMessage(this, tr("The game %1 seems not to be working, so the experiment can not be continued. Please, inform the researcher in charge. Nevertheless, thank you very much for your time.").arg(pGame->name()));
+		else if (eResult == GameControl::CaptureError)
+			MessageBox::infoMessage(this, tr("The video capture seems not to be working, so the experiment can not be continued. Please, inform the researcher in charge. Nevertheless, thank you very much for your time."));
 		else if (eResult == GameControl::Cancelled)
 			MessageBox::infoMessage(this, tr("You quit the game %1 before the required play time, hence quitting the experiment. Nevertheless, thank you very much for your time.").arg(pGame->name()));
 		wizard()->reject();

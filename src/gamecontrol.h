@@ -37,7 +37,7 @@ namespace gc
 	public:
 
 		/** Enumeration with the possible results for the gameplay session. */
-		enum GameplaySessionResult { Success, Cancelled, Error };
+		enum GameplaySessionResult { Success, Cancelled, GameError, CaptureError };
 		Q_ENUM(GameplaySessionResult)
 
 		/**
@@ -89,6 +89,16 @@ namespace gc
 		 * game to end (among Concluded and Failed).
 		 */
 		void onGameEnded(Game::EndReason eReason);
+
+		/**
+		 * Captures the signal indicating that the video capture started.
+		 */
+		void onCaptureStarted();
+
+		/**
+		 * Captures the signal indicating that the video capture failed to start.
+		 */
+		void onCaptureFailed();
 
 	signals:
 

@@ -50,8 +50,10 @@ gc::GameControl::GameControl(QObject *pParent): QObject(pParent)
 	m_pCurrentGame = NULL;
 	selectNextGame();
 
-	// Connect to the timer used to limit the gameplay session
+	// Connect to the required signals
 	connect(&m_oTimer, &QTimer::timeout, this, &GameControl::onTimeout);
+	connect(&m_oVideoControl, &VideoControl::captureStarted, this, &GameControl::onCaptureStarted);
+	connect(&m_oVideoControl, &VideoControl::captureFailed, this, &GameControl::onCaptureFailed);
 }
 
 // +-----------------------------------------------------------
@@ -94,12 +96,9 @@ void gc::GameControl::onTimeout()
 // +-----------------------------------------------------------
 void gc::GameControl::onGameStarted()
 {
-	// Start the one second timer to control the remaining time
+	// 3 - And finally start the session timer.
 	m_oTimer.start(1000);
 	emit gameRemainingTime(m_iRemainingTime);
-
-	// Start the video capturing of the gameplay and player's face
-	m_oVideoControl.startCapture();
 }
 
 // +-----------------------------------------------------------
@@ -109,7 +108,7 @@ void gc::GameControl::onGameEnded(Game::EndReason eReason)
 		m_oTimer.stop();
 	
 	if(eReason == Game::Failed)
-		emit gameplayEnded(Error);
+		emit gameplayEnded(GameError);
 	else if (m_iRemainingTime > 0)
 		emit gameplayEnded(Cancelled);
 	else
@@ -121,6 +120,19 @@ void gc::GameControl::onGameEnded(Game::EndReason eReason)
 }
 
 // +-----------------------------------------------------------
+void gc::GameControl::onCaptureStarted()
+{
+	// 2 - Now start the game...
+	m_pCurrentGame->start();
+}
+
+// +-----------------------------------------------------------
+void gc::GameControl::onCaptureFailed()
+{
+	emit gameplayEnded(CaptureError);
+}
+
+// +-----------------------------------------------------------
 bool gc::GameControl::running()
 {
 	return m_pCurrentGame->running();
@@ -129,7 +141,8 @@ bool gc::GameControl::running()
 // +-----------------------------------------------------------
 void gc::GameControl::run(int iTimeLimit)
 {
-	// Start the game
-	m_pCurrentGame->start();
+	// 1 - First start the video capture. Only when it is correctly started,
+	// the game will be started (in method GameControl::onCaptureStarted())
 	m_iRemainingTime = iTimeLimit;
+	m_oVideoControl.startCapture();
 }

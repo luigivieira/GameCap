@@ -139,6 +139,9 @@ namespace gc
 		 */
 		LOG_LEVEL m_eLogLevel;
 
+		/** Path where the collected data files must be stored. */
+		QString m_sDataPath;
+
 		/**
 		 * String with the stylesheet to be used by the application interface
 		 * (loaded from a .css file in the resource).

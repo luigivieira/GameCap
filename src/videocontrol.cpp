@@ -19,15 +19,20 @@
 #include "videocontrol.h"
 #include "application.h"
 #include <QFileInfo>
+#include <vector>
 
 #define GROUP_OBS "OBS"
 #define SETTING_PATH "path"
 #define SETTING_GAMEPLAYPROFILE "gameplayProfile"
 #define SETTING_GAMEPLAYCOLLECTION "gameplayCollection"
 #define SETTING_GAMEPLAYSCENE "gameplayScene"
+#define SETTING_GAMEPLAYPATH "gameplayPath"
 #define SETTING_PLAYERPROFILE "playerProfile"
 #define SETTING_PLAYERCOLLECTION "playerCollection"
 #define SETTING_PLAYERSCENE "playerScene"
+#define SETTING_PLAYERPATH "playerPath"
+
+using namespace std;
 
 // +-----------------------------------------------------------
 gc::VideoControl::VideoControl(QObject *pParent): QObject(pParent)
@@ -42,46 +47,36 @@ gc::VideoControl::VideoControl(QObject *pParent): QObject(pParent)
 	m_sGameplayProfile = pSettings->value(SETTING_GAMEPLAYPROFILE).toString();
 	m_sGameplayCollection = pSettings->value(SETTING_GAMEPLAYCOLLECTION).toString();
 	m_sGameplayScene = pSettings->value(SETTING_GAMEPLAYSCENE).toString();
+	m_sGameplayPath = pSettings->value(SETTING_GAMEPLAYPATH).toString();
+
 	m_sPlayerProfile = pSettings->value(SETTING_PLAYERPROFILE).toString();
 	m_sPlayerCollection = pSettings->value(SETTING_PLAYERCOLLECTION).toString();
 	m_sPlayerScene = pSettings->value(SETTING_PLAYERSCENE).toString();
+	m_sPlayerPath = pSettings->value(SETTING_PLAYERPATH).toString();
 	pSettings->endGroup();
 
-	QString aKeys[] = { SETTING_PATH, SETTING_GAMEPLAYPROFILE,
-						SETTING_GAMEPLAYCOLLECTION, SETTING_GAMEPLAYSCENE,
-						SETTING_PLAYERPROFILE, SETTING_PLAYERCOLLECTION,
-						SETTING_PLAYERSCENE };
-	for (int i = 0; i < 7; i++)
+	vector<QString> vKeys = { SETTING_PATH,
+							  SETTING_GAMEPLAYPROFILE, SETTING_GAMEPLAYCOLLECTION,
+							  SETTING_GAMEPLAYSCENE, SETTING_GAMEPLAYPATH,
+							  SETTING_PLAYERPROFILE, SETTING_PLAYERCOLLECTION,
+							  SETTING_PLAYERSCENE, SETTING_PLAYERPATH };
+	for (vector<QString>::iterator it = vKeys.begin(); it != vKeys.end(); ++it)
 	{
-		if (!aKeys[i].length())
-		{
-			QString sMsg = QString("the group/key [%1/%2] is missing in the configuration file.").arg(GROUP_OBS).arg(aKeys[i]);
-			qFatal(qPrintable(sMsg));
-		}
-		if (i > 0 && aKeys[i].contains(' '))
-		{
-			QString sMsg = QString("the value in group/key [%1/%2] can not contain spaces.").arg(GROUP_OBS).arg(aKeys[i]);
-			qFatal(qPrintable(sMsg));
-		}
+		if (!it->length())
+			qFatal("The group/key [%s/%s] is missing in the configuration file.", qPrintable(GROUP_OBS), qPrintable(*it));
 	}
 
-	QString aValues[] = { m_sGameplayProfile, m_sGameplayCollection,
-						  m_sGameplayScene, m_sPlayerProfile,
-						  m_sPlayerCollection, m_sPlayerScene };
-	for (int i = 0; i < 6; i++)
+	vector<QString> vValues = { m_sGameplayProfile, m_sGameplayCollection,
+								m_sGameplayScene, m_sPlayerProfile,
+								m_sPlayerCollection, m_sPlayerScene };
+	for (vector<QString>::iterator it = vValues.begin(); it != vValues.end(); ++it)
 	{
-		if (aValues[i].contains(' '))
-		{
-			QString sMsg = QString("the value in group/key [%1/%2] can not contain spaces.").arg(GROUP_OBS).arg(aKeys[i+1]);
-			qFatal(qPrintable(sMsg));
-		}
+		if (it->contains(' '))
+			qFatal("The value [%s] (used in the group [%s] of the configuration) can not contain spaces.", qPrintable(*it), qPrintable(GROUP_OBS));
 	}
 
 	if (!QFileInfo::exists(m_sOBSFileName))
-	{
-		QString sMsg = QString("the file name [%1] configured for the OBS applicatoin does not exist.").arg(m_sOBSFileName);
-		qFatal(qPrintable(sMsg));
-	}
+		qFatal("The file name [%s] (used in the group [%s] of the configuration) does not exist.", qPrintable(m_sOBSFileName), qPrintable(GROUP_OBS));
 
 	connect(&m_oGameplayCap, &QProcess::started, this, &VideoControl::onProcessStarted);
 	connect(&m_oGameplayCap, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished), this, &VideoControl::onProcessFinished);
@@ -91,9 +86,9 @@ gc::VideoControl::VideoControl(QObject *pParent): QObject(pParent)
 	connect(&m_oPlayerCap, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished), this, &VideoControl::onProcessFinished);
 	connect(&m_oPlayerCap, &QProcess::errorOccurred, this, &VideoControl::onProcessError);
 
-	qInfo("OBS configured from path [%s]", qPrintable(m_sOBSFileName));
-	qInfo("Gameplay capture settings: profile [%s], collection [%s], scene [%s]", qPrintable(m_sGameplayProfile), qPrintable(m_sGameplayCollection), qPrintable(m_sGameplayScene));
-	qInfo("Player capture settings: profile [%s], collection [%s], scene [%s]", qPrintable(m_sPlayerProfile), qPrintable(m_sPlayerCollection), qPrintable(m_sPlayerScene));
+	qDebug("OBS configured from path [%s]", qPrintable(m_sOBSFileName));
+	qDebug("Gameplay capture settings: profile [%s], collection [%s], scene [%s]", qPrintable(m_sGameplayProfile), qPrintable(m_sGameplayCollection), qPrintable(m_sGameplayScene));
+	qDebug("Player capture settings: profile [%s], collection [%s], scene [%s]", qPrintable(m_sPlayerProfile), qPrintable(m_sPlayerCollection), qPrintable(m_sPlayerScene));
 }
 
 // +-----------------------------------------------------------
@@ -101,9 +96,10 @@ void gc::VideoControl::startCapture()
 {
 	if (m_eState == Stopped)
 	{
+		m_bFailSignalSent = false;
 		m_eState = Starting;
 
-		m_aStartingFlags[0] = m_aStartingFlags[1] = false;
+		m_aStartedFlags[0] = m_aStartedFlags[1] = false;
 		QStringList lGameplayParams;
 		lGameplayParams << "--profile" << m_sGameplayProfile <<
 						   "--collection" << m_sGameplayCollection <<
@@ -141,14 +137,15 @@ void gc::VideoControl::onProcessStarted()
 	QProcess *pTest2 = &m_oPlayerCap;
 
 	if (pSender == &m_oGameplayCap)
-		m_aStartingFlags[0] = true;
+		m_aStartedFlags[0] = true;
 	else
-		m_aStartingFlags[1] = true;
+		m_aStartedFlags[1] = true;
 
-	if (m_aStartingFlags[0] && m_aStartingFlags[1])
+	if (m_aStartedFlags[0] && m_aStartedFlags[1])
 	{
-		qInfo() << "Video recording started.";
+		qDebug() << "Video recording started.";
 		m_eState = Started;
+		emit captureStarted();
 	}
 }
 
@@ -158,17 +155,17 @@ void gc::VideoControl::onProcessFinished(int iExitCode, QProcess::ExitStatus eEx
 	if (sender() == &m_oGameplayCap)
 	{
 		qDebug("OBS for gameplay capture ended with exit code [%d] and exit status [%s]", iExitCode, (eExitStatus == QProcess::NormalExit ? "normal" : "closed"));
-		m_aStartingFlags[0] = false;
+		m_aStartedFlags[0] = false;
 	}
 	else
 	{
 		qDebug("OBS for player capture ended with exit code [%d] and exit status [%s]", iExitCode, (eExitStatus == QProcess::NormalExit ? "normal" : "closed"));
-		m_aStartingFlags[1] = false;
+		m_aStartedFlags[1] = false;
 	}
 
-	if (!m_aStartingFlags[0] && !m_aStartingFlags[1])
+	if (!m_aStartedFlags[0] && !m_aStartedFlags[1])
 	{
-		qInfo() << "Video recording ended.";
+		qDebug() << "Video recording ended.";
 		m_eState = Stopped;
 	}
 }
@@ -178,19 +175,30 @@ void gc::VideoControl::onProcessError(QProcess::ProcessError eError)
 {
 	if (eError == QProcess::FailedToStart)
 	{
-		if (sender() == &m_oGameplayCap && m_oPlayerCap.state() == QProcess::Running)
+		if (sender() == &m_oGameplayCap)
 		{
 			qWarning() << "OBS for gameplay capture failed to start.";
 			m_eState = Stopping;
-			m_oPlayerCap.kill();
+			if (m_oPlayerCap.state() == QProcess::Running)
+				m_oPlayerCap.kill();
+			if (!m_bFailSignalSent)
+			{
+				m_bFailSignalSent = true;
+				emit captureFailed();
+			}
 		}
-		else if (m_oGameplayCap.state() == QProcess::Running)
+		else
 		{
 			qWarning() << "OBS for player's face capture failed to start.";
 			m_eState = Stopping;
-			m_oGameplayCap.kill();
+			if (m_oGameplayCap.state() == QProcess::Running)
+				m_oGameplayCap.kill();
+
+			if (!m_bFailSignalSent)
+			{
+				m_bFailSignalSent = true;
+				emit captureFailed();
+			}
 		}
-		else
-			m_eState = Stopped;
 	}
 }
