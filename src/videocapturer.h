@@ -16,8 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef VIDEO_CONTROL_H
-#define VIDEO_CONTROL_H
+#ifndef VIDEO_CAPTURER_H
+#define VIDEO_CAPTURER_H
 
 #include <QProcess>
 #include <QTimer>
@@ -25,9 +25,9 @@
 namespace gc
 {
 	/**
-	 * Handles the capture and exibition of the videos of the gameplay and player's face.
+	 * Handles the recording of the videos of the gameplay and player's face.
 	 */
-	class VideoControl: public QObject
+	class VideoCapturer: public QObject
 	{
 		Q_OBJECT
 	public:
@@ -43,7 +43,7 @@ namespace gc
 		 * Class constructor.
 		 * @param pParent Instance for the QObject that is the parent of this one. Default is NULL.
 		 */
-		VideoControl(QObject *pParent = NULL);
+		VideoCapturer(QObject *pParent = NULL);
 
 		/**
 		 * Starts the capture of the gameplay and player's face videos.
@@ -55,6 +55,9 @@ namespace gc
 		 */
 		void stopCapture();
 
+		/**
+		 * Deletes all video files in the configured OBS output directories.
+		 */
 		void deleteFiles();
 
 		bool saveFiles();
@@ -92,7 +95,7 @@ namespace gc
 		 * @param eResult Value of the CaptureResult enumeration with the video
 		 * capture result.
 		 */
-		void captureEnded(VideoControl::CaptureResult eResult);
+		void captureEnded(VideoCapturer::CaptureResult eResult);
 
 	private:
 
@@ -145,4 +148,4 @@ namespace gc
 	};
 }
 
-#endif // GAME_H
+#endif // VIDEO_CAPTURER_H

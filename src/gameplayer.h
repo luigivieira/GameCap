@@ -16,8 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GAME_CONTROL_H
-#define GAME_CONTROL_H
+#ifndef GAME_PLAYER_H
+#define GAME_PLAYER_H
 
 #include "game.h"
 #include <QObject>
@@ -26,10 +26,9 @@
 namespace gc
 {
 	/**
-	 * Class used to handle game selection, execution and termination, as well as the
-	 * video capture of gameplay and player's face.
+	 * Class used to handle game selection, execution and termination.
 	 */
-	class GameControl: public QObject
+	class GamePlayer: public QObject
 	{
 		Q_OBJECT
 	public:
@@ -42,7 +41,7 @@ namespace gc
 		 * Class constructor.
 		 * @param pParent Instance for the QObject that is the parent of this one. Default is NULL.
 		 */
-		GameControl(QObject *pParent = NULL);
+		GamePlayer(QObject *pParent = NULL);
 
 		/**
 		 * Selects the next game to be used in the next execution.
@@ -97,7 +96,7 @@ namespace gc
 		 * @param eResult Value of the GameplayResult enumeration with the gameplay
 		 * session result.
 		 */
-		void gameplayEnded(GameControl::GameplayResult eResult);
+		void gameplayEnded(GamePlayer::GameplayResult eResult);
 
 	private:
 
@@ -112,4 +111,4 @@ namespace gc
 	};
 }
 
-#endif // GAME_CONTROL_H
+#endif // GAME_PLAYER_H

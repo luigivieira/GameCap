@@ -27,7 +27,7 @@ namespace gc
 	 * Indicates the existance of the GameControl class, without defining it, just to the
 	 * friend declaration above.
 	 */
-	class GameControl;
+	class GamePlayer;
 
 	/**
 	 * Abstract class used to access the games. Must be inherited to create a concrete
@@ -38,8 +38,8 @@ namespace gc
 		Q_OBJECT
 	public:
 
-		/** Allows the GameControl class to access the protected methods ::start() and ::stop(). */
-		friend GameControl;
+		/** Allows the GamePlayer class to access the protected methods ::start() and ::stop(). */
+		friend GamePlayer;
 
 		/** Reason for the game to end. */
 		enum EndReason { FailedToStart, Closed };

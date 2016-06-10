@@ -123,7 +123,7 @@ void gc::Window::reject()
 	// If it is not, then an error happened.
 	if (currentId() == Page_GamePlay)
 	{
-		if (((Application*) qApp)->gameControl()->running())
+		if (((Application*) qApp)->gamePlayer()->running())
 			return;
 		else
 		{
@@ -144,7 +144,7 @@ void gc::Window::reject()
 // +-----------------------------------------------------------
 void gc::Window::done(int iRet)
 {
-	((Application*) qApp)->gameControl()->selectNextGame();
+	((Application*) qApp)->gamePlayer()->selectNextGame();
 	restart();
 }
 

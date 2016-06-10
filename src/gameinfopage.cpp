@@ -35,7 +35,7 @@ gc::GameInfoPage::GameInfoPage(QWidget *pParent) : QWizardPage(pParent)
 // +-----------------------------------------------------------
 void gc::GameInfoPage::initializePage()
 {
-	Game *pGame = ((Application*)qApp)->gameControl()->currentGame();
+	Game *pGame = ((Application*)qApp)->gamePlayer()->currentGame();
 	QString sText = tr("\
 You will now play %1, a %2 game. You will have 10 minutes to play it as you wish and as many \
 times as you want to. If you wish to interrupt your participation in the experiment before that \

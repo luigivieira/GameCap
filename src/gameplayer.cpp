@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "gamecontrol.h"
+#include "gameplayer.h"
 #include "gamepingus.h"
 #include "gameslender.h"
 #include "application.h"
@@ -27,12 +27,12 @@
 using namespace std;
 
 // Macro for easy repetition of required code for new game handling
-#define ADD_GAME(GAMEPTR, VECTOR) connect(GAMEPTR, &Game::gameStarted, this, &GameControl::onGameStarted); \
-				                  connect(GAMEPTR, &Game::gameEnded, this, &GameControl::onGameEnded); \
+#define ADD_GAME(GAMEPTR, VECTOR) connect(GAMEPTR, &Game::gameStarted, this, &GamePlayer::onGameStarted); \
+				                  connect(GAMEPTR, &Game::gameEnded, this, &GamePlayer::onGameEnded); \
 								  VECTOR.push_back(GAMEPTR);
 
 // +-----------------------------------------------------------
-gc::GameControl::GameControl(QObject *pParent): QObject(pParent)
+gc::GamePlayer::GamePlayer(QObject *pParent): QObject(pParent)
 {
 	// Game: Pingus
 	Game *pGame = new GamePingus(this);
@@ -51,7 +51,7 @@ gc::GameControl::GameControl(QObject *pParent): QObject(pParent)
 }
 
 // +-----------------------------------------------------------
-gc::Game* gc::GameControl::selectNextGame()
+gc::Game* gc::GamePlayer::selectNextGame()
 {
 	int iIndex;
 	if (!m_pCurrentGame)
@@ -68,19 +68,19 @@ gc::Game* gc::GameControl::selectNextGame()
 }
 
 // +-----------------------------------------------------------
-gc::Game* gc::GameControl::currentGame()
+gc::Game* gc::GamePlayer::currentGame()
 {
 	return m_pCurrentGame;
 }
 
 // +-----------------------------------------------------------
-void gc::GameControl::onGameStarted()
+void gc::GamePlayer::onGameStarted()
 {
 	emit gameplayStarted();
 }
 
 // +-----------------------------------------------------------
-void gc::GameControl::onGameEnded(Game::EndReason eReason)
+void gc::GamePlayer::onGameEnded(Game::EndReason eReason)
 {
 	if(eReason == Game::FailedToStart)
 		emit gameplayEnded(Failed);
@@ -91,20 +91,20 @@ void gc::GameControl::onGameEnded(Game::EndReason eReason)
 }
 
 // +-----------------------------------------------------------
-bool gc::GameControl::running()
+bool gc::GamePlayer::running()
 {
 	return m_pCurrentGame->running();
 }
 
 // +-----------------------------------------------------------
-void gc::GameControl::startGameplay()
+void gc::GamePlayer::startGameplay()
 {
 	m_bClosedBySystem = false;
 	m_pCurrentGame->start();
 }
 
 // +-----------------------------------------------------------
-void gc::GameControl::stopGameplay()
+void gc::GamePlayer::stopGameplay()
 {
 	m_bClosedBySystem = true;
 	m_pCurrentGame->stop();

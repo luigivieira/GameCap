@@ -102,14 +102,14 @@ gc::Application::Application(int& argc, char** argv): QApplication(argc, argv)
 	qDebug() << "Configured data path is: " << m_sDataPath;
 
 	// Prepares the access to the video recordings and the games
-	m_pVideoControl = new VideoControl(this);
-	m_pGameControl = new GameControl(this);
+	m_pVideoCapturer = new VideoCapturer(this);
+	m_pGamePlayer = new GamePlayer(this);
 
-	connect(m_pGameControl, &GameControl::gameplayStarted, this, &Application::onGameplayStarted);
-	connect(m_pGameControl, &GameControl::gameplayEnded, this, &Application::onGameplayEnded);
+	connect(m_pGamePlayer, &GamePlayer::gameplayStarted, this, &Application::onGameplayStarted);
+	connect(m_pGamePlayer, &GamePlayer::gameplayEnded, this, &Application::onGameplayEnded);
 
-	connect(m_pVideoControl, &VideoControl::captureStarted, this, &Application::onCaptureStarted);
-	connect(m_pVideoControl, &VideoControl::captureEnded, this, &Application::onCaptureEnded);
+	connect(m_pVideoCapturer, &VideoCapturer::captureStarted, this, &Application::onCaptureStarted);
+	connect(m_pVideoCapturer, &VideoCapturer::captureEnded, this, &Application::onCaptureEnded);
 
 	connect(&m_oTimer, &QTimer::timeout, this, &Application::onTimeout);
 }
@@ -166,15 +166,15 @@ void gc::Application::setLanguage(Language eLanguage)
 }
 
 // +-----------------------------------------------------------
-gc::GameControl* gc::Application::gameControl()
+gc::GamePlayer* gc::Application::gamePlayer()
 {
-	return m_pGameControl;
+	return m_pGamePlayer;
 }
 
 // +-----------------------------------------------------------
-gc::VideoControl* gc::Application::videoControl()
+gc::VideoCapturer* gc::Application::videoCapturer()
 {
-	return m_pVideoControl;
+	return m_pVideoCapturer;
 }
 
 // +-----------------------------------------------------------
@@ -293,13 +293,13 @@ void gc::Application::onTimeout()
 // +-----------------------------------------------------------
 void gc::Application::startGameplay()
 {
-	m_pVideoControl->startCapture();
+	m_pVideoCapturer->startCapture();
 }
 
 // +-----------------------------------------------------------
 void gc::Application::stopGameplay()
 {
-	m_pVideoControl->stopCapture();
+	m_pVideoCapturer->stopCapture();
 	m_oTimer.stop();
 	m_iTimeRemaining = 0;
 }
@@ -313,21 +313,21 @@ void gc::Application::onGameplayStarted()
 }
 
 // +-----------------------------------------------------------
-void gc::Application::onGameplayEnded(GameControl::GameplayResult eResult)
+void gc::Application::onGameplayEnded(GamePlayer::GameplayResult eResult)
 {
 	switch(eResult)
 	{
-		case GameControl::Failed:
+		case GamePlayer::Failed:
 			stopGameplay();
 			emit gameplayFailedToStart();
 			break;
 
-		case GameControl::ClosedByUser:
+		case GamePlayer::ClosedByUser:
 			stopGameplay();
 			emit gameplayCancelled();
 			break;
 
-		default: //case GameControl::ClosedBySystem:
+		default: //case GamePlayer::ClosedBySystem:
 			emit gameplayCompleted();
 			break;
 	}
@@ -336,14 +336,14 @@ void gc::Application::onGameplayEnded(GameControl::GameplayResult eResult)
 // +-----------------------------------------------------------
 void gc::Application::onCaptureStarted()
 {
-	m_pGameControl->startGameplay();
+	m_pGamePlayer->startGameplay();
 }
 
 // +-----------------------------------------------------------
-void gc::Application::onCaptureEnded(gc::VideoControl::CaptureResult eResult)
+void gc::Application::onCaptureEnded(gc::VideoCapturer::CaptureResult eResult)
 {
-	if (eResult == VideoControl::FailedToStart)
+	if (eResult == VideoCapturer::FailedToStart)
 		emit gameplayFailedToStart();
 	else // if(eResult == VideoControl::Closed )
-		m_pGameControl->stopGameplay();
+		m_pGamePlayer->stopGameplay();
 }

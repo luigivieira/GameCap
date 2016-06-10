@@ -58,7 +58,7 @@ gc::GamePlayPage::GamePlayPage(QWidget *pParent) : QWizardPage(pParent)
 // +-----------------------------------------------------------
 void gc::GamePlayPage::initializePage()
 {
-	Game *pGame = ((Application*) qApp)->gameControl()->currentGame();
+	Game *pGame = ((Application*) qApp)->gamePlayer()->currentGame();
 	m_pMessage->setText(tr("You are now playing %1. If you wish to quit the experiment, please quit from the game first.").arg(pGame->name()));
 	m_pRemainingTime->setText("");
 	
@@ -89,7 +89,7 @@ void gc::GamePlayPage::onGameplayCompleted()
 // +-----------------------------------------------------------
 void gc::GamePlayPage::onGameplayCancelled()
 {
-	Game *pGame = ((Application*) qApp)->gameControl()->currentGame();
+	Game *pGame = ((Application*) qApp)->gamePlayer()->currentGame();
 	MessageBox::infoMessage(this, tr("You have quit the game %1 before the required play time, hence quitting the experiment. Nevertheless, thank you very much for your time.").arg(pGame->name()));
 	wizard()->reject();
 }
@@ -97,7 +97,7 @@ void gc::GamePlayPage::onGameplayCancelled()
 // +-----------------------------------------------------------
 void gc::GamePlayPage::onGameplayFailedToStart()
 {
-	Game *pGame = ((Application*)qApp)->gameControl()->currentGame();
+	Game *pGame = ((Application*)qApp)->gamePlayer()->currentGame();
 	MessageBox::infoMessage(this, tr("An error ocurred and the gameplay session of the game %1 could not be started. Please, inform the researcher in charge. Nevertheless, thank you very much for your time.").arg(pGame->name()));
 	wizard()->reject();
 }

@@ -19,8 +19,8 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "gamecontrol.h"
-#include "videocontrol.h"
+#include "gameplayer.h"
+#include "videocapturer.h"
 #include <QApplication>
 #include <QSettings>
 #include <QKeySequence>
@@ -104,18 +104,18 @@ namespace gc
 		QSettings* getSettings();
 
 		/**
-		 * Gets the instance of the game control, used to access the games used in the
+		 * Gets the instance of the game player, used to access the games used in the
 		 * experiment.
-		 * @return Instance of the GameControl.
+		 * @return Instance of the GamePlayer.
 		 */
-		GameControl* gameControl();
+		GamePlayer* gamePlayer();
 
 		/**
-		 * Gets the instance of the video control, used to access the videos recorded in
+		 * Gets the instance of the video capturer, used to access the videos recorded in
 		 * the experiment.
-		 * @return Instance of the VideoControl.
+		 * @return Instance of the VideoCapturer.
 		 */
-		VideoControl* videoControl();
+		VideoCapturer* videoCapturer();
 
 		/**
 		 * Queries the current subject identifier.
@@ -150,7 +150,7 @@ namespace gc
 		 * @param eResult Value of the GameplayResult enumeration with the gameplay
 		 * session result.
 		 */
-		void onGameplayEnded(GameControl::GameplayResult eResult);
+		void onGameplayEnded(GamePlayer::GameplayResult eResult);
 
 		/**
 		 * Captures the signal indicating that the video capture started.
@@ -162,7 +162,7 @@ namespace gc
 		 * @param eResult Value of the CaptureResult enumeration with the video
 		 * capture result.
 		 */
-		void onCaptureEnded(VideoControl::CaptureResult eResult);
+		void onCaptureEnded(VideoCapturer::CaptureResult eResult);
 
 	signals:
 
@@ -231,10 +231,10 @@ namespace gc
 		QTranslator *m_pPTBRTranslator;
 
 		/** Controls the access to the games played in the experiment. */
-		GameControl *m_pGameControl;
+		GamePlayer *m_pGamePlayer;
 
 		/** Controls the recording and access of the gameplay and player videos. */
-		VideoControl *m_pVideoControl;
+		VideoCapturer *m_pVideoCapturer;
 
 		/** Settings used by the application. */
 		QSettings *m_pSettings;

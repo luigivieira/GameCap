@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "videocontrol.h"
+#include "videocapturer.h"
 #include "application.h"
 #include <QFileInfo>
 #include <vector>
@@ -36,7 +36,7 @@
 using namespace std;
 
 // +-----------------------------------------------------------
-gc::VideoControl::VideoControl(QObject *pParent): QObject(pParent)
+gc::VideoCapturer::VideoCapturer(QObject *pParent): QObject(pParent)
 {
 	m_eState = Stopped;
 
@@ -79,13 +79,13 @@ gc::VideoControl::VideoControl(QObject *pParent): QObject(pParent)
 	if (!QFileInfo::exists(m_sOBSFileName))
 		qFatal("The file name [%s] (used in the group [%s] of the configuration) does not exist.", qPrintable(m_sOBSFileName), qPrintable(GROUP_OBS));
 
-	connect(&m_oGameplayCap, &QProcess::started, this, &VideoControl::onProcessStarted);
-	connect(&m_oGameplayCap, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished), this, &VideoControl::onProcessFinished);
-	connect(&m_oGameplayCap, &QProcess::errorOccurred, this, &VideoControl::onProcessError);
+	connect(&m_oGameplayCap, &QProcess::started, this, &VideoCapturer::onProcessStarted);
+	connect(&m_oGameplayCap, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished), this, &VideoCapturer::onProcessFinished);
+	connect(&m_oGameplayCap, &QProcess::errorOccurred, this, &VideoCapturer::onProcessError);
 
-	connect(&m_oPlayerCap, &QProcess::started, this, &VideoControl::onProcessStarted);
-	connect(&m_oPlayerCap, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished), this, &VideoControl::onProcessFinished);
-	connect(&m_oPlayerCap, &QProcess::errorOccurred, this, &VideoControl::onProcessError);
+	connect(&m_oPlayerCap, &QProcess::started, this, &VideoCapturer::onProcessStarted);
+	connect(&m_oPlayerCap, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished), this, &VideoCapturer::onProcessFinished);
+	connect(&m_oPlayerCap, &QProcess::errorOccurred, this, &VideoCapturer::onProcessError);
 
 	qDebug("OBS configured from path [%s]", qPrintable(m_sOBSFileName));
 	qDebug("Gameplay capture settings: profile [%s], collection [%s], scene [%s]", qPrintable(m_sGameplayProfile), qPrintable(m_sGameplayCollection), qPrintable(m_sGameplayScene));
@@ -93,10 +93,12 @@ gc::VideoControl::VideoControl(QObject *pParent): QObject(pParent)
 }
 
 // +-----------------------------------------------------------
-void gc::VideoControl::startCapture()
+void gc::VideoCapturer::startCapture()
 {
 	if (m_eState == Stopped)
 	{
+		deleteFiles();
+
 		m_bFailSignalSent = false;
 		m_eState = Starting;
 
@@ -120,7 +122,7 @@ void gc::VideoControl::startCapture()
 }
 
 // +-----------------------------------------------------------
-void gc::VideoControl::stopCapture()
+void gc::VideoCapturer::stopCapture()
 {
 	if (m_eState == Started)
 	{
@@ -131,7 +133,7 @@ void gc::VideoControl::stopCapture()
 }
 
 // +-----------------------------------------------------------
-void gc::VideoControl::onProcessStarted()
+void gc::VideoCapturer::onProcessStarted()
 {
 	QProcess *pSender = qobject_cast<QProcess*>(sender());
 
@@ -149,7 +151,7 @@ void gc::VideoControl::onProcessStarted()
 }
 
 // +-----------------------------------------------------------
-void gc::VideoControl::onProcessFinished(int iExitCode, QProcess::ExitStatus eExitStatus)
+void gc::VideoCapturer::onProcessFinished(int iExitCode, QProcess::ExitStatus eExitStatus)
 {
 	if (sender() == &m_oGameplayCap)
 	{
@@ -172,7 +174,7 @@ void gc::VideoControl::onProcessFinished(int iExitCode, QProcess::ExitStatus eEx
 }
 
 // +-----------------------------------------------------------
-void gc::VideoControl::onProcessError(QProcess::ProcessError eError)
+void gc::VideoCapturer::onProcessError(QProcess::ProcessError eError)
 {
 	if (eError == QProcess::FailedToStart)
 	{
@@ -197,6 +199,7 @@ void gc::VideoControl::onProcessError(QProcess::ProcessError eError)
 
 			if (!m_bFailSignalSent)
 			{
+				deleteFiles();
 				m_bFailSignalSent = true;
 				emit captureEnded(FailedToStart);
 			}
@@ -205,7 +208,7 @@ void gc::VideoControl::onProcessError(QProcess::ProcessError eError)
 }
 
 // +-----------------------------------------------------------
-void gc::VideoControl::deleteFiles()
+void gc::VideoCapturer::deleteFiles()
 {
 	QDir oGameplayDir = QDir(m_sGameplayPath);
 	oGameplayDir.setFilter(QDir::NoDotAndDotDot | QDir::Files);
@@ -219,7 +222,7 @@ void gc::VideoControl::deleteFiles()
 }
 
 // +-----------------------------------------------------------
-bool gc::VideoControl::saveFiles()
+bool gc::VideoCapturer::saveFiles()
 {
 
 
