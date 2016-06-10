@@ -20,7 +20,6 @@
 #define GAME_H
 
 #include <QProcess>
-#include <QTimer>
 
 namespace gc
 {
@@ -39,11 +38,11 @@ namespace gc
 		Q_OBJECT
 	public:
 
-		/** Allows the GameControl class to access the protected method ::run(). */
+		/** Allows the GameControl class to access the protected methods ::start() and ::stop(). */
 		friend GameControl;
 
-		/** Reasons for the gameplay session to end. */
-		enum EndReason { Concluded, Failed };
+		/** Reason for the game to end. */
+		enum EndReason { FailedToStart, Closed };
 		Q_ENUM(EndReason);
 
 		/**
@@ -86,8 +85,7 @@ namespace gc
 		/**
 		 * Indicates the ending of the game process.
 		 * @param eReason Value of the EndReason enumeration indicating the reason
-		 * for the game to end: failure/crash, premature exiting by the participant
-		 * or correct conclusion in the given time.
+		 * for the game to end.
 		 */
 		void gameEnded(Game::EndReason eReason);
 

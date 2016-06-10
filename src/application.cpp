@@ -34,6 +34,7 @@ using namespace std;
 #define GROUP_MAIN "Main"
 #define SETTING_LOG_LEVEL "logLevel"
 #define SETTING_DATA_PATH "dataPath"
+#define SETTING_GAMEPLAY_TIME_LIMIT "gameplayTimeLimit"
 
 // +-----------------------------------------------------------
 gc::Application::Application(int& argc, char** argv): QApplication(argc, argv)
@@ -60,9 +61,25 @@ gc::Application::Application(int& argc, char** argv): QApplication(argc, argv)
 	m_pSettings = new QSettings(sIniFile, QSettings::IniFormat);
 
 	m_pSettings->beginGroup(GROUP_MAIN);
-	m_eLogLevel = (LOG_LEVEL)m_pSettings->value(SETTING_LOG_LEVEL, Fatal).toInt();
+	m_eLogLevel = (LOG_LEVEL) m_pSettings->value(SETTING_LOG_LEVEL, Fatal).toInt();
+	m_iGameplayTimeLimit = m_pSettings->value(SETTING_GAMEPLAY_TIME_LIMIT, 60).toUInt();
 	m_sDataPath = m_pSettings->value(SETTING_DATA_PATH, "").toString();
 	m_pSettings->endGroup();
+
+	// Validate the configurations
+	if (m_eLogLevel < Fatal)
+		m_eLogLevel = Fatal;
+	else if (m_eLogLevel > Debug)
+		m_eLogLevel = Debug;
+
+	if (!m_sDataPath.length())
+		qFatal("The group/key [%s/%s] is missing in the configuration file.", GROUP_MAIN, SETTING_DATA_PATH);
+	if (!QDir(m_sDataPath).exists())
+	{
+		qDebug("Configured data path does not exist. Trying to create it...");
+		if (!QDir().mkpath(m_sDataPath))
+			qFatal("Data path %s does not exist and could not be created.", qPrintable(m_sDataPath));
+	}
 
 	// Load the style sheet file from resources
 	QFile oFile(":/resources/stylesheet.css");
@@ -77,31 +94,24 @@ gc::Application::Application(int& argc, char** argv): QApplication(argc, argv)
 	if (!m_pPTBRTranslator->load(QLocale("pt"), ":/translations/pt-br.qm"))
 		qFatal("Could not load the pt-br translation from resource");
 
-
-
-
+	// Conclude the application start-up
 	qInfo("GameCap (v%s) started.", GC_VERSION);
 	qDebug("Running from %s", qPrintable(QCoreApplication::applicationFilePath()));
-
-	if (m_eLogLevel < Fatal)
-		m_eLogLevel = Fatal;
-	else if (m_eLogLevel > Debug)
-		m_eLogLevel = Debug;
-
-	if (!m_sDataPath.length())
-		qFatal("The group/key [%s/%s] is missing in the configuration file.", GROUP_MAIN, SETTING_DATA_PATH);
-
-	if (!QDir(m_sDataPath).exists())
-	{
-		qDebug("Configured data path does not exist. Trying to create it...");
-		if (!QDir().mkpath(m_sDataPath))
-			qFatal("Data path %s does not exist and could not be created.", qPrintable(m_sDataPath));
-	}
 	qDebug() << "Configured log level is: " << m_eLogLevel;
+	qDebug() << "Configured gameplay time limit is: " << m_iGameplayTimeLimit;
 	qDebug() << "Configured data path is: " << m_sDataPath;
 
-	// Creates the access to the games
+	// Prepares the access to the video recordings and the games
+	m_pVideoControl = new VideoControl(this);
 	m_pGameControl = new GameControl(this);
+
+	connect(m_pGameControl, &GameControl::gameplayStarted, this, &Application::onGameplayStarted);
+	connect(m_pGameControl, &GameControl::gameplayEnded, this, &Application::onGameplayEnded);
+
+	connect(m_pVideoControl, &VideoControl::captureStarted, this, &Application::onCaptureStarted);
+	connect(m_pVideoControl, &VideoControl::captureEnded, this, &Application::onCaptureEnded);
+
+	connect(&m_oTimer, &QTimer::timeout, this, &Application::onTimeout);
 }
 
 // +-----------------------------------------------------------
@@ -110,6 +120,12 @@ gc::Application::~Application()
 	// Update and close the log file
     m_oLogFile.flush();
 	m_oLogFile.close();
+}
+
+// +-----------------------------------------------------------
+unsigned int gc::Application::getSubjectID() const
+{
+	return m_iSubjectID;
 }
 
 // +-----------------------------------------------------------
@@ -153,6 +169,12 @@ void gc::Application::setLanguage(Language eLanguage)
 gc::GameControl* gc::Application::gameControl()
 {
 	return m_pGameControl;
+}
+
+// +-----------------------------------------------------------
+gc::VideoControl* gc::Application::videoControl()
+{
+	return m_pVideoControl;
 }
 
 // +-----------------------------------------------------------
@@ -213,15 +235,14 @@ void gc::Application::handleLogOutput(QtMsgType eType, const QMessageLogContext 
 
 	QString sNow = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz");
 
-	// Only include context information if it exists (when compiled in debug)
-	QString sDebugInfo;
+	QString sDebugInfo = " ";
+#ifdef _DEBUG
 	if(oContext.line != 0)
 	{
 		QString sSource = QFileInfo(QFile(oContext.file).fileName()).fileName();
 		sDebugInfo = QString(" [%1:%2, %3] ").arg(sSource).arg(oContext.line).arg(oContext.function);
 	}
-	else
-		sDebugInfo = " ";
+#endif
 
 	QString sLevel;
 	switch (eType)
@@ -256,7 +277,73 @@ void gc::Application::handleLogOutput(QtMsgType eType, const QMessageLogContext 
 
 		QApplication::beep();
 		QMessageBox::critical(NULL, qApp->translate("Main", "Runtime Error"), qApp->translate("Main", "A fatal exception ocurred and the application must be terminated. Please check the log file for details."), QMessageBox::Ok);
-
-		abort();
 	}
+}
+
+// +-----------------------------------------------------------
+void gc::Application::onTimeout()
+{
+	m_iTimeRemaining--;
+	if (m_iTimeRemaining <= 0)
+		stopGameplay();
+	else
+		emit gameplayTimeRemaining(m_iTimeRemaining);
+}
+
+// +-----------------------------------------------------------
+void gc::Application::startGameplay()
+{
+	m_pVideoControl->startCapture();
+}
+
+// +-----------------------------------------------------------
+void gc::Application::stopGameplay()
+{
+	m_pVideoControl->stopCapture();
+	m_oTimer.stop();
+	m_iTimeRemaining = 0;
+}
+
+// +-----------------------------------------------------------
+void gc::Application::onGameplayStarted()
+{
+	m_iTimeRemaining = m_iGameplayTimeLimit;
+	m_oTimer.start(1000);
+	emit gameplayTimeRemaining(m_iTimeRemaining);
+}
+
+// +-----------------------------------------------------------
+void gc::Application::onGameplayEnded(GameControl::GameplayResult eResult)
+{
+	switch(eResult)
+	{
+		case GameControl::Failed:
+			stopGameplay();
+			emit gameplayFailedToStart();
+			break;
+
+		case GameControl::ClosedByUser:
+			stopGameplay();
+			emit gameplayCancelled();
+			break;
+
+		default: //case GameControl::ClosedBySystem:
+			emit gameplayCompleted();
+			break;
+	}
+}
+
+// +-----------------------------------------------------------
+void gc::Application::onCaptureStarted()
+{
+	m_pGameControl->startGameplay();
+}
+
+// +-----------------------------------------------------------
+void gc::Application::onCaptureEnded(gc::VideoControl::CaptureResult eResult)
+{
+	if (eResult == VideoControl::FailedToStart)
+		emit gameplayFailedToStart();
+	else // if(eResult == VideoControl::Closed )
+		m_pGameControl->stopGameplay();
 }

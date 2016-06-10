@@ -19,6 +19,7 @@
 #include "gamecontrol.h"
 #include "gamepingus.h"
 #include "gameslender.h"
+#include "application.h"
 #include <QtGlobal>
 #include <algorithm>
 #include <QFileInfo>
@@ -33,10 +34,8 @@ using namespace std;
 // +-----------------------------------------------------------
 gc::GameControl::GameControl(QObject *pParent): QObject(pParent)
 {
-	Game *pGame;
-
 	// Game: Pingus
-	pGame = new GamePingus(this);
+	Game *pGame = new GamePingus(this);
 	ADD_GAME(pGame, m_vGames)
 	
 	// Game: Slender
@@ -49,11 +48,6 @@ gc::GameControl::GameControl(QObject *pParent): QObject(pParent)
 	// Randomly select a game to start
 	m_pCurrentGame = NULL;
 	selectNextGame();
-
-	// Connect to the required signals
-	connect(&m_oTimer, &QTimer::timeout, this, &GameControl::onTimeout);
-	connect(&m_oVideoControl, &VideoControl::captureStarted, this, &GameControl::onCaptureStarted);
-	connect(&m_oVideoControl, &VideoControl::captureFailed, this, &GameControl::onCaptureFailed);
 }
 
 // +-----------------------------------------------------------
@@ -80,56 +74,20 @@ gc::Game* gc::GameControl::currentGame()
 }
 
 // +-----------------------------------------------------------
-void gc::GameControl::onTimeout()
-{
-	m_iRemainingTime--;
-	if (m_iRemainingTime <= 0)
-	{
-		m_pCurrentGame->stop();
-		m_oTimer.stop();
-		m_iRemainingTime = 0;
-	}
-	else
-		emit gameRemainingTime(m_iRemainingTime);
-}
-
-// +-----------------------------------------------------------
 void gc::GameControl::onGameStarted()
 {
-	// 3 - And finally start the session timer.
-	m_oTimer.start(1000);
-	emit gameRemainingTime(m_iRemainingTime);
+	emit gameplayStarted();
 }
 
 // +-----------------------------------------------------------
 void gc::GameControl::onGameEnded(Game::EndReason eReason)
 {
-	if (m_oTimer.isActive())
-		m_oTimer.stop();
-	
-	if(eReason == Game::Failed)
-		emit gameplayEnded(GameError);
-	else if (m_iRemainingTime > 0)
-		emit gameplayEnded(Cancelled);
+	if(eReason == Game::FailedToStart)
+		emit gameplayEnded(Failed);
+	else if(m_bClosedBySystem)
+		emit gameplayEnded(ClosedBySystem);
 	else
-		emit gameplayEnded(Success);
-
-	m_oVideoControl.stopCapture();
-
-	m_iRemainingTime = 0;
-}
-
-// +-----------------------------------------------------------
-void gc::GameControl::onCaptureStarted()
-{
-	// 2 - Now start the game...
-	m_pCurrentGame->start();
-}
-
-// +-----------------------------------------------------------
-void gc::GameControl::onCaptureFailed()
-{
-	emit gameplayEnded(CaptureError);
+		emit gameplayEnded(ClosedByUser);
 }
 
 // +-----------------------------------------------------------
@@ -139,10 +97,15 @@ bool gc::GameControl::running()
 }
 
 // +-----------------------------------------------------------
-void gc::GameControl::run(int iTimeLimit)
+void gc::GameControl::startGameplay()
 {
-	// 1 - First start the video capture. Only when it is correctly started,
-	// the game will be started (in method GameControl::onCaptureStarted())
-	m_iRemainingTime = iTimeLimit;
-	m_oVideoControl.startCapture();
+	m_bClosedBySystem = false;
+	m_pCurrentGame->start();
+}
+
+// +-----------------------------------------------------------
+void gc::GameControl::stopGameplay()
+{
+	m_bClosedBySystem = true;
+	m_pCurrentGame->stop();
 }

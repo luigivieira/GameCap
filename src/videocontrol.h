@@ -35,6 +35,10 @@ namespace gc
 		enum State { Starting, Started, Stopping, Stopped };
 		Q_ENUM(State)
 
+		/** Enumeration with the possible results for the video capture. */
+		enum CaptureResult { FailedToStart, Closed };
+		Q_ENUM(CaptureResult)
+
 		/**
 		 * Class constructor.
 		 * @param pParent Instance for the QObject that is the parent of this one. Default is NULL.
@@ -50,6 +54,10 @@ namespace gc
 		 * Stops the capture of the gameplay and player's face videos.
 		 */
 		void stopCapture();
+
+		void deleteFiles();
+
+		bool saveFiles();
 
 	protected slots:
 
@@ -80,9 +88,11 @@ namespace gc
 		void captureStarted();
 
 		/**
-		 * Signal indicating that the capture failed to start.
+		 * Signal indicating that the capture ended.
+		 * @param eResult Value of the CaptureResult enumeration with the video
+		 * capture result.
 		 */
-		void captureFailed();
+		void captureEnded(VideoControl::CaptureResult eResult);
 
 	private:
 

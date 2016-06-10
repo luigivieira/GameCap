@@ -20,6 +20,7 @@
 #include "application.h"
 #include <QFileInfo>
 #include <vector>
+#include <QDir>
 
 #define GROUP_OBS "OBS"
 #define SETTING_PATH "path"
@@ -133,8 +134,6 @@ void gc::VideoControl::stopCapture()
 void gc::VideoControl::onProcessStarted()
 {
 	QProcess *pSender = qobject_cast<QProcess*>(sender());
-	QProcess *pTest = &m_oGameplayCap;
-	QProcess *pTest2 = &m_oPlayerCap;
 
 	if (pSender == &m_oGameplayCap)
 		m_aStartedFlags[0] = true;
@@ -167,6 +166,8 @@ void gc::VideoControl::onProcessFinished(int iExitCode, QProcess::ExitStatus eEx
 	{
 		qDebug() << "Video recording ended.";
 		m_eState = Stopped;
+		if(!m_bFailSignalSent)
+			emit captureEnded(Closed);
 	}
 }
 
@@ -184,7 +185,7 @@ void gc::VideoControl::onProcessError(QProcess::ProcessError eError)
 			if (!m_bFailSignalSent)
 			{
 				m_bFailSignalSent = true;
-				emit captureFailed();
+				emit captureEnded(FailedToStart);
 			}
 		}
 		else
@@ -197,8 +198,30 @@ void gc::VideoControl::onProcessError(QProcess::ProcessError eError)
 			if (!m_bFailSignalSent)
 			{
 				m_bFailSignalSent = true;
-				emit captureFailed();
+				emit captureEnded(FailedToStart);
 			}
 		}
 	}
+}
+
+// +-----------------------------------------------------------
+void gc::VideoControl::deleteFiles()
+{
+	QDir oGameplayDir = QDir(m_sGameplayPath);
+	oGameplayDir.setFilter(QDir::NoDotAndDotDot | QDir::Files);
+	foreach(QString sFile, oGameplayDir.entryList())
+		oGameplayDir.remove(sFile);
+
+	QDir oPlayerDir = QDir(m_sPlayerPath);
+	oPlayerDir.setFilter(QDir::NoDotAndDotDot | QDir::Files);
+	foreach(QString sFile, oPlayerDir.entryList())
+		oPlayerDir.remove(sFile);
+}
+
+// +-----------------------------------------------------------
+bool gc::VideoControl::saveFiles()
+{
+
+
+	return true;
 }

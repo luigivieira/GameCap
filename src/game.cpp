@@ -47,7 +47,7 @@ void gc::Game::setup()
 	}
 	else if(!QFileInfo::exists(m_sFileName))
 	{
-		QString sMsg = QString("the file name [%1] configured for the game %1 does not exist.").arg(m_sFileName).arg(name());
+		QString sMsg = QString("the file name [%1] configured for the game %2 does not exist.").arg(m_sFileName).arg(name());
 		qFatal(qPrintable(sMsg));
 	}
 
@@ -88,7 +88,7 @@ void gc::Game::onProcessStarted()
 void gc::Game::onProcessFinished(int iExitCode, QProcess::ExitStatus eExitStatus)
 {
 	qDebug("Game %s ended with exit code [%d] and exit status [%s]", qPrintable(name()), iExitCode, (eExitStatus == QProcess::NormalExit ? "normal" : "closed"));
-	emit gameEnded(Concluded);
+	emit gameEnded(Closed);
 }
 
 // +-----------------------------------------------------------
@@ -97,6 +97,6 @@ void gc::Game::onProcessError(QProcess::ProcessError eError)
 	if (eError == QProcess::FailedToStart)
 	{
 		qWarning("Game %s failed to start", qPrintable(name()));
-		emit gameEnded(Failed);
+		emit gameEnded(FailedToStart);
 	}
 }

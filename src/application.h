@@ -20,6 +20,7 @@
 #define APPLICATION_H
 
 #include "gamecontrol.h"
+#include "videocontrol.h"
 #include <QApplication>
 #include <QSettings>
 #include <QKeySequence>
@@ -109,6 +110,60 @@ namespace gc
 		 */
 		GameControl* gameControl();
 
+		/**
+		 * Gets the instance of the video control, used to access the videos recorded in
+		 * the experiment.
+		 * @return Instance of the VideoControl.
+		 */
+		VideoControl* videoControl();
+
+		/**
+		 * Queries the current subject identifier.
+		 * @return Unsigned integer with the value of the current subject identifier.
+		 */
+		unsigned int getSubjectID() const;
+
+		/**
+		 * Starts the gameplay session in the experiment.
+		 */
+		void startGameplay();
+
+		/**
+		 * Stops the gameplay session in the experiment.
+		 */
+		void stopGameplay();
+
+	protected slots:
+
+		/**
+		 * Captures the timer timeout signal (each second).
+		 */
+		void onTimeout();
+
+		/**
+		 * Captures the signal indicating that the gameplay started.
+		 */
+		void onGameplayStarted();
+
+		/**
+		 * Captures the signal indicating that the gameplay ended.
+		 * @param eResult Value of the GameplayResult enumeration with the gameplay
+		 * session result.
+		 */
+		void onGameplayEnded(GameControl::GameplayResult eResult);
+
+		/**
+		 * Captures the signal indicating that the video capture started.
+		 */
+		void onCaptureStarted();
+
+		/**
+		 * Captures the signal indicating that the video capture ended.
+		 * @param eResult Value of the CaptureResult enumeration with the video
+		 * capture result.
+		 */
+		void onCaptureEnded(VideoControl::CaptureResult eResult);
+
 	signals:
 
 		/**
@@ -117,6 +172,27 @@ namespace gc
 		 * the language that is now active.
 		 */
 		void languageChanged(Application::Language eLanguage);
+
+		/**
+		 * Indicates the remaining time for the gameplay session.
+		 * @param iTimeRemaining Time of gameplay remaining, in seconds.
+		 */
+		void gameplayTimeRemaining(unsigned int iTimeRemaining);
+
+		/**
+		 * Indicates that that the gameplay has been successfully completed.
+		 */
+		void gameplayCompleted();
+
+		/**
+		 * Indicates that that the gameplay has been cancelled by the user.
+		 */
+		void gameplayCancelled();
+
+		/**
+		 * Indicates that the gameplay has failed to start.
+		 */
+		void gameplayFailedToStart();
 
 	protected:
 
@@ -157,8 +233,23 @@ namespace gc
 		/** Controls the access to the games played in the experiment. */
 		GameControl *m_pGameControl;
 
+		/** Controls the recording and access of the gameplay and player videos. */
+		VideoControl *m_pVideoControl;
+
 		/** Settings used by the application. */
 		QSettings *m_pSettings;
+
+		/** Time limit in seconds for the gameplay session. */
+		unsigned int m_iGameplayTimeLimit;
+
+		/** Identifier of the current subject. */
+		unsigned int m_iSubjectID;
+
+		/** Remaining time (in seconds) for the game session. */
+		unsigned int m_iTimeRemaining;
+
+		/** Timer used to limit the game session. */
+		QTimer m_oTimer;
 	};
 }
 

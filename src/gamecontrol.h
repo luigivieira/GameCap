@@ -20,10 +20,8 @@
 #define GAME_CONTROL_H
 
 #include "game.h"
-#include "videocontrol.h"
 #include <QObject>
 #include <vector>
-#include <QTimer>
 
 namespace gc
 {
@@ -37,46 +35,43 @@ namespace gc
 	public:
 
 		/** Enumeration with the possible results for the gameplay session. */
-		enum GameplaySessionResult { Success, Cancelled, GameError, CaptureError };
-		Q_ENUM(GameplaySessionResult)
+		enum GameplayResult { Failed, ClosedBySystem, ClosedByUser };
+		Q_ENUM(GameplayResult)
 
 		/**
-		* Class constructor.
-		* @param pParent Instance for the QObject that is the parent of this one. Default is NULL.
-		*/
+		 * Class constructor.
+		 * @param pParent Instance for the QObject that is the parent of this one. Default is NULL.
+		 */
 		GameControl(QObject *pParent = NULL);
 
 		/**
-		 * Selects the next game to be used in the experiment.
-		 * @return Instance of the Game to be next used in the experiment.
+		 * Selects the next game to be used in the next execution.
+		 * @return Instance of the Game to be next used.
 		 */
 		Game* selectNextGame();
 
 		/**
-		 * Gets the current game being used in the experiment.
-		 * @return Instance of the Game used in the experiment.
+		 * Gets the current game being used.
+		 * @return Instance of the Game in use.
 		 */
 		Game* currentGame();
 
 		/**
-		 * Indicates if the game is running.
+		 * Indicates if a game is running.
 		 */
 		bool running();
 
 		/**
-		 * Runs the current game, automatically performing all the video capture required.
-		 * @param iTimeLimit Integer value with the time (in seconds) to limit the game session.
-		 * The default is 600 seconds (10 minutes). After that time expires, if the game is still
-		 * running it will be forcefully stopped.
+		 * Runs the current game.
 		 */
-		void run(int iTimeLimit = 600);
-
-	protected slots:
+		void startGameplay();
 
 		/**
-		 * Captures the timer timeout signal (each second).
+		 * Stops the current game.
 		 */
-		void onTimeout();
+		void stopGameplay();
+
+	protected slots:
 
 		/**
 		 * Captures the indication that the game started.
@@ -86,34 +81,23 @@ namespace gc
 		/**
 		 * Captures the indication that the game ended.
 		 * @param eReason Value of the EndReason enumeration with the reason for the
-		 * game to end (among Concluded and Failed).
+		 * game to end.
 		 */
 		void onGameEnded(Game::EndReason eReason);
-
-		/**
-		 * Captures the signal indicating that the video capture started.
-		 */
-		void onCaptureStarted();
-
-		/**
-		 * Captures the signal indicating that the video capture failed to start.
-		 */
-		void onCaptureFailed();
 
 	signals:
 
 		/**
-		 * Indicates the remaining game time, once the game is running.
-		 * @param iSeconds Remaining time in seconds.
+		 * Indicates that the gameplay started.
 		 */
-		void gameRemainingTime(int iSeconds);
+		void gameplayStarted();
 
 		/**
 		 * Indicates that the gameplay ended.
-		 * @param eResult Value of the GameplaySessionResult enumeration with the gameplay
-		 * session result (among Success, Cancelled and Error).
+		 * @param eResult Value of the GameplayResult enumeration with the gameplay
+		 * session result.
 		 */
-		void gameplayEnded(GameControl::GameplaySessionResult eResult);
+		void gameplayEnded(GameControl::GameplayResult eResult);
 
 	private:
 
@@ -123,17 +107,8 @@ namespace gc
 		/** List of available games. */
 		std::vector<Game*> m_vGames;
 
-		/** Remaining time (in seconds) for the game session. */
-		int m_iRemainingTime;
-
-		/** Timer used to limit the game session. */
-		QTimer m_oTimer;
-
-		/**
-		 * Object responsible for handling the execution and access to the
-		 * gameplay and player's face video recordings.
-		 */
-		VideoControl m_oVideoControl;
+		/** Indicates that the game has been closed by the system instead of the user. */
+		bool m_bClosedBySystem;
 	};
 }
 

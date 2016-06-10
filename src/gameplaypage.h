@@ -50,17 +50,30 @@ namespace gc
 	protected slots:
 
 		/**
-		 * Captures the remaining game time, once the game is running.
-		 * @param iSeconds Remaining time in seconds.
+		 * Starts the gameplay after a brief time has elapsed in initialization.
 		 */
-		void onGameRemainingTime(int iSeconds);
+		void startGameplay();
 
 		/**
-		 * Captures the indication that the game ended.
-		 * @param eResult Value of the GameplaySessionResult enumeration with the gameplay
-		 * session result (among Success, Cancelled and Error).
+		 * Captures the remaining gameplay time, once the game is running.
+		 * @param iTimeRemaining Remaining time in seconds.
 		 */
-		void onGameplayEnded(GameControl::GameplaySessionResult eResult);
+		void onGameplayTimeRemaining(unsigned int iTimeRemaining);
+
+		/**
+		 * Captures the indication that the gameplay ended successfully.
+		 */
+		void onGameplayCompleted();
+
+		/**
+		 * Captures the indication that the gameplay was cancelled by the user.
+		 */
+		void onGameplayCancelled();
+
+		/**
+		 * Captures the indication that the gameplay failed to start.
+		 */
+		void onGameplayFailedToStart();
 
 	private:
 

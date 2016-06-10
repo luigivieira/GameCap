@@ -48,9 +48,11 @@ gc::GamePlayPage::GamePlayPage(QWidget *pParent) : QWizardPage(pParent)
 
 	pLayout->addStretch();
 
-	// Connect to the gameplay for the remaining time and game ended signals
-	connect(((Application*) qApp)->gameControl(), &GameControl::gameRemainingTime, this, &GamePlayPage::onGameRemainingTime);
-	connect(((Application*) qApp)->gameControl(), &GameControl::gameplayEnded, this, &GamePlayPage::onGameplayEnded);
+	// Connect to the required signals
+	connect(((Application*) qApp), &Application::gameplayTimeRemaining, this, &GamePlayPage::onGameplayTimeRemaining);
+	connect(((Application*) qApp), &Application::gameplayCompleted, this, &GamePlayPage::onGameplayCompleted);
+	connect(((Application*) qApp), &Application::gameplayCancelled, this, &GamePlayPage::onGameplayCancelled);
+	connect(((Application*) qApp), &Application::gameplayFailedToStart, this, &GamePlayPage::onGameplayFailedToStart);
 }
 
 // +-----------------------------------------------------------
@@ -59,29 +61,43 @@ void gc::GamePlayPage::initializePage()
 	Game *pGame = ((Application*) qApp)->gameControl()->currentGame();
 	m_pMessage->setText(tr("You are now playing %1. If you wish to quit the experiment, please quit from the game first.").arg(pGame->name()));
 	m_pRemainingTime->setText("");
+	
+	// Starts the gameplay with a timer, in order to prevent disturbing the
+	// page initialization in case of immediate errors in the startup.
+	QTimer::singleShot(100, this, SLOT(startGameplay()));
 }
 
 // +-----------------------------------------------------------
-void gc::GamePlayPage::onGameRemainingTime(int iSeconds)
+void gc::GamePlayPage::startGameplay()
 {
-	QString sTime = QDateTime::fromTime_t(iSeconds).toUTC().toString("mm:ss");
+	((Application*) qApp)->startGameplay();
+}
+
+// +-----------------------------------------------------------
+void gc::GamePlayPage::onGameplayTimeRemaining(unsigned int iTimeRemaining)
+{
+	QString sTime = QDateTime::fromTime_t(iTimeRemaining).toUTC().toString("mm:ss");
 	m_pRemainingTime->setText(tr("Remaining time playing: %1").arg(sTime));
 }
 
 // +-----------------------------------------------------------
-void gc::GamePlayPage::onGameplayEnded(GameControl::GameplaySessionResult eResult)
+void gc::GamePlayPage::onGameplayCompleted()
 {
-	if (eResult == GameControl::Success)
-		wizard()->next();
-	else
-	{
-		Game *pGame = ((Application*)qApp)->gameControl()->currentGame();
-		if (eResult == GameControl::GameError)
-			MessageBox::infoMessage(this, tr("The game %1 seems not to be working, so the experiment can not be continued. Please, inform the researcher in charge. Nevertheless, thank you very much for your time.").arg(pGame->name()));
-		else if (eResult == GameControl::CaptureError)
-			MessageBox::infoMessage(this, tr("The video capture seems not to be working, so the experiment can not be continued. Please, inform the researcher in charge. Nevertheless, thank you very much for your time."));
-		else if (eResult == GameControl::Cancelled)
-			MessageBox::infoMessage(this, tr("You quit the game %1 before the required play time, hence quitting the experiment. Nevertheless, thank you very much for your time.").arg(pGame->name()));
-		wizard()->reject();
-	}
+	wizard()->next();
+}
+
+// +-----------------------------------------------------------
+void gc::GamePlayPage::onGameplayCancelled()
+{
+	Game *pGame = ((Application*) qApp)->gameControl()->currentGame();
+	MessageBox::infoMessage(this, tr("You have quit the game %1 before the required play time, hence quitting the experiment. Nevertheless, thank you very much for your time.").arg(pGame->name()));
+	wizard()->reject();
+}
+
+// +-----------------------------------------------------------
+void gc::GamePlayPage::onGameplayFailedToStart()
+{
+	Game *pGame = ((Application*)qApp)->gameControl()->currentGame();
+	MessageBox::infoMessage(this, tr("An error ocurred and the gameplay session of the game %1 could not be started. Please, inform the researcher in charge. Nevertheless, thank you very much for your time.").arg(pGame->name()));
+	wizard()->reject();
 }
