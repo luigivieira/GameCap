@@ -108,6 +108,11 @@ gc::StartPage::StartPage(QWidget *pParent) : QWizardPage(pParent)
 	// ----------------------------------------------
 	// Connect to the application to receive notifications on language changes
 	connect(qApp, SIGNAL(languageChanged(Application::Language)), this, SLOT(languageChanged(Application::Language)));
+
+	// Check the button that corresponds to the current language
+	Application::Language eLanguage = ((Application *)qApp)->getLanguage();
+	QPushButton *pButton = m_aFlagButtons.at((int)eLanguage);
+	pButton->setChecked(true);
 }
 
 // +-----------------------------------------------------------
@@ -122,7 +127,7 @@ void gc::StartPage::checkLanguageButton(Application::Language eLanguage)
 void gc::StartPage::languageToggled(int iId, bool bChecked)
 {
 	if (bChecked)
-		((Application*)qApp)->setLanguage((Application::Language) iId);
+		((Application*) qApp)->setLanguage((Application::Language) iId);
 }
 
 // +-----------------------------------------------------------

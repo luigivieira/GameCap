@@ -32,6 +32,7 @@
 using namespace std;
 
 #define GROUP_MAIN "Main"
+#define SETTING_DEFAULT_LANGUAGE "defaultLanguage"
 #define SETTING_LOG_LEVEL "logLevel"
 #define SETTING_DATA_PATH "dataPath"
 #define SETTING_GAMEPLAY_TIME_LIMIT "gameplayTimeLimit"
@@ -61,12 +62,18 @@ gc::Application::Application(int& argc, char** argv): QApplication(argc, argv)
 	m_pSettings = new QSettings(sIniFile, QSettings::IniFormat);
 
 	m_pSettings->beginGroup(GROUP_MAIN);
+	m_eCurrentLanguage = (Language) m_pSettings->value(SETTING_DEFAULT_LANGUAGE, EN_UK).toInt();
 	m_eLogLevel = (LOG_LEVEL) m_pSettings->value(SETTING_LOG_LEVEL, Fatal).toInt();
 	m_iGameplayTimeLimit = m_pSettings->value(SETTING_GAMEPLAY_TIME_LIMIT, 60).toUInt();
 	m_sDataPath = m_pSettings->value(SETTING_DATA_PATH, "").toString();
 	m_pSettings->endGroup();
 
 	// Validate the configurations
+	if (m_eCurrentLanguage < EN_UK)
+		m_eCurrentLanguage = EN_UK;
+	else if (m_eCurrentLanguage > PT_BR)
+		m_eCurrentLanguage = PT_BR;
+
 	if (m_eLogLevel < Fatal)
 		m_eLogLevel = Fatal;
 	else if (m_eLogLevel > Debug)
@@ -112,6 +119,9 @@ gc::Application::Application(int& argc, char** argv): QApplication(argc, argv)
 	connect(m_pVideoCapturer, &VideoCapturer::captureEnded, this, &Application::onCaptureEnded);
 
 	connect(&m_oTimer, &QTimer::timeout, this, &Application::onTimeout);
+
+	// Finally, sets the default language
+	setLanguage(m_eCurrentLanguage);
 }
 
 // +-----------------------------------------------------------
@@ -141,6 +151,12 @@ QString gc::Application::getStyleSheet()
 }
 
 // +-----------------------------------------------------------
+gc::Application::Language gc::Application::getLanguage()
+{
+	return m_eCurrentLanguage;
+}
+
+// +-----------------------------------------------------------
 void gc::Application::setLanguage(Language eLanguage)
 {
 	// Remove current translator (if any)
@@ -150,8 +166,10 @@ void gc::Application::setLanguage(Language eLanguage)
 		m_pCurrentTranslator = NULL;
 	}
 
+	m_eCurrentLanguage = eLanguage;
+
 	// Identify the translator according to the language
-	switch (eLanguage)
+	switch (m_eCurrentLanguage)
 	{
 		case PT_BR:
 			m_pCurrentTranslator = m_pPTBRTranslator;
@@ -162,7 +180,7 @@ void gc::Application::setLanguage(Language eLanguage)
 	if (m_pCurrentTranslator)
 		qApp->installTranslator(m_pCurrentTranslator);
 
-	emit languageChanged(eLanguage);
+	emit languageChanged(m_eCurrentLanguage);
 }
 
 // +-----------------------------------------------------------

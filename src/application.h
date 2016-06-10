@@ -91,6 +91,12 @@ namespace gc
 		QString getStyleSheet();
 
 		/**
+		 * Queries the language currently used by the application.
+		 * @return Value of the enumeration Language with the language identifier.
+		 */
+		Language getLanguage();
+
+		/**
 		 * Sets the current language for the application, in order to update
 		 * the translations.
 		 * @param eLanguage Value of the enumeration Language with the language identifier.
@@ -226,6 +232,9 @@ namespace gc
 
 		/** Current translator installed. */
 		QTranslator *m_pCurrentTranslator;
+
+		/** Current language used by the application. */
+		Language m_eCurrentLanguage;
 
 		/** Translator used for Brazilian Portuguese. */
 		QTranslator *m_pPTBRTranslator;
