@@ -21,6 +21,7 @@
 #include <QFileInfo>
 #include <vector>
 #include <QDir>
+#include <QFile>
 
 #define GROUP_OBS "OBS"
 #define SETTING_PATH "path"
@@ -93,10 +94,12 @@ gc::VideoCapturer::VideoCapturer(QObject *pParent): QObject(pParent)
 }
 
 // +-----------------------------------------------------------
-void gc::VideoCapturer::startCapture()
+void gc::VideoCapturer::startCapture(QString sGameplayTargetName, QString sPlayerTargetName)
 {
 	if (m_eState == Stopped)
 	{
+		m_sGameplayTargetName = sGameplayTargetName;
+		m_sPlayerTargetName = sPlayerTargetName;
 		deleteFiles();
 
 		m_bFailSignalSent = false;
@@ -168,8 +171,17 @@ void gc::VideoCapturer::onProcessFinished(int iExitCode, QProcess::ExitStatus eE
 	{
 		qDebug() << "Video recording ended.";
 		m_eState = Stopped;
-		if(!m_bFailSignalSent)
-			emit captureEnded(Closed);
+		if (!m_bFailSignalSent)
+		{
+			if(saveFiles())
+				emit captureEnded(Closed);
+			else
+			{
+				qWarning() << "Could not save video files recorded.";
+				deleteFiles();
+				emit captureEnded(FailedToSave);
+			}
+		}
 	}
 }
 
@@ -186,6 +198,7 @@ void gc::VideoCapturer::onProcessError(QProcess::ProcessError eError)
 				m_oPlayerCap.kill();
 			if (!m_bFailSignalSent)
 			{
+				deleteFiles();
 				m_bFailSignalSent = true;
 				emit captureEnded(FailedToStart);
 			}
@@ -210,12 +223,12 @@ void gc::VideoCapturer::onProcessError(QProcess::ProcessError eError)
 // +-----------------------------------------------------------
 void gc::VideoCapturer::deleteFiles()
 {
-	QDir oGameplayDir = QDir(m_sGameplayPath);
+	QDir oGameplayDir(m_sGameplayPath);
 	oGameplayDir.setFilter(QDir::NoDotAndDotDot | QDir::Files);
 	foreach(QString sFile, oGameplayDir.entryList())
 		oGameplayDir.remove(sFile);
 
-	QDir oPlayerDir = QDir(m_sPlayerPath);
+	QDir oPlayerDir(m_sPlayerPath);
 	oPlayerDir.setFilter(QDir::NoDotAndDotDot | QDir::Files);
 	foreach(QString sFile, oPlayerDir.entryList())
 		oPlayerDir.remove(sFile);
@@ -224,7 +237,45 @@ void gc::VideoCapturer::deleteFiles()
 // +-----------------------------------------------------------
 bool gc::VideoCapturer::saveFiles()
 {
+	// First, get the source file
+	QDir oGameplayDir(m_sGameplayPath);
+	oGameplayDir.setFilter(QDir::NoDotAndDotDot | QDir::Files);
+	if (oGameplayDir.entryList().size() <= 0) // sanity check
+		return false;
+	QString sGameplaySourceName = oGameplayDir.entryInfoList().at(0).absoluteFilePath();
+	QFile oGameplaySourceFile(sGameplaySourceName);
+	if (!oGameplaySourceFile.exists())
+		return false;
+	
+	QDir oPlayerDir(m_sPlayerPath);
+	oPlayerDir.setFilter(QDir::NoDotAndDotDot | QDir::Files);
+	if (oPlayerDir.entryList().size() <= 0) // sanity check
+		return false;
+	QString sPlayerSourceName = oPlayerDir.entryInfoList().at(0).absoluteFilePath();
+	QFile oPlayerSourceFile(sPlayerSourceName);
+	if (!oPlayerSourceFile.exists())
+		return false;
 
+	// Then, remove the target files
+	// (just in case they exist - the copy fails if they do)
+	QFile::remove(m_sGameplayTargetName);
+	QFile::remove(m_sPlayerTargetName);
 
-	return true;
+	// Then, copy the recorded files with the target names
+	bool bOk = oGameplaySourceFile.copy(m_sGameplayTargetName) &&
+	           oPlayerSourceFile.copy(m_sPlayerTargetName);
+
+	// Finally, remove the source files if the copy succeeded
+	if (!bOk)
+	{
+		QFile::remove(m_sGameplayTargetName);
+		QFile::remove(m_sPlayerTargetName);
+		return false;
+	}
+	else
+	{
+		QFile::remove(sGameplaySourceName);
+		QFile::remove(sPlayerSourceName);
+		return true;
+	}
 }

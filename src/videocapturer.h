@@ -36,7 +36,7 @@ namespace gc
 		Q_ENUM(State)
 
 		/** Enumeration with the possible results for the video capture. */
-		enum CaptureResult { FailedToStart, Closed };
+		enum CaptureResult { FailedToStart, FailedToSave, Closed };
 		Q_ENUM(CaptureResult)
 
 		/**
@@ -47,20 +47,15 @@ namespace gc
 
 		/**
 		 * Starts the capture of the gameplay and player's face videos.
+		 * @param sGameplayTargetName Name of the file to save the gameplayer video file.
+		 * @param sPlayerTargetName Name of the file to save the player's face video file.
 		 */
-		void startCapture();
+		void startCapture(QString sGameplayTargetName, QString sPlayerTargetName);
 
 		/**
 		 * Stops the capture of the gameplay and player's face videos.
 		 */
 		void stopCapture();
-
-		/**
-		 * Deletes all video files in the configured OBS output directories.
-		 */
-		void deleteFiles();
-
-		bool saveFiles();
 
 	protected slots:
 
@@ -97,6 +92,18 @@ namespace gc
 		 */
 		void captureEnded(VideoCapturer::CaptureResult eResult);
 
+	protected:
+
+		/**
+		 * Deletes all video files in the configured OBS output directories.
+		 */
+		void deleteFiles();
+
+		/**
+		 * Save the video files recorded to the path and file names provided.
+		 */
+		bool saveFiles();
+
 	private:
 
 		/** Current state of the video capturing process. */
@@ -112,6 +119,12 @@ namespace gc
 		 * this flag, the code can avoid emitting two signals in a row.
 		 */
 		bool m_bFailSignalSent;
+
+		/** Name of the file to save the gameplayer video file. */
+		QString m_sGameplayTargetName;
+
+		/** Name of the file to save the player's face video file. */
+		QString m_sPlayerTargetName;
 
 		/** Handles the OBS process used to capture the gameplay video. */
 		QProcess m_oGameplayCap;

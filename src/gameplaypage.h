@@ -72,8 +72,9 @@ namespace gc
 
 		/**
 		 * Captures the indication that the gameplay failed to start.
+		 * @param eReason Value of the enumeration GameplayFailureReason with the reason to fail.
 		 */
-		void onGameplayFailedToStart();
+		void onGameplayFailed(Application::GameplayFailureReason eReason);
 
 	private:
 

@@ -43,6 +43,10 @@ namespace gc
 		enum LOG_LEVEL { Fatal, Critical, Warning, Info, Debug };
 		Q_ENUM(LOG_LEVEL)
 
+		/** Enumeration with the failure reason on the gameplay. */
+		enum GameplayFailureReason { FailedToStart, FailedToConclude };
+		Q_ENUM(GameplayFailureReason);
+
 		/** Enumeration of the available languages for this application. */
 		enum Language { EN_UK, PT_BR };
 		Q_ENUM(Language)
@@ -130,6 +134,16 @@ namespace gc
 		unsigned int getSubjectID() const;
 
 		/**
+		 * Prepares the experiment to capture a new subject.
+		 */
+		void newSubject();
+
+		/**
+		 * Rejects the current subject and erase his/her data.
+		 */
+		void rejectSubject();
+
+		/**
 		 * Starts the gameplay session in the experiment.
 		 */
 		void startGameplay();
@@ -197,8 +211,9 @@ namespace gc
 
 		/**
 		 * Indicates that the gameplay has failed to start.
+		 * @param eReason Value of the enumeration GameplayFailureReason with the reason to fail.
 		 */
-		void gameplayFailedToStart();
+		void gameplayFailed(GameplayFailureReason eReason);
 
 	protected:
 
@@ -259,6 +274,9 @@ namespace gc
 
 		/** Timer used to limit the game session. */
 		QTimer m_oTimer;
+
+		/** Indicates that a failure has already been signalled. */
+		bool m_bFailureSignalled;
 	};
 }
 

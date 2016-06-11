@@ -148,7 +148,7 @@ void gc::Window::reject()
 // +-----------------------------------------------------------
 void gc::Window::done(int iRet)
 {
-	((Application*) qApp)->gamePlayer()->selectNextGame();
+	((Application*) qApp)->newSubject();
 	restart();
 }
 

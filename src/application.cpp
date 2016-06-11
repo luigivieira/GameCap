@@ -27,7 +27,7 @@
 #include <QFileInfo>
 #include <QTranslator>
 #include <iostream>
-#include <QMetaType>
+#include <QTextStream>
 
 using namespace std;
 
@@ -36,6 +36,9 @@ using namespace std;
 #define SETTING_LOG_LEVEL "logLevel"
 #define SETTING_DATA_PATH "dataPath"
 #define SETTING_GAMEPLAY_TIME_LIMIT "gameplayTimeLimit"
+#define SETTING_LAST_SUBJECT_ID "lastSubjectID"
+
+#define SUBJECT_FOLDER QString().sprintf("%s%csubject_%03d%c", qPrintable(m_sDataPath), QDir::separator(), m_iSubjectID, QDir::separator())
 
 // +-----------------------------------------------------------
 gc::Application::Application(int& argc, char** argv): QApplication(argc, argv)
@@ -66,6 +69,7 @@ gc::Application::Application(int& argc, char** argv): QApplication(argc, argv)
 	m_eLogLevel = (LOG_LEVEL) m_pSettings->value(SETTING_LOG_LEVEL, Fatal).toInt();
 	m_iGameplayTimeLimit = m_pSettings->value(SETTING_GAMEPLAY_TIME_LIMIT, 60).toUInt();
 	m_sDataPath = m_pSettings->value(SETTING_DATA_PATH, "").toString();
+	m_iSubjectID = m_pSettings->value(SETTING_LAST_SUBJECT_ID, 0).toUInt();
 	m_pSettings->endGroup();
 
 	// Validate the configurations
@@ -120,8 +124,11 @@ gc::Application::Application(int& argc, char** argv): QApplication(argc, argv)
 
 	connect(&m_oTimer, &QTimer::timeout, this, &Application::onTimeout);
 
-	// Finally, sets the default language
+	// Sets the default language
 	setLanguage(m_eCurrentLanguage);
+
+	// Finally, prepare a new subject
+	newSubject();
 }
 
 // +-----------------------------------------------------------
@@ -136,6 +143,19 @@ gc::Application::~Application()
 unsigned int gc::Application::getSubjectID() const
 {
 	return m_iSubjectID;
+}
+
+// +-----------------------------------------------------------
+void gc::Application::newSubject()
+{
+	m_iSubjectID++;
+	m_pGamePlayer->selectNextGame();
+}
+
+// +-----------------------------------------------------------
+void gc::Application::rejectSubject()
+{
+
 }
 
 // +-----------------------------------------------------------
@@ -311,7 +331,14 @@ void gc::Application::onTimeout()
 // +-----------------------------------------------------------
 void gc::Application::startGameplay()
 {
-	m_pVideoCapturer->startCapture();
+	QDir oDir(SUBJECT_FOLDER);
+	if (!oDir.exists())
+		oDir.mkdir(SUBJECT_FOLDER);
+
+	QString sGameplayFile = SUBJECT_FOLDER + "gameplay.mp4";
+	QString sPlayerFile = SUBJECT_FOLDER + "player.mp4";
+	m_bFailureSignalled = false;
+	m_pVideoCapturer->startCapture(sGameplayFile, sPlayerFile);
 }
 
 // +-----------------------------------------------------------
@@ -333,11 +360,14 @@ void gc::Application::onGameplayStarted()
 // +-----------------------------------------------------------
 void gc::Application::onGameplayEnded(GamePlayer::GameplayResult eResult)
 {
+	if(m_bFailureSignalled)
+		return;
+
 	switch(eResult)
 	{
 		case GamePlayer::Failed:
 			stopGameplay();
-			emit gameplayFailedToStart();
+			emit gameplayFailed(FailedToStart);
 			break;
 
 		case GamePlayer::ClosedByUser:
@@ -360,8 +390,21 @@ void gc::Application::onCaptureStarted()
 // +-----------------------------------------------------------
 void gc::Application::onCaptureEnded(gc::VideoCapturer::CaptureResult eResult)
 {
-	if (eResult == VideoCapturer::FailedToStart)
-		emit gameplayFailedToStart();
-	else // if(eResult == VideoControl::Closed )
-		m_pGamePlayer->stopGameplay();
+	switch(eResult)
+	{
+		case VideoCapturer::FailedToStart:
+			emit gameplayFailed(FailedToStart);
+			break;
+
+		case VideoCapturer::FailedToSave:
+			m_bFailureSignalled = true;
+			m_pGamePlayer->stopGameplay();
+			emit gameplayFailed(FailedToConclude);
+			break;
+
+		default: // case VideoControl::Closed:
+			m_pGamePlayer->stopGameplay();
+			break;
+	}
+	
 }

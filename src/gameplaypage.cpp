@@ -52,7 +52,7 @@ gc::GamePlayPage::GamePlayPage(QWidget *pParent) : QWizardPage(pParent)
 	connect(((Application*) qApp), &Application::gameplayTimeRemaining, this, &GamePlayPage::onGameplayTimeRemaining);
 	connect(((Application*) qApp), &Application::gameplayCompleted, this, &GamePlayPage::onGameplayCompleted);
 	connect(((Application*) qApp), &Application::gameplayCancelled, this, &GamePlayPage::onGameplayCancelled);
-	connect(((Application*) qApp), &Application::gameplayFailedToStart, this, &GamePlayPage::onGameplayFailedToStart);
+	connect(((Application*) qApp), &Application::gameplayFailed, this, &GamePlayPage::onGameplayFailed);
 }
 
 // +-----------------------------------------------------------
@@ -95,9 +95,12 @@ void gc::GamePlayPage::onGameplayCancelled()
 }
 
 // +-----------------------------------------------------------
-void gc::GamePlayPage::onGameplayFailedToStart()
+void gc::GamePlayPage::onGameplayFailed(gc::Application::GameplayFailureReason eReason)
 {
 	Game *pGame = ((Application*)qApp)->gamePlayer()->currentGame();
-	MessageBox::infoMessage(this, tr("An error ocurred and the gameplay session of the game %1 could not be started. Please, inform the researcher in charge. Nevertheless, thank you very much for your time.").arg(pGame->name()));
+	if(eReason == Application::FailedToStart)
+		MessageBox::infoMessage(this, tr("An error ocurred and the gameplay session of the game %1 could not be started. Please, inform the researcher in charge. Nevertheless, thank you very much for your time.").arg(pGame->name()));
+	else if(eReason == Application::FailedToConclude)
+		MessageBox::infoMessage(this, tr("An error ocurred and the gameplay session of the game %1 could not be concluded. Please, inform the researcher in charge. Nevertheless, thank you very much for your time.").arg(pGame->name()));
 	wizard()->reject();
 }
