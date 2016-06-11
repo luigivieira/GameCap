@@ -66,7 +66,7 @@ gc::Application::Application(int& argc, char** argv): QApplication(argc, argv)
 
 	m_pSettings->beginGroup(GROUP_MAIN);
 	m_eCurrentLanguage = (Language) m_pSettings->value(SETTING_DEFAULT_LANGUAGE, EN_UK).toInt();
-	m_eLogLevel = (LOG_LEVEL) m_pSettings->value(SETTING_LOG_LEVEL, Fatal).toInt();
+	m_eLogLevel = (LogLevel) m_pSettings->value(SETTING_LOG_LEVEL, Fatal).toInt();
 	m_iGameplayTimeLimit = m_pSettings->value(SETTING_GAMEPLAY_TIME_LIMIT, 60).toUInt();
 	m_sDataPath = m_pSettings->value(SETTING_DATA_PATH, "").toString();
 	m_iSubjectID = m_pSettings->value(SETTING_LAST_SUBJECT_ID, 0).toUInt();
@@ -227,13 +227,13 @@ int gc::Application::exec()
 }
 
 // +-----------------------------------------------------------
-gc::Application::LOG_LEVEL gc::Application::getLogLevel()
+gc::Application::LogLevel gc::Application::getLogLevel()
 {
 	return m_eLogLevel;
 }
 
 // +-----------------------------------------------------------
-void gc::Application::setLogLevel(Application::LOG_LEVEL eLevel)
+void gc::Application::setLogLevel(Application::LogLevel eLevel)
 {
 	m_eLogLevel = eLevel;
 }
@@ -264,10 +264,10 @@ bool gc::Application::notify(QObject* pReceiver, QEvent* pEvent)
 void gc::Application::handleLogOutput(QtMsgType eType, const QMessageLogContext &oContext, const QString &sMsg)
 {
 	// Convert the qt message type to a log level
-	LOG_LEVEL eLevel = (LOG_LEVEL) (eType == QtDebugMsg ? 4 : (eType == QtInfoMsg ? 3 : std::abs(eType - QtFatalMsg)));
+	LogLevel eLevel = (LogLevel) (eType == QtDebugMsg ? 4 : (eType == QtInfoMsg ? 3 : std::abs(eType - QtFatalMsg)));
 
 	// Do not log the message if its level is bigger then the maximum configured.
-	LOG_LEVEL eMax = ((Application*) qApp)->m_eLogLevel;
+	LogLevel eMax = ((Application*) qApp)->m_eLogLevel;
 	if(eLevel > ((Application*) qApp)->m_eLogLevel)
 		return;
 

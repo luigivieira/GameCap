@@ -40,8 +40,8 @@ namespace gc
 		Q_OBJECT
 	public:
 		/** Enumeration with the levels of log for the application. */
-		enum LOG_LEVEL { Fatal, Critical, Warning, Info, Debug };
-		Q_ENUM(LOG_LEVEL)
+		enum LogLevel { Fatal, Critical, Warning, Info, Debug };
+		Q_ENUM(LogLevel)
 
 		/** Enumeration with the failure reason on the gameplay. */
 		enum GameplayFailureReason { FailedToStart, FailedToConclude };
@@ -78,15 +78,15 @@ namespace gc
 
 		/**
 		 * Gets the current maximum log level.
-		 * @return LOG_LEVEL with the maximum log level.
+		 * @return LogLevel with the maximum log level.
 		 */
-		LOG_LEVEL getLogLevel();
+		LogLevel getLogLevel();
 
 		/**
 		* Sets the maximum log level.
-		* @param eLevel LOG_LEVEL with the maximum log level.
+		* @param eLevel LogLevel with the maximum log level.
 		*/
-		void setLogLevel(LOG_LEVEL eLevel);
+		void setLogLevel(LogLevel eLevel);
 
 		/**
 		 * Gets the style sheet to be used by the application interface.
@@ -234,7 +234,7 @@ namespace gc
 		/**
 		 * Maximum level of the messages to log.
 		 */
-		LOG_LEVEL m_eLogLevel;
+		LogLevel m_eLogLevel;
 
 		/** Path where the collected data files must be stored. */
 		QString m_sDataPath;
