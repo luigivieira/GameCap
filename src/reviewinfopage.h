@@ -20,6 +20,7 @@
 #define REVIEW_INFO_PAGE_H
 
 #include <QWizardPage>
+#include <QLabel>
 
 namespace gc
 {
@@ -37,6 +38,18 @@ namespace gc
          * The default is NULL.
          */
 		ReviewInfoPage(QWidget *pParent = NULL);
+
+	protected:
+
+		/**
+		* Initialization method called everytime the page is displayed.
+		*/
+		void initializePage();
+
+	private:
+
+		/** Info message presented in this page. */
+		QLabel *m_pMessage;
 	};
 }
 
