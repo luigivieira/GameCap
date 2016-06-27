@@ -16,45 +16,43 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GAME_REVIEW_PAGE_H
-#define GAME_REVIEW_PAGE_H
+#ifndef PROGRESS_SLIDER_H
+#define PROGRESS_SLIDER_H
 
-#include <QWizardPage>
-#include <QMediaPlayer>
-#include <QVideoWidget>
+#include <QSlider>
 
 namespace gc
 {
 	/**
-	* Page class in the wizard application used to review the gameplay and collect review data.
-	*/
-	class GameReviewPage : public QWizardPage
+	 * Implements a custom slider for displaying the progress of videos.
+	 */
+	class ProgressSlider : public QSlider
 	{
 		Q_OBJECT
 	public:
 
         /**
          * Class constructor.
-         * @param pParent Instance of a QWidget with the parent of this page.
+         * @param pParent Instance of a QWidget with the parent of this component.
          * The default is NULL.
          */
-		GameReviewPage(QWidget *pParent = NULL);
+		ProgressSlider(QWidget *pParent = NULL);
 
 	protected:
 
 		/**
-		 * Initialization method called everytime the page is displayed.
+		 * Overloads the tickPosition setter as private, so it can not be used
+		 * by outside classes.
 		 */
-		void initializePage();
+		void setTickPosition(TickPosition ePosition);
 
-	private:
+		/**
+		 * Captures the paint event, so the ticks can be drawn.
+		 * @param pEvent Instance of the QPaintEvent with the event data.
+		 */
+		void paintEvent(QPaintEvent *pEvent);
 
-		/** Player used for the reprduction of the gameplay video. */
-		QMediaPlayer *m_pPlayer;
-
-		/** Widget for allowing the user to control the gameplay of the video. */
-		QVideoWidget *m_pPlayerWidget;
 	};
 }
 
-#endif // GAME_REVIEW_PAGE_H
+#endif // PROGRESS_SLIDER_H

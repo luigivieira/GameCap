@@ -335,10 +335,16 @@ void gc::Application::startGameplay()
 	if (!oDir.exists())
 		oDir.mkdir(SUBJECT_FOLDER);
 
-	QString sGameplayFile = SUBJECT_FOLDER + "gameplay.mp4";
+	m_sGameplayFile = SUBJECT_FOLDER + "gameplay.mp4";
 	QString sPlayerFile = SUBJECT_FOLDER + "player.mp4";
 	m_bFailureSignalled = false;
-	m_pVideoCapturer->startCapture(sGameplayFile, sPlayerFile);
+	m_pVideoCapturer->startCapture(m_sGameplayFile, sPlayerFile);
+}
+
+// +-----------------------------------------------------------
+QString gc::Application::getGameplayFile()
+{
+	return m_sGameplayFile;
 }
 
 // +-----------------------------------------------------------

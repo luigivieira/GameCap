@@ -46,6 +46,8 @@ set(CMAKE_AUTOMOC ON) # Instruct CMake to run moc automatically when needed
 set(CMAKE_AUTORCC ON) # Instruct CMake to run rcc automatically when needed
 set(CMAKE_AUTOUIC ON) # Instruct CMake to run uic automatically when needed
 find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Multimedia REQUIRED)
+find_package(Qt5MultimediaWidgets REQUIRED)
 
 # Add source files
 file(GLOB SRC_FILES src/*.cpp src/*.h ${PROJECT_BINARY_DIR}/src/version.h)
@@ -66,7 +68,7 @@ set_target_properties(GameCap PROPERTIES OUTPUT_NAME gamecap)
 set_target_properties(GameCap PROPERTIES OUTPUT_NAME_DEBUG gamecapd)
 
 # Set up the required libraries
-target_link_libraries(GameCap Qt5::Widgets)
+target_link_libraries(GameCap Qt5::Widgets Qt5::Multimedia Qt5::MultimediaWidgets)
 
 # Copy configuration file to the build directory upon building
 ADD_CUSTOM_COMMAND(TARGET GameCap POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PROJECT_SOURCE_DIR}/src/configuration/configuration.ini $<TARGET_FILE_DIR:GameCap>)

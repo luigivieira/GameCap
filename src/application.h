@@ -153,6 +153,12 @@ namespace gc
 		 */
 		void stopGameplay();
 
+		/**
+		 * Queries the gameplay video file for the current subject.
+		 * @return QString with the video file name and path.
+		 */
+		QString getGameplayFile();
+
 	protected slots:
 
 		/**
@@ -277,6 +283,9 @@ namespace gc
 
 		/** Indicates that a failure has already been signalled. */
 		bool m_bFailureSignalled;
+
+		/** File with the gameplay video for the current subject. */
+		QString m_sGameplayFile;
 	};
 }
 
