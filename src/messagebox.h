@@ -19,6 +19,7 @@
 #ifndef MESSAGE_BOX_H
 #define MESSAGE_BOX_H
 
+#include "window.h"
 #include <QDialog>
 #include <QLabel>
 #include <QDialogButtonBox>
@@ -37,9 +38,9 @@ namespace gc
 
 		/**
 		 * Protected constructor, so this class can not be instantiated.
-		 * @param pParent Instance of the class that will parent this dialog.
+		 * @param pParent Instance of the Window class that will parent this dialog.
 		 */
-		MessageBox(QWizardPage *pParent);
+		MessageBox(Window *pParent);
 
 		/**
 		 * Class destructor.
@@ -105,6 +106,9 @@ namespace gc
 
 		/** Group of buttons to be displayed for user interaction. */
 		QDialogButtonBox *m_pButtons;
+
+		/** Main window of the application. */
+		Window *m_pMainWindow;
 	};
 }
 

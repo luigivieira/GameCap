@@ -25,10 +25,13 @@
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
 #include <QScreen>
+#include <QDebug>
 
 // +-----------------------------------------------------------
-gc::MessageBox::MessageBox(QWizardPage *pParent): QDialog(pParent)
+gc::MessageBox::MessageBox(gc::Window *pParent): QDialog(pParent)
 {
+	m_pMainWindow = pParent;
+
 	setAttribute(Qt::WA_TranslucentBackground);
 	setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
 
@@ -79,7 +82,7 @@ gc::MessageBox::~MessageBox()
 // +-----------------------------------------------------------
 void gc::MessageBox::fadeOut()
 {
-	QWidget *pWidget = (QWidget *) ((QWidget *) parent())->parent();
+	QWidget *pWidget = m_pMainWindow->currentPage();
 	if (!pWidget->graphicsEffect())
 	{
 		QGraphicsOpacityEffect *pEffect = new QGraphicsOpacityEffect(pWidget);
@@ -97,7 +100,7 @@ void gc::MessageBox::fadeOut()
 // +-----------------------------------------------------------
 void gc::MessageBox::fadeIn()
 {
-	QWidget *pWidget = (QWidget *)((QWidget *)parent())->parent();
+	QWidget *pWidget = m_pMainWindow->currentPage();
 	if (!pWidget->graphicsEffect())
 	{
 		QGraphicsOpacityEffect *pEffect = new QGraphicsOpacityEffect(pWidget);
@@ -115,7 +118,7 @@ void gc::MessageBox::fadeIn()
 // +-----------------------------------------------------------
 bool gc::MessageBox::yesNoQuestion(QWizardPage *pParent, QString sMessage)
 {
-	MessageBox oBox(pParent);
+	MessageBox oBox((Window *) pParent->parent());
 	return oBox.yesNoQuestion(sMessage);
 }
 
@@ -138,7 +141,7 @@ bool gc::MessageBox::yesNoQuestion(QString sMessage)
 // +-----------------------------------------------------------
 void gc::MessageBox::infoMessage(QWizardPage *pParent, QString sMessage)
 {
-	MessageBox oBox(pParent);
+	MessageBox oBox((Window *) pParent->parent());
 	oBox.infoMessage(sMessage);
 }
 
