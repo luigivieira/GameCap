@@ -137,7 +137,7 @@ void gc::Window::reject()
 	}
 
 	// Confirm quiting the experiment only if not in any of the previous conditions
-	MessageBox oBox(currentPage());
+	MessageBox oBox(this);
 	if (currentId() == Page_GamePlay || oBox.yesNoQuestion(tr("Do you confirm quitting the experiment?")))
 	{
 		oBox.infoMessage(tr("You have chosen to quit the experiment. Nevertheless, thank you very much for your time."));
