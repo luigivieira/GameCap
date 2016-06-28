@@ -63,6 +63,8 @@ namespace gc
 
 		void onSliderMoved(int iNewPosition);
 
+		void onActionTriggered(int iAction);
+
 	private:
 
 		/** Media player used to access and play the video files. */

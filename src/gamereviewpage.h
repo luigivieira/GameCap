@@ -20,8 +20,7 @@
 #define GAME_REVIEW_PAGE_H
 
 #include <QWizardPage>
-#include <QMediaPlayer>
-#include <QVideoWidget>
+#include "videoreviewer.h"
 
 namespace gc
 {
@@ -49,11 +48,8 @@ namespace gc
 
 	private:
 
-		/** Player used for the reprduction of the gameplay video. */
-		QMediaPlayer *m_pPlayer;
-
-		/** Widget for allowing the user to control the gameplay of the video. */
-		QVideoWidget *m_pPlayerWidget;
+		/** Instance of the class used to allow the user reviewing the gameplay. */
+		VideoReviewer *m_pReviewer;
 	};
 }
 

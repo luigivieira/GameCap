@@ -28,18 +28,14 @@ gc::GameReviewPage::GameReviewPage(QWidget *pParent) : QWizardPage(pParent)
 	QVBoxLayout *pLayout = new QVBoxLayout(this);
 	pLayout->setMargin(50);
 
-	m_pPlayer = new QMediaPlayer(this);
-	m_pPlayerWidget = new QVideoWidget(this);
-	m_pPlayer->setVideoOutput(m_pPlayerWidget);
-
-	pLayout->addWidget(m_pPlayerWidget);
+	m_pReviewer = new VideoReviewer(this);
+	pLayout->addWidget(m_pReviewer);
 }
 
 // +-----------------------------------------------------------
 void gc::GameReviewPage::initializePage()
 {
 	QString sFile = ((Application *) qApp)->getGameplayFile();
-	m_pPlayer->setMedia(QUrl::fromLocalFile(sFile));
-	m_pPlayerWidget->show();
-	m_pPlayer->play();
+	
+	m_pReviewer->playVideo("C:\\Temp\\Filme de teste.avi");
 }

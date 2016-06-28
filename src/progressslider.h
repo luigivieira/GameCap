@@ -20,6 +20,7 @@
 #define PROGRESS_SLIDER_H
 
 #include <QSlider>
+#include <QMouseEvent>
 
 namespace gc
 {
@@ -41,16 +42,24 @@ namespace gc
 	protected:
 
 		/**
-		 * Overloads the tickPosition setter as private, so it can not be used
+		 * Overloads the tickPosition setter as protected, so it can not be used
 		 * by outside classes.
 		 */
 		void setTickPosition(TickPosition ePosition);
+
+		/**
+		 * Overloads the orientation setter as protected, so it can not be used
+		 * by outside classes.
+		 */
+		void setOrientation(Qt::Orientation eOrientation);
 
 		/**
 		 * Captures the paint event, so the ticks can be drawn.
 		 * @param pEvent Instance of the QPaintEvent with the event data.
 		 */
 		void paintEvent(QPaintEvent *pEvent);
+
+		void mousePressEvent(QMouseEvent *pEvent);
 
 	};
 }

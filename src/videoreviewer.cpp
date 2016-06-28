@@ -45,17 +45,12 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 	QHBoxLayout *pControlsLayout = new QHBoxLayout();
 	pLayout->addLayout(pControlsLayout);
 
-	QSize oBtSize(24, 24);
 	QPushButton *pPlayPauseButton = new QPushButton(this);
-	pPlayPauseButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
-	pPlayPauseButton->setIconSize(oBtSize);
-	pPlayPauseButton->setFixedSize(oBtSize);
+	pPlayPauseButton->setObjectName("playPauseButton");
 	pControlsLayout->addWidget(pPlayPauseButton);
 
 	QPushButton *pVolumeButton = new QPushButton(this);
-	pVolumeButton->setIcon(style()->standardIcon(QStyle::SP_MediaVolume));
-	pVolumeButton->setIconSize(oBtSize);
-	pVolumeButton->setFixedSize(oBtSize);
+	pVolumeButton->setObjectName("volumeButton");
 	pControlsLayout->addWidget(pVolumeButton);
 
 	m_pElapsedTime = new QLabel("00:00", this);
@@ -63,7 +58,8 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 
 	m_pProgressSlider = new ProgressSlider(this);
 	pControlsLayout->addWidget(m_pProgressSlider);
-	connect(m_pProgressSlider, &QSlider::sliderMoved, this, &VideoReviewer::onSliderMoved);
+	//connect(m_pProgressSlider, &QSlider::sliderMoved, this, &VideoReviewer::onSliderMoved);
+	connect(m_pProgressSlider, &QSlider::actionTriggered, this, &VideoReviewer::onActionTriggered);
 
 	m_pRemainingTime = new QLabel("00:00", this);
 	pControlsLayout->addWidget(m_pRemainingTime);
@@ -143,4 +139,10 @@ void gc::VideoReviewer::onMediaStatusChanged(QMediaPlayer::MediaStatus eStatus)
 void gc::VideoReviewer::onSliderMoved(int iNewPosition)
 {
 	m_pMediaPlayer->setPosition(iNewPosition * 1000);
+}
+
+// +-----------------------------------------------------------
+void gc::VideoReviewer::onActionTriggered(int iAction)
+{
+	m_pMediaPlayer->setPosition(m_pProgressSlider->sliderPosition() * 1000);
 }
