@@ -79,7 +79,7 @@ void gc::ProgressSlider::paintEvent(QPaintEvent *pEvent)
 // +-----------------------------------------------------------
 void gc::ProgressSlider::mousePressEvent(QMouseEvent *pEvent)
 {
-	// Implement the "jump click" in the progress slider
+	// Implements the "jump click" in the progress slider
 	QStyleOptionSlider oOpt;
 	initStyleOption(&oOpt);
 	QRect oHandleRect = style()->subControlRect(QStyle::CC_Slider, &oOpt, QStyle::SC_SliderHandle, this);

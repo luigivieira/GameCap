@@ -17,6 +17,7 @@
  */
 
 #include "videoreviewer.h"
+#include "application.h"
 #include <QFrame>
 #include <QStyle>
 #include <QTime>
@@ -45,9 +46,11 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 	QHBoxLayout *pControlsLayout = new QHBoxLayout();
 	pLayout->addLayout(pControlsLayout);
 
-	QPushButton *pPlayPauseButton = new QPushButton(this);
-	pPlayPauseButton->setObjectName("playPauseButton");
-	pControlsLayout->addWidget(pPlayPauseButton);
+	m_pPlayPauseButton = new QPushButton(this);
+	m_pPlayPauseButton->setObjectName("playPauseButton");
+	m_pPlayPauseButton->setProperty("state", "playing");
+	pControlsLayout->addWidget(m_pPlayPauseButton);
+	connect(m_pPlayPauseButton, &QPushButton::clicked, this, &VideoReviewer::onPlayPauseClicked);
 
 	QPushButton *pVolumeButton = new QPushButton(this);
 	pVolumeButton->setObjectName("volumeButton");
@@ -120,10 +123,11 @@ void gc::VideoReviewer::onMediaStatusChanged(QMediaPlayer::MediaStatus eStatus)
 {
 	qDebug() << "onMediaStatusChanged(" << eStatus << ")";
 
-	/*switch(eStatus)
+	switch(eStatus)
 	{
 		case QMediaPlayer::UnknownMediaStatus:
 		case QMediaPlayer::InvalidMedia:
+			break;
 
 		case QMediaPlayer::NoMedia:
 		case QMediaPlayer::LoadingMedia:
@@ -131,18 +135,35 @@ void gc::VideoReviewer::onMediaStatusChanged(QMediaPlayer::MediaStatus eStatus)
 		case QMediaPlayer::StalledMedia:
 		case QMediaPlayer::BufferingMedia:
 		case QMediaPlayer::BufferedMedia:
-		case QMediaPlayer::EndOfMedia:
-	}*/
-}
+			break;
 
-// +-----------------------------------------------------------
-void gc::VideoReviewer::onSliderMoved(int iNewPosition)
-{
-	m_pMediaPlayer->setPosition(iNewPosition * 1000);
+		case QMediaPlayer::EndOfMedia:
+			m_pPlayPauseButton->setProperty("state", "paused");
+			m_pPlayPauseButton->style()->unpolish(m_pPlayPauseButton);
+			m_pPlayPauseButton->style()->polish(m_pPlayPauseButton);
+			break;
+	}
 }
 
 // +-----------------------------------------------------------
 void gc::VideoReviewer::onActionTriggered(int iAction)
 {
 	m_pMediaPlayer->setPosition(m_pProgressSlider->sliderPosition() * 1000);
+}
+
+// +-----------------------------------------------------------
+void gc::VideoReviewer::onPlayPauseClicked()
+{
+	if (m_pPlayPauseButton->property("state") == "paused")
+	{
+		m_pMediaPlayer->play();
+		m_pPlayPauseButton->setProperty("state", "playing");
+	}
+	else
+	{
+		m_pMediaPlayer->pause();
+		m_pPlayPauseButton->setProperty("state", "paused");
+	}
+	m_pPlayPauseButton->style()->unpolish(m_pPlayPauseButton);
+	m_pPlayPauseButton->style()->polish(m_pPlayPauseButton);
 }

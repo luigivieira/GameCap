@@ -61,9 +61,9 @@ namespace gc
 
 		void onMediaStatusChanged(QMediaPlayer::MediaStatus eStatus);
 
-		void onSliderMoved(int iNewPosition);
-
 		void onActionTriggered(int iAction);
+
+		void onPlayPauseClicked();
 
 	private:
 
@@ -75,6 +75,9 @@ namespace gc
 
 		/** Progress slider for controlling the movie playing position. */
 		ProgressSlider *m_pProgressSlider;
+
+		/** Button to control the playing/pause of the video. */
+		QPushButton *m_pPlayPauseButton;
 
 		/** Display of the video elapsed time. */
 		QLabel *m_pElapsedTime;

@@ -98,6 +98,8 @@ gc::Application::Application(int& argc, char** argv): QApplication(argc, argv)
 		m_sStyleSheet = oFile.readAll();
 	else
 		qFatal("Error reading style sheet from resources.");
+	setStyleSheet(m_sStyleSheet);
+	
 	m_pCurrentTranslator = NULL;
 
 	// Load the translations
@@ -162,12 +164,6 @@ void gc::Application::rejectSubject()
 QSettings* gc::Application::getSettings()
 {
 	return m_pSettings;
-}
-
-// +-----------------------------------------------------------
-QString gc::Application::getStyleSheet()
-{
-	return m_sStyleSheet;
 }
 
 // +-----------------------------------------------------------

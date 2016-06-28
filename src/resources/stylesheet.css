@@ -74,19 +74,25 @@ QPushButton#flagBR:checked, QPushButton#flagUK:checked
     border-radius: 20px;
 }
 
-QPushButton#playPauseButton
+gc--VideoReviewer QPushButton
 {
     width: 32px;
     height: 32px;
     icon-size: 24px 24px;
+}
+
+QPushButton#playPauseButton[state="paused"]
+{
     qproperty-icon: url(:/resources/media_play.png)
+}
+
+QPushButton#playPauseButton[state="playing"]
+{
+    qproperty-icon: url(:/resources/media_pause.png)
 }
 
 QPushButton#volumeButton
 {
-    width: 32px;
-    height: 32px;
-    icon-size: 24px 24px;
     qproperty-icon: url(:/resources/audio_volume_high.png)
 }
 

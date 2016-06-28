@@ -53,8 +53,6 @@ gc::Window::Window(QWidget *pParent) : QWizard(pParent)
 	lLayout << QWizard::CancelButton << QWizard::Stretch << QWizard::NextButton << QWizard::FinishButton;
 	setButtonLayout(lLayout);
 
-	setStyleSheet(((Application *) qApp)->getStyleSheet());
-
 	setPage(Page_Start, new StartPage(this));
 	setPage(Page_Intro, new IntroPage(this));
 	setPage(Page_GameInfo, new GameInfoPage(this));

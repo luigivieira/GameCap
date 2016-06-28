@@ -89,12 +89,6 @@ namespace gc
 		void setLogLevel(LogLevel eLevel);
 
 		/**
-		 * Gets the style sheet to be used by the application interface.
-		 * @return QString with the style sheet to be used.
-		 */
-		QString getStyleSheet();
-
-		/**
 		 * Queries the language currently used by the application.
 		 * @return Value of the enumeration Language with the language identifier.
 		 */
