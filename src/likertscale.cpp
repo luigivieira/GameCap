@@ -17,7 +17,6 @@
  */
 
 #include "likertscale.h"
-#include <QRadioButton>
 #include <QBoxLayout>
 
 // +-----------------------------------------------------------
@@ -26,42 +25,47 @@ gc::LikertScale::LikertScale(QString sTitle, QWidget *pParent) : QWidget(pParent
 	QVBoxLayout *pLayout = new QVBoxLayout();
 	setLayout(pLayout);
 
-	m_pTitle = new QLabel(sTitle, this);
+	m_pTitle = new QLabel(this);
 	pLayout->addWidget(m_pTitle);
 
 	QHBoxLayout *pOptionsLayout = new QHBoxLayout();
 	pLayout->addLayout(pOptionsLayout);
 
-	QRadioButton *pButton = new QRadioButton(this);
-	pButton->setText(tr("not at all"));
-	pButton->setObjectName("0");
-	pOptionsLayout->addWidget(pButton);
+	m_lButtons.append(new QRadioButton(this));
+	m_lButtons.append(new QRadioButton(this));
+	m_lButtons.append(new QRadioButton(this));
+	m_lButtons.append(new QRadioButton(this));
+	m_lButtons.append(new QRadioButton(this));
 
-	pButton = new QRadioButton(this);
-	pButton->setText(tr("slightly"));
-	pButton->setObjectName("1");
-	pOptionsLayout->addWidget(pButton);
+	foreach(QRadioButton *pButton, m_lButtons)
+	{
+		pOptionsLayout->addWidget(pButton);
+		connect(pButton, &QRadioButton::toggled, this, &LikertScale::onButtonToggled);
+	}
 
-	pButton = new QRadioButton(this);
-	pButton->setText(tr("moderately"));
-	pButton->setObjectName("2");
-	pOptionsLayout->addWidget(pButton);
-
-	pButton = new QRadioButton(this);
-	pButton->setText(tr("fairly"));
-	pButton->setObjectName("3");
-	pOptionsLayout->addWidget(pButton);
-
-	pButton = new QRadioButton(this);
-	pButton->setText(tr("extremely"));
-	pButton->setObjectName("4");
-	pOptionsLayout->addWidget(pButton);
+	m_iSelected = -1;
+	updateStrings(sTitle);
 }
 
 // +-----------------------------------------------------------
 void gc::LikertScale::onButtonToggled(bool bChecked)
 {
-	QRadioButton *pButton = (QRadioButton *) sender();
+	if (bChecked)
+	{
+		int iIndex = m_lButtons.indexOf((QRadioButton *) sender());
+		emit answerSelected(iIndex);
+		m_iSelected = iIndex;
+	}
+}
 
+// +-----------------------------------------------------------
+void gc::LikertScale::updateStrings(QString sTitle)
+{
+	m_pTitle->setText(sTitle);
+	m_lButtons[0]->setText(tr("not at all"));
+	m_lButtons[1]->setText(tr("slightly"));
+	m_lButtons[2]->setText(tr("moderately"));
+	m_lButtons[3]->setText(tr("fairly"));
+	m_lButtons[4]->setText(tr("extremely"));
 }
 

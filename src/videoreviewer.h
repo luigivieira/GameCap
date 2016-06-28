@@ -85,6 +85,9 @@ namespace gc
 		/** Display of the video remaining time. */
 		QLabel *m_pRemainingTime;
 
+		/** Holds the questionnaire displayed to the user at each video tick. */
+		QWidget *m_pQuestionnaire;
+
 	};
 }
 

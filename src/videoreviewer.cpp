@@ -68,7 +68,23 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 	m_pRemainingTime = new QLabel("00:00", this);
 	pControlsLayout->addWidget(m_pRemainingTime);
 
-	LikertScale *pQuestion = new LikertScale("How much do you know the paranaues?", this);
+	// Create the questionnaire
+	m_pQuestionnaire = new QWidget(this);
+	pLayout->addWidget(m_pQuestionnaire);
+
+	QVBoxLayout *pQLayout = new QVBoxLayout();
+	m_pQuestionnaire->setLayout(pQLayout);
+
+	QLabel *pLabel = new QLabel(tr("At the moment the video is paused, did you ..."), m_pQuestionnaire);
+	pQLayout->addWidget(pLabel);
+
+	LikertScale *pQuestion = new LikertScale(tr("... feel frustrated?"), this);
+	pLayout->addWidget(pQuestion);
+
+	pQuestion = new LikertScale(tr("... feel involved?"), this);
+	pLayout->addWidget(pQuestion);
+
+	pQuestion = new LikertScale(tr("... have fun?"), this);
 	pLayout->addWidget(pQuestion);
 
 	// Create the media player

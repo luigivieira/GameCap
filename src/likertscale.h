@@ -21,6 +21,7 @@
 
 #include <QWidget>
 #include <QLabel>
+#include <QRadioButton>
 
 namespace gc
 {
@@ -40,6 +41,13 @@ namespace gc
          */
 		LikertScale(QString sTitle, QWidget *pParent = NULL);
 
+		/**
+		 * Updates the strings used by the component, guaranteeing that the
+		 * component is properly translated according to the current language.
+		 * @param sTitle String with the updated title.
+		 */
+		void updateStrings(QString sTitle);
+
 	public slots:
 
 		/**
@@ -50,13 +58,22 @@ namespace gc
 
 	signals:
 
-		
+		/**
+		 * Indicates that an answer has been selected.
+		 * @iIndex Integer with the index of the selected answer (starting from 0).
+		 */
+		void answerSelected(int iIndex);
 
 	private:
 
 		/** Title of the question asked. */
 		QLabel *m_pTitle;
 		
+		/** List of buttons for the options. */
+		QList<QRadioButton *> m_lButtons;
+
+		/** Index of the currently selected option (-1 indicates no selection). */
+		int m_iSelected;
 	};
 }
 
