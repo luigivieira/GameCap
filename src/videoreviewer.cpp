@@ -18,6 +18,7 @@
 
 #include "videoreviewer.h"
 #include "application.h"
+#include "volumebutton.h"
 #include <QFrame>
 #include <QStyle>
 #include <QTime>
@@ -52,7 +53,7 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 	pControlsLayout->addWidget(m_pPlayPauseButton);
 	connect(m_pPlayPauseButton, &QPushButton::clicked, this, &VideoReviewer::onPlayPauseClicked);
 
-	QPushButton *pVolumeButton = new QPushButton(this);
+	VolumeButton *pVolumeButton = new VolumeButton(this);
 	pVolumeButton->setObjectName("volumeButton");
 	pControlsLayout->addWidget(pVolumeButton);
 
@@ -61,7 +62,6 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 
 	m_pProgressSlider = new ProgressSlider(this);
 	pControlsLayout->addWidget(m_pProgressSlider);
-	//connect(m_pProgressSlider, &QSlider::sliderMoved, this, &VideoReviewer::onSliderMoved);
 	connect(m_pProgressSlider, &QSlider::actionTriggered, this, &VideoReviewer::onActionTriggered);
 
 	m_pRemainingTime = new QLabel("00:00", this);
@@ -76,6 +76,8 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 	connect(m_pMediaPlayer, static_cast<void(QMediaPlayer::*)(QMediaPlayer::Error)>(&QMediaPlayer::error), this, &VideoReviewer::onError);
 	connect(m_pMediaPlayer, &QMediaPlayer::mediaStatusChanged, this, &VideoReviewer::onMediaStatusChanged);
 	connect(m_pMediaPlayer, &QMediaPlayer::positionChanged, this, &VideoReviewer::onPositionChanged);
+
+	connect(pVolumeButton, &VolumeButton::volumeChanged, m_pMediaPlayer, &QMediaPlayer::setVolume);
 }
 
 // +-----------------------------------------------------------

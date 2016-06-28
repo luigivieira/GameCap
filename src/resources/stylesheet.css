@@ -74,15 +74,22 @@ QPushButton#flagBR:checked, QPushButton#flagUK:checked
     border-radius: 20px;
 }
 
-gc--VideoReviewer QPushButton
+gc--VolumeButton
 {
     width: 32px;
     height: 32px;
     icon-size: 24px 24px;
 }
 
-QPushButton#playPauseButton[state="paused"]
+QPushButton#playPauseButton
 {
+    width: 35px;
+    height: 35px;
+    icon-size: 24px 24px;
+}
+
+QPushButton#playPauseButton[state="paused"]
+{   
     qproperty-icon: url(:/resources/media_play.png)
 }
 
@@ -91,9 +98,40 @@ QPushButton#playPauseButton[state="playing"]
     qproperty-icon: url(:/resources/media_pause.png)
 }
 
-QPushButton#volumeButton
+gc--VolumeButton[volume="high"]
 {
     qproperty-icon: url(:/resources/audio_volume_high.png)
+}
+
+gc--VolumeButton[volume="low"]
+{
+    qproperty-icon: url(:/resources/audio_volume_low.png)
+}
+
+gc--VolumeButton[volume="mute"]
+{
+    qproperty-icon: url(:/resources/audio_volume_mute.png)
+}
+
+gc--VolumeButton QLabel
+{
+    font-size: 20px;
+}
+
+gc--VolumeButton QSlider::groove:horizontal {
+    border: 1px solid #999999;
+    height: 8px;
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #b1b1b1, stop:1 #c4c4c4);
+    margin: 2px 2px;
+    border-radius: 4px;
+}
+
+gc--VolumeButton QSlider::handle:horizontal {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #b4b4b4, stop:1 #8f8f8f);
+    border: 1px solid #5c5c5c;
+    width: 10px;
+    margin: -2px -2px;
+    border-radius: 4px;
 }
 
 gc--ProgressSlider::groove:horizontal
