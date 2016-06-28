@@ -19,6 +19,7 @@
 #include "videoreviewer.h"
 #include "application.h"
 #include "volumebutton.h"
+#include "likertscale.h"
 #include <QFrame>
 #include <QStyle>
 #include <QTime>
@@ -66,6 +67,9 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 
 	m_pRemainingTime = new QLabel("00:00", this);
 	pControlsLayout->addWidget(m_pRemainingTime);
+
+	LikertScale *pQuestion = new LikertScale("How much do you know the paranaues?", this);
+	pLayout->addWidget(pQuestion);
 
 	// Create the media player
 	m_pMediaPlayer = new QMediaPlayer(this);

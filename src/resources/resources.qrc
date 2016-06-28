@@ -9,6 +9,10 @@
         <file>audio_volume_mute.png</file>
         <file>audio_volume_low.png</file>
         <file>audio_volume_high.png</file>
+        <file>radio_button_checked.png</file>
+        <file>radio_button_checked_hover.png</file>
+        <file>radio_button_unchecked.png</file>
+        <file>radio_button_unchecked_hover.png</file>
         <file>stylesheet.css</file>
     </qresource>
 </RCC>
