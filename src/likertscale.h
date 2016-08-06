@@ -22,11 +22,12 @@
 #include <QWidget>
 #include <QLabel>
 #include <QRadioButton>
+#include "gameplaydata.h"
 
 namespace gc
 {
 	/**
-	 * Implements a likert-scaled question.
+	 * Implements a 5-values likert-scaled question.
 	 */
 	class LikertScale : public QWidget
 	{
@@ -59,10 +60,10 @@ namespace gc
 	signals:
 
 		/**
-		 * Indicates that an answer has been selected.
-		 * @iIndex Integer with the index of the selected answer (starting from 0).
+		 * Indicates that an answer has been selected/changed.
+		 * @eSelected Value of the gc::GamePlayData::AnswerValue enumeration with the selected value.
 		 */
-		void answerSelected(int iIndex);
+		void answerSelected(gc::GamePlayData::AnswerValue eSelected);
 
 	private:
 
@@ -72,8 +73,8 @@ namespace gc
 		/** List of buttons for the options. */
 		QList<QRadioButton *> m_lButtons;
 
-		/** Index of the currently selected option (-1 indicates no selection). */
-		int m_iSelected;
+		/** Currently selected option. */
+		GamePlayData::AnswerValue m_eSelected;
 	};
 }
 

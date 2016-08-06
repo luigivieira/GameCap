@@ -37,5 +37,5 @@ void gc::GameReviewPage::initializePage()
 {
 	QString sFile = ((Application *) qApp)->getGameplayFile();
 	
-	m_pReviewer->playVideo("C:\\Temp\\Filme de teste.avi");
+	m_pReviewer->playVideo("C:\\Users\\luigi\\Downloads\\Big Buck Bunny.avi");
 }

@@ -43,7 +43,7 @@ gc::LikertScale::LikertScale(QString sTitle, QWidget *pParent) : QWidget(pParent
 		connect(pButton, &QRadioButton::toggled, this, &LikertScale::onButtonToggled);
 	}
 
-	m_iSelected = -1;
+	m_eSelected = GamePlayData::Undefined;
 	updateStrings(sTitle);
 }
 
@@ -53,8 +53,8 @@ void gc::LikertScale::onButtonToggled(bool bChecked)
 	if (bChecked)
 	{
 		int iIndex = m_lButtons.indexOf((QRadioButton *) sender());
-		emit answerSelected(iIndex);
-		m_iSelected = iIndex;
+		m_eSelected = (GamePlayData::AnswerValue) (iIndex - 2);
+		emit answerSelected(m_eSelected);
 	}
 }
 

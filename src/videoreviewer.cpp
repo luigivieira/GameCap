@@ -78,14 +78,16 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 	QLabel *pLabel = new QLabel(tr("At the moment the video is paused, did you ..."), m_pQuestionnaire);
 	pQLayout->addWidget(pLabel);
 
-	LikertScale *pQuestion = new LikertScale(tr("... feel frustrated?"), this);
-	pLayout->addWidget(pQuestion);
+	LikertScale *pQuestion = new LikertScale(tr("... feel frustrated?"), m_pQuestionnaire);
+	pQLayout->addWidget(pQuestion);
 
-	pQuestion = new LikertScale(tr("... feel involved?"), this);
-	pLayout->addWidget(pQuestion);
+	pQuestion = new LikertScale(tr("... feel involved?"), m_pQuestionnaire);
+	pQLayout->addWidget(pQuestion);
 
-	pQuestion = new LikertScale(tr("... have fun?"), this);
-	pLayout->addWidget(pQuestion);
+	pQuestion = new LikertScale(tr("... have fun?"), m_pQuestionnaire);
+	pQLayout->addWidget(pQuestion);
+
+	m_pQuestionnaire->hide();
 
 	// Create the media player
 	m_pMediaPlayer = new QMediaPlayer(this);
