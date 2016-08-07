@@ -19,6 +19,7 @@
 #include "application.h"
 #include "window.h"
 #include <QScreen>
+#include "gameplaydata.h"
 
 using namespace gc;
 

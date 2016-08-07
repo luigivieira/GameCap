@@ -84,8 +84,21 @@ namespace gc
 		 */
 		void setReviewAnswer(const gc::GamePlayData::ReviewQuestion eQuestion, const uint iTimestamp, const gc::GamePlayData::AnswerValue eAnswer);
 
-	protected:
+		/**
+		 * Gets the stored answer value for the given GEQ question.
+		 * @param iQuestion Unsigned integer with the index of the question (in range [0, GEQ_SIZE-1]).
+		 * @return Value of the AnswerValue enumeration with the answer for the question.
+		 */
+		gc::GamePlayData::AnswerValue getGEQAnswer(const uint iQuestion) const;
 
+		/**
+		 * Sets the stored answer value for the given GEQ question.
+		 * @param iQuestion Unsigned integer with the index of the question (in range [0, GEQ_SIZE-1]).
+		 * @param eAnswer Value of the AnswerValue enumeration with the answer for the question.
+		 */
+		void setGEQAnswer(const int uiQuestion, const gc::GamePlayData::AnswerValue eAnswer);
+
+		bool save(const QString &sPath);
 
 	private:
 
@@ -105,7 +118,6 @@ namespace gc
 		
 		/** Array with the answers for the GEQ questionnaire. */
 		AnswerValue m_aGEQ[GEQ_SIZE];
-		
 	};
 }
 

@@ -18,6 +18,8 @@
 
 #include "gameplaydata.h"
 #include "likertscale.h"
+#include <QFile>
+#include <QDir>
 
 // +-----------------------------------------------------------
 gc::GamePlayData::GamePlayData(const uint iVideoDuration, const uint iSamples, const uint iInterval): QObject(NULL)
@@ -29,13 +31,15 @@ gc::GamePlayData::GamePlayData(const uint iVideoDuration, const uint iSamples, c
 		m_mpReviewAnswers.insert(iTimestamp, { Undefined, Undefined, Undefined });
 		iTimestamp -= iInterval;
 	}
+	for (uint i = 0; i < GEQ_SIZE; i++)
+		m_aGEQ[i] = Undefined;
 }
 
 // +-----------------------------------------------------------
 gc::GamePlayData::AnswerValue gc::GamePlayData::getReviewAnswer(const gc::GamePlayData::ReviewQuestion eQuestion, const uint iTimestamp) const
 {
 	ReviewAnswers::const_iterator it = m_mpReviewAnswers.find(iTimestamp);
-	if (it != m_mpReviewAnswers.constEnd())
+	if(it != m_mpReviewAnswers.constEnd())
 	{
 		switch(eQuestion)
 		{
@@ -46,13 +50,12 @@ gc::GamePlayData::AnswerValue gc::GamePlayData::getReviewAnswer(const gc::GamePl
 			case Fun:
 				return it.value().eFun;
 			default:
-				return AnswerValue::Undefined;
+				return Undefined;
 		}
 	}
 	else
-		return AnswerValue::Undefined;
+		return Undefined;
 }
-
 
 // +-----------------------------------------------------------
 void gc::GamePlayData::setReviewAnswer(const gc::GamePlayData::ReviewQuestion eQuestion, const uint iTimestamp, const gc::GamePlayData::AnswerValue eAnswer)
@@ -73,4 +76,70 @@ void gc::GamePlayData::setReviewAnswer(const gc::GamePlayData::ReviewQuestion eQ
 				break;
 		}
 	}
+}
+
+// +-----------------------------------------------------------
+gc::GamePlayData::AnswerValue gc::GamePlayData::getGEQAnswer(const uint iQuestion) const
+{
+	if(iQuestion < GEQ_SIZE)
+		return m_aGEQ[iQuestion];
+	else
+		return Undefined;
+}
+
+// +-----------------------------------------------------------
+void gc::GamePlayData::setGEQAnswer(const int iQuestion, const gc::GamePlayData::AnswerValue eAnswer)
+{
+	if(iQuestion < GEQ_SIZE)
+		m_aGEQ[iQuestion] = eAnswer;
+}
+
+// +-----------------------------------------------------------
+bool gc::GamePlayData::save(const QString &sPath)
+{
+	QString sSavePath;
+	if(sPath.right(1) != QDir::separator())
+		sSavePath = sPath + QDir::separator();
+	else
+		sSavePath = sPath;
+
+	// Save the review answers
+	QString sRevFile = QString("%1review_answers.csv").arg(sSavePath);
+	QFile oRevFile(sRevFile);
+	if(!oRevFile.open(QFile::WriteOnly | QFile::Truncate))
+		return false;
+
+	QTextStream oRevOut(&oRevFile);
+	oRevOut << "Seconds;Frustration;Involvement;Fun" << endl;
+	ReviewAnswers::const_iterator it;
+	for(it = m_mpReviewAnswers.cbegin(); it != m_mpReviewAnswers.cend(); ++it)
+	{
+		if(it != m_mpReviewAnswers.cbegin())
+			oRevOut << endl;
+		oRevOut << it.key() << ";" << it.value().eFrustration << ";" << it.value().eInvolvement << ";" << it.value().eFun;
+	}
+
+	oRevFile.close();
+
+	// Save the GEQ answers
+	QString sGEQFile = QString("%1GEQ_answers.csv").arg(sSavePath);
+	QFile oGEQFile(sGEQFile);
+	if(!oGEQFile.open(QFile::WriteOnly | QFile::Truncate))
+	{
+		oRevFile.remove();
+		return false;
+	}
+
+	QTextStream oGEQOut(&oGEQFile);
+	oGEQOut << "Question;Answer" << endl;
+	for(uint i = 0; i < GEQ_SIZE; i++)
+	{
+		if(i != 0)
+			oGEQOut << endl;
+		oGEQOut << i + 1 << ";" << m_aGEQ[i];
+	}
+
+	oGEQFile.close();
+
+	return true;
 }
