@@ -96,7 +96,7 @@ gc::VideoCapturer::VideoCapturer(QObject *pParent): QObject(pParent)
 // +-----------------------------------------------------------
 void gc::VideoCapturer::startCapture(QString sGameplayTargetName, QString sPlayerTargetName)
 {
-	if (m_eState == Stopped)
+	if(m_eState == Stopped)
 	{
 		m_sGameplayTargetName = sGameplayTargetName;
 		m_sPlayerTargetName = sPlayerTargetName;

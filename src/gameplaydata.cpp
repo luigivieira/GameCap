@@ -24,15 +24,82 @@
 // +-----------------------------------------------------------
 gc::GamePlayData::GamePlayData(const uint iVideoDuration, const uint iSamples, const uint iInterval): QObject(NULL)
 {
-	// Initialize the data structures used for storage
+	// Initialization of the data with default values
+	m_iAge = 0;
+	m_eSex = Unknown;
+	m_bPlayVideogames = false;
+	m_eHoursPlayingVideogames = Empty;
+	m_bPlayedGameBefore = false;
+
 	uint iTimestamp = iVideoDuration;
 	for(uint i = 0; i < iSamples; i++)
 	{
 		m_mpReviewAnswers.insert(iTimestamp, { Undefined, Undefined, Undefined });
 		iTimestamp -= iInterval;
 	}
+
 	for (uint i = 0; i < GEQ_SIZE; i++)
 		m_aGEQ[i] = Undefined;
+}
+
+// +-----------------------------------------------------------
+uint gc::GamePlayData::GamePlayData::getAge() const
+{
+	return m_iAge;
+}
+
+// +-----------------------------------------------------------
+void gc::GamePlayData::setAge(const uint iAge)
+{
+	m_iAge = iAge;
+}
+
+// +-----------------------------------------------------------
+gc::GamePlayData::Sex gc::GamePlayData::getSex() const
+{
+	return m_eSex;
+}
+
+// +-----------------------------------------------------------
+void gc::GamePlayData::setSex(const Sex eSex)
+{
+	m_eSex = eSex;
+}
+
+// +-----------------------------------------------------------
+bool gc::GamePlayData::getPlaysVideogames() const
+{
+	return m_bPlayVideogames;
+}
+
+// +-----------------------------------------------------------
+void gc::GamePlayData::setPlaysVideogames(const bool bPlays)
+{
+	m_bPlayVideogames = bPlays;
+}
+
+// +-----------------------------------------------------------
+gc::GamePlayData::HoursPlayingVideogames gc::GamePlayData::getHoursPlayingVideogames() const
+{
+	return m_eHoursPlayingVideogames;
+}
+
+// +-----------------------------------------------------------
+void gc::GamePlayData::setHoursPlayingVideogames(const HoursPlayingVideogames eHours)
+{
+	m_eHoursPlayingVideogames = eHours;
+}
+
+// +-----------------------------------------------------------
+bool gc::GamePlayData::hasPlayedGameBefore() const
+{
+	return m_bPlayedGameBefore;
+}
+
+// +-----------------------------------------------------------
+void gc::GamePlayData::setHasPlayedGameBefore(const bool bHasPlayed)
+{
+	m_bPlayedGameBefore = bHasPlayed;
 }
 
 // +-----------------------------------------------------------
@@ -95,7 +162,7 @@ void gc::GamePlayData::setGEQAnswer(const int iQuestion, const gc::GamePlayData:
 }
 
 // +-----------------------------------------------------------
-bool gc::GamePlayData::save(const QString &sPath)
+bool gc::GamePlayData::save(const QString &sPath) const
 {
 	QString sSavePath;
 	if(sPath.right(1) != QDir::separator())
@@ -103,11 +170,27 @@ bool gc::GamePlayData::save(const QString &sPath)
 	else
 		sSavePath = sPath;
 
+	// Save the demographic information
+	QString sDemFile = QString("%1demographic_answers.csv").arg(sSavePath);
+	QFile oDemFile(sDemFile);
+	if (!oDemFile.open(QFile::WriteOnly | QFile::Truncate))
+		return false;
+
+	QTextStream oDemOut(&oDemFile);
+	oDemOut << "Age;Sex;PlayVideogames;HoursPlayingVideogames;PlayedGameBefore" << endl;
+	oDemOut << m_iAge << ";" << m_eSex << ";" << m_bPlayVideogames << ";" <<
+		       m_eHoursPlayingVideogames << ";" << m_bPlayedGameBefore;
+
+	oDemFile.close();
+
 	// Save the review answers
 	QString sRevFile = QString("%1review_answers.csv").arg(sSavePath);
 	QFile oRevFile(sRevFile);
 	if(!oRevFile.open(QFile::WriteOnly | QFile::Truncate))
+	{
+		oDemFile.remove();
 		return false;
+	}
 
 	QTextStream oRevOut(&oRevFile);
 	oRevOut << "Seconds;Frustration;Involvement;Fun" << endl;
@@ -126,6 +209,7 @@ bool gc::GamePlayData::save(const QString &sPath)
 	QFile oGEQFile(sGEQFile);
 	if(!oGEQFile.open(QFile::WriteOnly | QFile::Truncate))
 	{
+		oDemFile.remove();
 		oRevFile.remove();
 		return false;
 	}
@@ -142,4 +226,35 @@ bool gc::GamePlayData::save(const QString &sPath)
 	oGEQFile.close();
 
 	return true;
+}
+
+// +-----------------------------------------------------------
+bool gc::GamePlayData::isReviewCompleted() const
+{
+	bool bRet = true;
+	ReviewAnswers::const_iterator it;
+	for(it = m_mpReviewAnswers.cbegin(); it != m_mpReviewAnswers.cend(); ++it)
+	{
+		if(it.value().eFrustration == Undefined || it.value().eInvolvement == Undefined || it.value().eFun == Undefined)
+		{
+			bRet = false;
+			break;
+		}
+	}
+	return bRet;
+}
+
+// +-----------------------------------------------------------
+bool gc::GamePlayData::isGEQCompleted() const
+{
+	bool bRet = true;
+	for(uint i = 0; i < GEQ_SIZE; i++)
+	{
+		if(m_aGEQ[i] == Undefined)
+		{
+			bRet = false;
+			break;
+		}
+	}
+	return bRet;
 }
