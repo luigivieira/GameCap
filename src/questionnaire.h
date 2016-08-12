@@ -38,6 +38,7 @@ namespace gc
 
 		/** Types of questions allowed in questionnaires. */
 		enum QuestionType { Integer, String, Likert };
+		Q_ENUM(QuestionType)
 
 		/**
 		 * Class constructor.
@@ -62,11 +63,11 @@ namespace gc
 	protected slots:
 
 		/**
-		 * Captures signals indicating changes in questions made by the participant.
-		 * @param iIndex Index of the question that has changed, in range [0, n-1] (where
-		 * n is the number of questions 
+		 * Captures signals indicating changes in question fields made by the participant.
+		 * @param iIndex Index of the question field that has changed, in range [0, n-1]
+		 * (where n is the number of questions in the questionnaire).
 		 */
-		void questionChanged(const uint iIndex);
+		void fieldChanged(const uint iIndex);
 
 	signals:
 
@@ -75,6 +76,11 @@ namespace gc
 		 * filled up all answers.
 		 */
 		void completed();
+
+		/**
+		 *
+		 */
+		void questionChanged(const uint iIndex, const QuestionType eType, const QVariant oValue);
 
 	private:
 

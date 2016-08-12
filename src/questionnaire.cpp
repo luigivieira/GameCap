@@ -50,7 +50,7 @@ gc::Questionnaire::Questionnaire(const QString sTitle, const QString sDescriptio
 	m_pMainLayout->addSpacing(10);
 
 	m_pMapper = new QSignalMapper(this);
-	connect(m_pMapper, static_cast<void(QSignalMapper::*)(int)>(&QSignalMapper::mapped), this, &Questionnaire::questionChanged);
+	connect(m_pMapper, static_cast<void(QSignalMapper::*)(int)>(&QSignalMapper::mapped), this, &Questionnaire::fieldChanged);
 }
 
 // +-----------------------------------------------------------
@@ -124,8 +124,29 @@ bool gc::Questionnaire::isCompleted() const
 }
 
 // +-----------------------------------------------------------
-void gc::Questionnaire::questionChanged(const uint iIndex)
+void gc::Questionnaire::fieldChanged(const uint iIndex)
 {
+	Q_ASSERT(static_cast<uint>(m_vQuestionTypes.size()) >= iIndex);
+	QuestionType eType = m_vQuestionTypes[iIndex];
+
+	Q_ASSERT(static_cast<uint>(m_vQuestionFields.size()) >= iIndex);
+	QVariant vValue = QVariant::Invalid;
+	switch(eType)
+	{
+		case Integer:
+			vValue = static_cast<QSpinBox*>(m_vQuestionFields[iIndex])->value();
+			break;
+
+		case String:
+			vValue = static_cast<QLineEdit*>(m_vQuestionFields[iIndex])->text();
+			break;
+
+		case Likert:
+			vValue = static_cast<LikertScale*>(m_vQuestionFields[iIndex])->selected();
+			break;
+	}
+	emit questionChanged(iIndex, eType, vValue);
+
 	if(isCompleted())
 		emit completed();
 }

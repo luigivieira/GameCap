@@ -43,6 +43,16 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 	m_pVideoWidget = new QVideoWidget(this);
 	pFrame->layout()->addWidget(m_pVideoWidget);
 
+	// Create the media player
+	m_pMediaPlayer = new QMediaPlayer(this);
+	m_pMediaPlayer->setVideoOutput(m_pVideoWidget);
+
+	connect(m_pMediaPlayer, &QMediaPlayer::bufferStatusChanged, this, &VideoReviewer::onBufferStatusChanged);
+	connect(m_pMediaPlayer, &QMediaPlayer::durationChanged, this, &VideoReviewer::onDurationChanged);
+	connect(m_pMediaPlayer, static_cast<void(QMediaPlayer::*)(QMediaPlayer::Error)>(&QMediaPlayer::error), this, &VideoReviewer::onError);
+	connect(m_pMediaPlayer, &QMediaPlayer::mediaStatusChanged, this, &VideoReviewer::onMediaStatusChanged);
+	connect(m_pMediaPlayer, &QMediaPlayer::positionChanged, this, &VideoReviewer::onPositionChanged);
+
 	// Create the video controls
 	QHBoxLayout *pControlsLayout = new QHBoxLayout();
 	pLayout->addLayout(pControlsLayout);
@@ -57,6 +67,7 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 	VolumeButton *pVolumeButton = new VolumeButton(this);
 	pVolumeButton->setObjectName("volumeButton");
 	pControlsLayout->addWidget(pVolumeButton);
+	connect(pVolumeButton, &VolumeButton::volumeChanged, m_pMediaPlayer, &QMediaPlayer::setVolume);
 
 	m_pElapsedTime = new QLabel("00:00", this);
 	pControlsLayout->addWidget(m_pElapsedTime);
@@ -70,7 +81,7 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 
 	// Create the sample questionnaire
 	QString sTitle = tr("How were you feeling at that time?");
-	QString sDescription = tr("Please indicate how you felt while playing the game at the time the video is paused, for each of the following items.");
+	QString sDescription = tr("Please indicate how you were feeling while playing the game at the time the video is paused, for each of the following items.");
 	m_pQuestionnaire = new Questionnaire(sTitle, sDescription, this);
 	pLayout->addSpacing(20);
 	pLayout->addWidget(m_pQuestionnaire);
@@ -79,19 +90,8 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 	m_pQuestionnaire->addQuestion(Questionnaire::Likert, tr("2. I was feeling involved."));
 	m_pQuestionnaire->addQuestion(Questionnaire::Likert, tr("3. I was having fun."));
 
-	//m_pQuestionnaire->hide();
-
-	// Create the media player
-	m_pMediaPlayer = new QMediaPlayer(this);
-	m_pMediaPlayer->setVideoOutput(m_pVideoWidget);
-
-	connect(m_pMediaPlayer, &QMediaPlayer::bufferStatusChanged, this, &VideoReviewer::onBufferStatusChanged);
-	connect(m_pMediaPlayer, &QMediaPlayer::durationChanged, this, &VideoReviewer::onDurationChanged);
-	connect(m_pMediaPlayer, static_cast<void(QMediaPlayer::*)(QMediaPlayer::Error)>(&QMediaPlayer::error), this, &VideoReviewer::onError);
-	connect(m_pMediaPlayer, &QMediaPlayer::mediaStatusChanged, this, &VideoReviewer::onMediaStatusChanged);
-	connect(m_pMediaPlayer, &QMediaPlayer::positionChanged, this, &VideoReviewer::onPositionChanged);
-
-	connect(pVolumeButton, &VolumeButton::volumeChanged, m_pMediaPlayer, &QMediaPlayer::setVolume);
+	connect(m_pQuestionnaire, &Questionnaire::questionChanged, this, &VideoReviewer::onQuestionChanged);
+	connect(m_pQuestionnaire, &Questionnaire::completed, this, &VideoReviewer::onQuestionnaireCompleted);
 }
 
 // +-----------------------------------------------------------
@@ -182,4 +182,16 @@ void gc::VideoReviewer::onPlayPauseClicked()
 	}
 	m_pPlayPauseButton->style()->unpolish(m_pPlayPauseButton);
 	m_pPlayPauseButton->style()->polish(m_pPlayPauseButton);
+}
+
+// +-----------------------------------------------------------
+void gc::VideoReviewer::onQuestionChanged(const uint iIndex, const Questionnaire::QuestionType eType, const QVariant oValue)
+{
+	
+}
+
+// +-----------------------------------------------------------
+void gc::VideoReviewer::onQuestionnaireCompleted()
+{
+	
 }

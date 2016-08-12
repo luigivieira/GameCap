@@ -66,6 +66,10 @@ namespace gc
 
 		void onPlayPauseClicked();
 
+		void onQuestionChanged(const uint iIndex, const Questionnaire::QuestionType eType, const QVariant oValue);
+
+		void onQuestionnaireCompleted();
+
 	private:
 
 		/** Media player used to access and play the video files. */
