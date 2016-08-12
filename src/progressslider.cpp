@@ -24,6 +24,7 @@
 // +-----------------------------------------------------------
 gc::ProgressSlider::ProgressSlider(QWidget *pParent) : QSlider(Qt::Horizontal, pParent)
 {
+	setCursor(Qt::PointingHandCursor);
 	setTickInterval(30);
 
 	// Force horizontal orientation and no default ticks (the ticks will be drawn

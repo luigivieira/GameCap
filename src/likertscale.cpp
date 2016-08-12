@@ -66,7 +66,7 @@ void gc::LikertScale::updateTranslations()
 }
 
 // +-----------------------------------------------------------
-int gc::LikertScale::getSelectedOption() const
+int gc::LikertScale::selected() const
 {
 	return m_iSelected;
 }

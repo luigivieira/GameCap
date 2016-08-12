@@ -48,6 +48,7 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 	pLayout->addLayout(pControlsLayout);
 
 	m_pPlayPauseButton = new QPushButton(this);
+	m_pPlayPauseButton->setCursor(Qt::PointingHandCursor);
 	m_pPlayPauseButton->setObjectName("playPauseButton");
 	m_pPlayPauseButton->setProperty("state", "playing");
 	pControlsLayout->addWidget(m_pPlayPauseButton);

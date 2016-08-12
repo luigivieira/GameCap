@@ -23,6 +23,7 @@
 #include <QLabel>
 #include <QVector>
 #include <QBoxLayout>
+#include <QSignalMapper>
 
 namespace gc
 {
@@ -52,6 +53,29 @@ namespace gc
 		 */
 		bool addQuestion(const QuestionType eType, const QString sTitle);
 
+		/**
+		 * Queries if the questionnaire is completed.
+		 * @return Boolean value indicating if the questionnaire is completed or not.
+		 */
+		bool isCompleted() const;
+
+	protected slots:
+
+		/**
+		 * Captures signals indicating changes in questions made by the participant.
+		 * @param iIndex Index of the question that has changed, in range [0, n-1] (where
+		 * n is the number of questions 
+		 */
+		void questionChanged(const uint iIndex);
+
+	signals:
+
+		/**
+		 * Signals the completion of the questionnaire, when the participant has
+		 * filled up all answers.
+		 */
+		void completed();
+
 	private:
 
 		/** Main layout for adding controls. */
@@ -71,6 +95,9 @@ namespace gc
 
 		/** Vector with the question field objects (used for capturing the data). */
 		QVector<QWidget*> m_vQuestionFields;
+
+		/** Signal mapper used for triggering the changed signal upon field updates. */
+		QSignalMapper *m_pMapper;
 	};
 }
 

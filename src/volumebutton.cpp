@@ -24,6 +24,7 @@
 // +-----------------------------------------------------------
 gc::VolumeButton::VolumeButton(QWidget *pParent) : QToolButton(pParent)
 {
+	setCursor(Qt::PointingHandCursor);
 	setPopupMode(QToolButton::InstantPopup);
 
 	QWidget *pPopup = new QWidget(this);
@@ -31,12 +32,14 @@ gc::VolumeButton::VolumeButton(QWidget *pParent) : QToolButton(pParent)
 	m_pSlider = new QSlider(Qt::Horizontal, pPopup);
 	m_pSlider->setRange(0, 100);
 	m_pSlider->setValue(100);
+	m_pSlider->setCursor(Qt::PointingHandCursor);
 	setProperty("volume", "high");
 	connect(m_pSlider, &QAbstractSlider::valueChanged, this, &VolumeButton::onSliderValueChanged);
 
 	m_pLabel = new QLabel(m_pSlider);
 	m_pLabel->setAlignment(Qt::AlignCenter);
 	m_pLabel->setText("100%");
+	m_pLabel->setCursor(Qt::ArrowCursor);
 	m_pLabel->setMinimumWidth(m_pLabel->sizeHint().width());
 
 	QBoxLayout *pPopupLayout = new QHBoxLayout(pPopup);
@@ -49,6 +52,7 @@ gc::VolumeButton::VolumeButton(QWidget *pParent) : QToolButton(pParent)
 
 	m_pMenu = new QMenu(this);
 	m_pMenu->addAction(pAction);
+	m_pMenu->setCursor(Qt::PointingHandCursor);
 	setMenu(m_pMenu);
 }
 

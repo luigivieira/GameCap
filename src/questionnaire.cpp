@@ -48,6 +48,9 @@ gc::Questionnaire::Questionnaire(const QString sTitle, const QString sDescriptio
 	pLine->setLineWidth(1);
 	m_pMainLayout->addWidget(pLine);
 	m_pMainLayout->addSpacing(10);
+
+	m_pMapper = new QSignalMapper(this);
+	connect(m_pMapper, static_cast<void(QSignalMapper::*)(int)>(&QSignalMapper::mapped), this, &Questionnaire::questionChanged);
 }
 
 // +-----------------------------------------------------------
@@ -60,16 +63,19 @@ bool gc::Questionnaire::addQuestion(const QuestionType eType, const QString sTit
 		case Integer:
 			pLayout = new QHBoxLayout();
 			pField = new QSpinBox(this);
+			connect(static_cast<QSpinBox*>(pField), static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), m_pMapper, static_cast<void(QSignalMapper::*)()>(&QSignalMapper::map));
 			break;
 
 		case String:
 			pLayout = new QHBoxLayout();
 			pField = new QLineEdit(this);
+			connect(static_cast<QLineEdit*>(pField), &QLineEdit::editingFinished, m_pMapper, static_cast<void(QSignalMapper::*)()>(&QSignalMapper::map));
 			break;
 
 		case Likert:
 			pLayout = new QVBoxLayout();
 			pField = new LikertScale(this);
+			connect(static_cast<LikertScale*>(pField), &LikertScale::answerSelected, m_pMapper, static_cast<void(QSignalMapper::*)()>(&QSignalMapper::map));
 			break;
 
 		default:
@@ -77,7 +83,7 @@ bool gc::Questionnaire::addQuestion(const QuestionType eType, const QString sTit
 	}
 	QLabel *pLabel = new QLabel(sTitle, this);
 	pLabel->setObjectName("questionnaireQuestion");
-	
+
 	pLayout->addWidget(pLabel);
 	pLayout->addWidget(pField);
 	m_pMainLayout->addLayout(pLayout);
@@ -86,5 +92,40 @@ bool gc::Questionnaire::addQuestion(const QuestionType eType, const QString sTit
 	m_vQuestionLabels.push_back(pLabel);
 	m_vQuestionFields.push_back(pField);
 
+	m_pMapper->setMapping(pField, m_vQuestionFields.length() - 1);
 	return true;
+}
+
+// +-----------------------------------------------------------
+bool gc::Questionnaire::isCompleted() const
+{
+	bool bRet = true;
+	for(int i = 0; i < m_vQuestionTypes.size(); i++)
+	{
+		Q_ASSERT(m_vQuestionTypes.size() > i);
+		switch(m_vQuestionTypes[i])
+		{
+			case Integer:
+				bRet = bRet && static_cast<QSpinBox*>(m_vQuestionFields[i])->value() != 0;
+				break;
+
+			case String:
+				bRet = bRet && static_cast<QLineEdit*>(m_vQuestionFields[i])->text().length() != 0;
+				break;
+
+			case Likert:
+				bRet = bRet && static_cast<LikertScale*>(m_vQuestionFields[i])->selected() != -1;
+				break;
+		}
+		if(!bRet)
+			break;
+	}
+	return bRet;
+}
+
+// +-----------------------------------------------------------
+void gc::Questionnaire::questionChanged(const uint iIndex)
+{
+	if(isCompleted())
+		emit completed();
 }

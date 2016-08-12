@@ -45,7 +45,7 @@ namespace gc
 		 * @return Integer with the index of the currently selected option,
 		 * or -1 if no option is selected.
 		 */
-		int getSelectedOption() const;
+		int selected() const;
 
 		/**
 		 * Updates the strings due to locale changes.
