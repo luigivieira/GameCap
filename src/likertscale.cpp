@@ -20,13 +20,10 @@
 #include <QBoxLayout>
 
 // +-----------------------------------------------------------
-gc::LikertScale::LikertScale(QString sTitle, QWidget *pParent) : QWidget(pParent)
+gc::LikertScale::LikertScale(QWidget *pParent) : QWidget(pParent)
 {
 	QVBoxLayout *pLayout = new QVBoxLayout();
 	setLayout(pLayout);
-
-	m_pTitle = new QLabel(this);
-	pLayout->addWidget(m_pTitle);
 
 	QHBoxLayout *pOptionsLayout = new QHBoxLayout();
 	pLayout->addLayout(pOptionsLayout);
@@ -39,12 +36,13 @@ gc::LikertScale::LikertScale(QString sTitle, QWidget *pParent) : QWidget(pParent
 
 	foreach(QRadioButton *pButton, m_lButtons)
 	{
+		pButton->setCursor(Qt::PointingHandCursor);
 		pOptionsLayout->addWidget(pButton);
 		connect(pButton, &QRadioButton::toggled, this, &LikertScale::onButtonToggled);
 	}
 
-	m_eSelected = GamePlayData::Undefined;
-	updateStrings(sTitle);
+	m_iSelected = -1;
+	updateTranslations();
 }
 
 // +-----------------------------------------------------------
@@ -52,20 +50,24 @@ void gc::LikertScale::onButtonToggled(bool bChecked)
 {
 	if (bChecked)
 	{
-		int iIndex = m_lButtons.indexOf((QRadioButton *) sender());
-		m_eSelected = (GamePlayData::AnswerValue) (iIndex - 2);
-		emit answerSelected(m_eSelected);
+		m_iSelected = m_lButtons.indexOf((QRadioButton *) sender());
+		emit answerSelected(m_iSelected);
 	}
 }
 
 // +-----------------------------------------------------------
-void gc::LikertScale::updateStrings(QString sTitle)
+void gc::LikertScale::updateTranslations()
 {
-	m_pTitle->setText(sTitle);
 	m_lButtons[0]->setText(tr("not at all"));
 	m_lButtons[1]->setText(tr("slightly"));
 	m_lButtons[2]->setText(tr("moderately"));
 	m_lButtons[3]->setText(tr("fairly"));
 	m_lButtons[4]->setText(tr("extremely"));
+}
+
+// +-----------------------------------------------------------
+int gc::LikertScale::getSelectedOption() const
+{
+	return m_iSelected;
 }
 

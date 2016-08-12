@@ -20,6 +20,7 @@
 #define VIDEO_REVIWER_H
 
 #include "progressslider.h"
+#include "questionnaire.h"
 #include <QWidget>
 #include <QBoxLayout>
 #include <QPushButton>
@@ -86,7 +87,7 @@ namespace gc
 		QLabel *m_pRemainingTime;
 
 		/** Holds the questionnaire displayed to the user at each video tick. */
-		QWidget *m_pQuestionnaire;
+		Questionnaire *m_pQuestionnaire;
 
 	};
 }

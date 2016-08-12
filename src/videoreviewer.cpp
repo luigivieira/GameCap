@@ -19,7 +19,6 @@
 #include "videoreviewer.h"
 #include "application.h"
 #include "volumebutton.h"
-#include "likertscale.h"
 #include <QFrame>
 #include <QStyle>
 #include <QTime>
@@ -68,26 +67,18 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 	m_pRemainingTime = new QLabel("00:00", this);
 	pControlsLayout->addWidget(m_pRemainingTime);
 
-	// Create the questionnaire
-	m_pQuestionnaire = new QWidget(this);
+	// Create the sample questionnaire
+	QString sTitle = tr("How were you feeling at that time?");
+	QString sDescription = tr("Please indicate how you felt while playing the game at the time the video is paused, for each of the following items.");
+	m_pQuestionnaire = new Questionnaire(sTitle, sDescription, this);
+	pLayout->addSpacing(20);
 	pLayout->addWidget(m_pQuestionnaire);
 
-	QVBoxLayout *pQLayout = new QVBoxLayout();
-	m_pQuestionnaire->setLayout(pQLayout);
+	m_pQuestionnaire->addQuestion(Questionnaire::Likert, tr("1. I was feeling frustrated."));
+	m_pQuestionnaire->addQuestion(Questionnaire::Likert, tr("2. I was feeling involved."));
+	m_pQuestionnaire->addQuestion(Questionnaire::Likert, tr("3. I was having fun."));
 
-	QLabel *pLabel = new QLabel(tr("At the moment the video is paused, did you ..."), m_pQuestionnaire);
-	pQLayout->addWidget(pLabel);
-
-	LikertScale *pQuestion = new LikertScale(tr("... feel frustrated?"), m_pQuestionnaire);
-	pQLayout->addWidget(pQuestion);
-
-	pQuestion = new LikertScale(tr("... feel involved?"), m_pQuestionnaire);
-	pQLayout->addWidget(pQuestion);
-
-	pQuestion = new LikertScale(tr("... have fun?"), m_pQuestionnaire);
-	pQLayout->addWidget(pQuestion);
-
-	m_pQuestionnaire->hide();
+	//m_pQuestionnaire->hide();
 
 	// Create the media player
 	m_pMediaPlayer = new QMediaPlayer(this);

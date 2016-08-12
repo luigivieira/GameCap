@@ -196,7 +196,17 @@ gc--ProgressSlider::handle:horizontal:disabled
     border-radius: 4px;
 }
 
-gc--LikertScale QLabel
+gc--Questionnaire QLabel#questionnaireTitle
+{
+    font-size: 40px;
+}
+
+gc--Questionnaire QLabel#questionnaireDescription
+{
+    font-size: 30px;
+}
+
+gc--Questionnaire QLabel#questionnaireQuestion
 {
     font-size: 25px;
 }

@@ -22,7 +22,6 @@
 #include <QWidget>
 #include <QLabel>
 #include <QRadioButton>
-#include "gameplaydata.h"
 
 namespace gc
 {
@@ -36,20 +35,24 @@ namespace gc
 
         /**
          * Class constructor.
-		 * @param sTitle String with the title for the question.
          * @param pParent Instance of a QWidget with the parent of this component.
          * The default is NULL.
          */
-		LikertScale(QString sTitle, QWidget *pParent = NULL);
+		LikertScale(QWidget *pParent = NULL);
 
 		/**
-		 * Updates the strings used by the component, guaranteeing that the
-		 * component is properly translated according to the current language.
-		 * @param sTitle String with the updated title.
+		 * Gets the index of the currently selected option.
+		 * @return Integer with the index of the currently selected option,
+		 * or -1 if no option is selected.
 		 */
-		void updateStrings(QString sTitle);
+		int getSelectedOption() const;
 
-	public slots:
+		/**
+		 * Updates the strings due to locale changes.
+		 */
+		void updateTranslations();
+
+	protected slots:
 
 		/**
 		 * Captures the toggle indications from the radio buttons.
@@ -61,20 +64,18 @@ namespace gc
 
 		/**
 		 * Indicates that an answer has been selected/changed.
-		 * @eSelected Value of the gc::GamePlayData::AnswerValue enumeration with the selected value.
+		 * @param iSelected Integer with the index of the currently selected option,
+		 * or -1 if no option is selected.
 		 */
-		void answerSelected(gc::GamePlayData::AnswerValue eSelected);
+		void answerSelected(const int iSelected);
 
 	private:
-
-		/** Title of the question asked. */
-		QLabel *m_pTitle;
 		
 		/** List of buttons for the options. */
 		QList<QRadioButton *> m_lButtons;
 
-		/** Currently selected option. */
-		GamePlayData::AnswerValue m_eSelected;
+		/** Index of the currently selected option. */
+		int m_iSelected;
 	};
 }
 
