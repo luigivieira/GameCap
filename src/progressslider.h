@@ -34,10 +34,16 @@ namespace gc
 
         /**
          * Class constructor.
+		 * @param iNumberOfTicks Integer with the number of ticks to be presented,
+		 * from the end of the progress bar towards the start according to the
+		 * configured interval between them.
+		 * @param iTickInterval Integer with the time interval, in seconds, 
+		 * between ticks. The number of ticks configured will be spaced according
+		 * to this time interval.
          * @param pParent Instance of a QWidget with the parent of this component.
          * The default is NULL.
          */
-		ProgressSlider(QWidget *pParent = NULL);
+		ProgressSlider(const uint iNumberOfTicks, const uint iTickInterval, QWidget *pParent = NULL);
 
 	protected:
 
@@ -59,8 +65,17 @@ namespace gc
 		 */
 		void paintEvent(QPaintEvent *pEvent);
 
+		/**
+		 * Captures the mouse press event, so the slider can be "jump" upon
+		 * the user's click on the bar.
+		 * @param pEvent Instance of the QMouseEvent with the event data.
+		 */
 		void mousePressEvent(QMouseEvent *pEvent);
 
+	private:
+
+		/** Number of ticks to display. */
+		uint m_iNumberOfTicks;
 	};
 }
 

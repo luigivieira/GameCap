@@ -19,9 +19,8 @@
 #ifndef GAME_PLAY_DATA_H
 #define GAME_PLAY_DATA_H
 
-#include "application.h"
-#include <QWizardPage>
-#include <QLabel>
+#include <QObject>
+#include <QMap>
 
 // Size of the GEQ questionnaire.
 #define GEQ_SIZE 33
@@ -74,67 +73,75 @@ namespace gc
 
         /**
          * Class constructor.
-		 * @param iVideoDuration Integer with the duration of the videos captured, in seconds.
+		 * @param pParent Instance of a QObject to parent this instance. Default is NULL.
          */
-		GameplayData(const uint iVideoDuration, const uint iSamples, const uint iInterval);
+		GameplayData(QObject *pParent = NULL);
 
 		/**
-		 * Gets the stored age of the participant.
-		 * @return Unsigned integer with the age of the participant.
+		 * Setups the class so it can be used to collect data for another subject.
+		 * @param iVideoDuration Integer with the duration of the videos captured, in seconds.
+		 * @param iSamples Integer with the number of samples collected in the gameplay review.
+		 * @param iInterval Integer with the time interval (in seconds) for each collection in the gameplay review.
+		 */
+		void newSubject(const uint iVideoDuration, const uint iSamples, const uint iInterval);
+
+		/**
+		 * Gets the stored age of the subject.
+		 * @return Unsigned integer with the age of the subject.
 		 */
 		uint getAge() const;
 
 		/**
-		 * Sets the storad age of the participant.
-		 * @param iAge Unsigned integer with the age of the participant.
+		 * Sets the storad age of the subject.
+		 * @param iAge Unsigned integer with the age of the subject.
 		 */
 		void setAge(const uint iAge);
 
 		/**
-		 * Gets the stored sex of the participant.
-		 * @return Value of the Sex enumeration with the sex of the participant.
+		 * Gets the stored sex of the subject.
+		 * @return Value of the Sex enumeration with the sex of the subject.
 		 */
 		Sex getSex() const;
 
 		/**
-		 * Sets the storad sex of the participant.
-		 * @param eSex Value of the Sex enumeration with the sex of the participant.
+		 * Sets the storad sex of the subject.
+		 * @param eSex Value of the Sex enumeration with the sex of the subject.
 		 */
 		void setSex(const Sex eSex);
 
 		/**
-		 * Gets the stored indication on whether the participant plays videogames.
-		 * @return Boolean indicating if the participant plays or not videogames.
+		 * Gets the stored indication on whether the subject plays videogames.
+		 * @return Boolean indicating if the subject plays or not videogames.
 		 */
 		bool getPlaysVideogames() const;
 
 		/**
-		 * Sets the stored indication on whether the participant plays videogames.
-		 * @param bPlays Boolean indicating if the participant plays or not videogames.
+		 * Sets the stored indication on whether the subject plays videogames.
+		 * @param bPlays Boolean indicating if the subject plays or not videogames.
 		 */
 		void setPlaysVideogames(const bool bPlays);
 
 		/**
-		 * Gets the stored number of hours per week the participant plays videogames.
+		 * Gets the stored number of hours per week the subject plays videogames.
 		 * @return Value of the HoursPlayingVideogames enumeration with the number of hours.
 		 */
 		HoursPlayingVideogames getHoursPlayingVideogames() const;
 
 		/**
-		 * Sets the stored number of hours per week the participant plays videogames.
+		 * Sets the stored number of hours per week the subject plays videogames.
 		 * @param eHours Value of the HoursPlayingVideogames enumeration with the number of hours.
 		 */
 		void setHoursPlayingVideogames(const HoursPlayingVideogames eHours);
 
 		/**
-		 * Gets the stored indication on whether the participant has played the tested game before.
-		 * @return Boolean indicating if the participant has played the game or not.
+		 * Gets the stored indication on whether the subject has played the tested game before.
+		 * @return Boolean indicating if the subject has played the game or not.
 		 */
 		bool hasPlayedGameBefore() const;
 
 		/**
-		 * Sets the stored indication on whether the participant has played the tested game before.
-		 * @param bHasPlayed Boolean indicating if the participant has played the game or not.
+		 * Sets the stored indication on whether the subject has played the tested game before.
+		 * @param bHasPlayed Boolean indicating if the subject has played the game or not.
 		 */
 		void setHasPlayedGameBefore(const bool bHasPlayed);
 
@@ -194,19 +201,19 @@ namespace gc
 
 	private:
 
-		/** Age of the participant. */
+		/** Age of the subject. */
 		uint m_iAge;
 
-		/** Sex of the participant. */
+		/** Sex of the subject. */
 		Sex m_eSex;
 
-		/** Indication if the participant usually plays videogames. */
+		/** Indication if the subject usually plays videogames. */
 		bool m_bPlayVideogames;
 
-		/** Number of hours per week the participant usually plays videogames. */
+		/** Number of hours per week the subject usually plays videogames. */
 		HoursPlayingVideogames m_eHoursPlayingVideogames;
 
-		/** Indication if the participant has played before the game used in the experiment. */
+		/** Indication if the subject has played before the game used in the experiment. */
 		bool m_bPlayedGameBefore;
 
 		/** Structure to store the answers for a givem sample. */

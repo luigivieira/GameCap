@@ -36,6 +36,8 @@ using namespace std;
 #define SETTING_LOG_LEVEL "logLevel"
 #define SETTING_DATA_PATH "dataPath"
 #define SETTING_GAMEPLAY_TIME_LIMIT "gameplayTimeLimit"
+#define SETTING_GAMEPLAY_REVIEW_SAMPLES "gameplayReviewSamples"
+#define SETTING_GAMEPLAY_REVIEW_INTERVAL "gameplayReviewInterval"
 #define SETTING_LAST_SUBJECT_ID "lastSubjectID"
 
 #define SUBJECT_FOLDER QString().sprintf("%s%csubject_%03d%c", qPrintable(m_sDataPath), QDir::separator(), m_iSubjectID, QDir::separator())
@@ -68,6 +70,8 @@ gc::Application::Application(int& argc, char** argv): QApplication(argc, argv)
 	m_eCurrentLanguage = (Language) m_pSettings->value(SETTING_DEFAULT_LANGUAGE, EN_UK).toInt();
 	m_eLogLevel = (LogLevel) m_pSettings->value(SETTING_LOG_LEVEL, Fatal).toInt();
 	m_iGameplayTimeLimit = m_pSettings->value(SETTING_GAMEPLAY_TIME_LIMIT, 60).toUInt();
+	m_iGameplayReviewSamples = m_pSettings->value(SETTING_GAMEPLAY_REVIEW_SAMPLES, 10).toUInt();
+	m_iGameplayReviewInterval = m_pSettings->value(SETTING_GAMEPLAY_REVIEW_INTERVAL, 30).toUInt();
 	m_sDataPath = m_pSettings->value(SETTING_DATA_PATH, "").toString();
 	m_iSubjectID = m_pSettings->value(SETTING_LAST_SUBJECT_ID, 0).toUInt();
 	m_pSettings->endGroup();
@@ -112,6 +116,8 @@ gc::Application::Application(int& argc, char** argv): QApplication(argc, argv)
 	qDebug("Running from %s", qPrintable(QCoreApplication::applicationFilePath()));
 	qDebug() << "Configured log level is: " << m_eLogLevel;
 	qDebug() << "Configured gameplay time limit is: " << m_iGameplayTimeLimit;
+	qDebug() << "Configured gameplay review samples is: " << m_iGameplayReviewSamples;
+	qDebug() << "Configured gameplay review interval is: " << m_iGameplayReviewInterval;
 	qDebug() << "Configured data path is: " << m_sDataPath;
 
 	// Prepares the access to the video recordings and the games
@@ -142,7 +148,7 @@ gc::Application::~Application()
 }
 
 // +-----------------------------------------------------------
-unsigned int gc::Application::getSubjectID() const
+uint gc::Application::getSubjectID() const
 {
 	return m_iSubjectID;
 }
@@ -151,6 +157,7 @@ unsigned int gc::Application::getSubjectID() const
 void gc::Application::newSubject()
 {
 	m_iSubjectID++;
+	m_oGameplayData.newSubject(m_iGameplayTimeLimit, m_iGameplayReviewSamples, m_iGameplayReviewInterval);
 	m_pGamePlayer->selectNextGame();
 }
 
@@ -409,4 +416,16 @@ void gc::Application::onCaptureEnded(gc::VideoCapturer::CaptureResult eResult)
 			break;
 	}
 	
+}
+
+// +-----------------------------------------------------------
+uint gc::Application::getGameplayReviewSamples() const
+{
+	return m_iGameplayReviewSamples;
+}
+
+// +-----------------------------------------------------------
+uint gc::Application::getGameplayReviewInterval() const
+{
+	return m_iGameplayReviewInterval;
 }

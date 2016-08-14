@@ -21,6 +21,7 @@
 
 #include "gameplayer.h"
 #include "videocapturer.h"
+#include "gameplaydata.h"
 #include <QApplication>
 #include <QSettings>
 #include <QKeySequence>
@@ -125,7 +126,7 @@ namespace gc
 		 * Queries the current subject identifier.
 		 * @return Unsigned integer with the value of the current subject identifier.
 		 */
-		unsigned int getSubjectID() const;
+		uint getSubjectID() const;
 
 		/**
 		 * Prepares the experiment to capture a new subject.
@@ -152,6 +153,19 @@ namespace gc
 		 * @return QString with the video file name and path.
 		 */
 		QString getGameplayFile();
+
+		/**
+		 * Gets the configured number of samples for the gameplay review.
+		 * @return Unsigned integer with the configured number of samples.
+		 */
+		uint getGameplayReviewSamples() const;
+
+		/**
+		 * Gets the configured time interval (in seconds) between samples in the
+		 * gameplay review.
+		 * @return Unsigned integer with the configured time interval in seconds.
+		 */
+		uint getGameplayReviewInterval() const;
 
 	protected slots:
 
@@ -197,7 +211,7 @@ namespace gc
 		 * Indicates the remaining time for the gameplay session.
 		 * @param iTimeRemaining Time of gameplay remaining, in seconds.
 		 */
-		void gameplayTimeRemaining(unsigned int iTimeRemaining);
+		void gameplayTimeRemaining(uint iTimeRemaining);
 
 		/**
 		 * Indicates that that the gameplay has been successfully completed.
@@ -264,13 +278,19 @@ namespace gc
 		QSettings *m_pSettings;
 
 		/** Time limit in seconds for the gameplay session. */
-		unsigned int m_iGameplayTimeLimit;
+		uint m_iGameplayTimeLimit;
+
+		/** Number of samples for the gameplay review. */
+		uint m_iGameplayReviewSamples;
+
+		/** Time interval in seconds for the samples in gameplay review. */
+		uint m_iGameplayReviewInterval;
 
 		/** Identifier of the current subject. */
-		unsigned int m_iSubjectID;
+		uint m_iSubjectID;
 
 		/** Remaining time (in seconds) for the game session. */
-		unsigned int m_iTimeRemaining;
+		uint m_iTimeRemaining;
 
 		/** Timer used to limit the game session. */
 		QTimer m_oTimer;
@@ -280,6 +300,9 @@ namespace gc
 
 		/** File with the gameplay video for the current subject. */
 		QString m_sGameplayFile;
+
+		/** Manages the gameplay data captured for the current subject. */
+		GameplayData m_oGameplayData;
 	};
 }
 

@@ -20,9 +20,15 @@
 #include "likertscale.h"
 #include <QFile>
 #include <QDir>
+#include <QTextStream>
 
 // +-----------------------------------------------------------
-gc::GameplayData::GameplayData(const uint iVideoDuration, const uint iSamples, const uint iInterval): QObject(NULL)
+gc::GameplayData::GameplayData(QObject *pParent): QObject(pParent)
+{
+}
+
+// +-----------------------------------------------------------
+void gc::GameplayData::newSubject(const uint iVideoDuration, const uint iSamples, const uint iInterval)
 {
 	// Initialization of the data with default values
 	m_iAge = 0;
@@ -32,7 +38,8 @@ gc::GameplayData::GameplayData(const uint iVideoDuration, const uint iSamples, c
 	m_bPlayedGameBefore = false;
 
 	uint iTimestamp = iVideoDuration;
-	for(uint i = 0; i < iSamples; i++)
+	m_mpReviewAnswers.clear();
+	for (uint i = 0; i < iSamples; i++)
 	{
 		m_mpReviewAnswers.insert(iTimestamp, { Undefined, Undefined, Undefined });
 		iTimestamp -= iInterval;

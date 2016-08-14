@@ -30,7 +30,7 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 	QVBoxLayout *pLayout = new QVBoxLayout();
 	setLayout(pLayout);
 
-	// Create the video widget with a "TV" frame around it
+	// Create the video widget with a nice frame around it
 	QFrame *pFrame = new QFrame(this);
 	pFrame->setFrameStyle(QFrame::Box | QFrame::Raised);
 	pFrame->setLineWidth(1);
@@ -71,8 +71,9 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 
 	m_pElapsedTime = new QLabel("00:00", this);
 	pControlsLayout->addWidget(m_pElapsedTime);
-
-	m_pProgressSlider = new ProgressSlider(this);
+	
+	Application *pApp = static_cast<Application*>(qApp);
+	m_pProgressSlider = new ProgressSlider(pApp->getGameplayReviewSamples(), pApp->getGameplayReviewInterval(), this);
 	pControlsLayout->addWidget(m_pProgressSlider);
 	connect(m_pProgressSlider, &QSlider::actionTriggered, this, &VideoReviewer::onActionTriggered);
 
