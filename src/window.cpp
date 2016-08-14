@@ -56,7 +56,7 @@ gc::Window::Window(QWidget *pParent) : QWizard(pParent)
 	setPage(Page_Start, new StartPage(this));
 	setPage(Page_Intro, new IntroPage(this));
 	setPage(Page_GameInfo, new GameInfoPage(this));
-	setPage(Page_GamePlay, new GamePlayPage(this));
+	setPage(Page_GamePlay, new GameplayPage(this));
 	setPage(Page_ReviewInfo, new ReviewInfoPage(this));
 	setPage(Page_GameReview, new GameReviewPage(this));
 	setPage(Page_EtnoData, new EtnoDataPage(this));

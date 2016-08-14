@@ -28,7 +28,7 @@ namespace gc
 	/**
 	 * Page class in the wizard application displayed while the game is played.
 	 */
-	class GamePlayPage : public QWizardPage
+	class GameplayPage : public QWizardPage
 	{
 		Q_OBJECT
 	public:
@@ -38,7 +38,7 @@ namespace gc
          * @param pParent Instance of a QWidget with the parent of this page.
          * The default is NULL.
          */
-		GamePlayPage(QWidget *pParent = NULL);
+		GameplayPage(QWidget *pParent = NULL);
 
 	protected:
 

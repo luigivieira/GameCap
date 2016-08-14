@@ -22,7 +22,7 @@
 #include <QDir>
 
 // +-----------------------------------------------------------
-gc::GamePlayData::GamePlayData(const uint iVideoDuration, const uint iSamples, const uint iInterval): QObject(NULL)
+gc::GameplayData::GameplayData(const uint iVideoDuration, const uint iSamples, const uint iInterval): QObject(NULL)
 {
 	// Initialization of the data with default values
 	m_iAge = 0;
@@ -43,67 +43,67 @@ gc::GamePlayData::GamePlayData(const uint iVideoDuration, const uint iSamples, c
 }
 
 // +-----------------------------------------------------------
-uint gc::GamePlayData::GamePlayData::getAge() const
+uint gc::GameplayData::getAge() const
 {
 	return m_iAge;
 }
 
 // +-----------------------------------------------------------
-void gc::GamePlayData::setAge(const uint iAge)
+void gc::GameplayData::setAge(const uint iAge)
 {
 	m_iAge = iAge;
 }
 
 // +-----------------------------------------------------------
-gc::GamePlayData::Sex gc::GamePlayData::getSex() const
+gc::GameplayData::Sex gc::GameplayData::getSex() const
 {
 	return m_eSex;
 }
 
 // +-----------------------------------------------------------
-void gc::GamePlayData::setSex(const Sex eSex)
+void gc::GameplayData::setSex(const Sex eSex)
 {
 	m_eSex = eSex;
 }
 
 // +-----------------------------------------------------------
-bool gc::GamePlayData::getPlaysVideogames() const
+bool gc::GameplayData::getPlaysVideogames() const
 {
 	return m_bPlayVideogames;
 }
 
 // +-----------------------------------------------------------
-void gc::GamePlayData::setPlaysVideogames(const bool bPlays)
+void gc::GameplayData::setPlaysVideogames(const bool bPlays)
 {
 	m_bPlayVideogames = bPlays;
 }
 
 // +-----------------------------------------------------------
-gc::GamePlayData::HoursPlayingVideogames gc::GamePlayData::getHoursPlayingVideogames() const
+gc::GameplayData::HoursPlayingVideogames gc::GameplayData::getHoursPlayingVideogames() const
 {
 	return m_eHoursPlayingVideogames;
 }
 
 // +-----------------------------------------------------------
-void gc::GamePlayData::setHoursPlayingVideogames(const HoursPlayingVideogames eHours)
+void gc::GameplayData::setHoursPlayingVideogames(const HoursPlayingVideogames eHours)
 {
 	m_eHoursPlayingVideogames = eHours;
 }
 
 // +-----------------------------------------------------------
-bool gc::GamePlayData::hasPlayedGameBefore() const
+bool gc::GameplayData::hasPlayedGameBefore() const
 {
 	return m_bPlayedGameBefore;
 }
 
 // +-----------------------------------------------------------
-void gc::GamePlayData::setHasPlayedGameBefore(const bool bHasPlayed)
+void gc::GameplayData::setHasPlayedGameBefore(const bool bHasPlayed)
 {
 	m_bPlayedGameBefore = bHasPlayed;
 }
 
 // +-----------------------------------------------------------
-gc::GamePlayData::AnswerValue gc::GamePlayData::getReviewAnswer(const gc::GamePlayData::ReviewQuestion eQuestion, const uint iTimestamp) const
+gc::GameplayData::AnswerValue gc::GameplayData::getReviewAnswer(const ReviewQuestion eQuestion, const uint iTimestamp) const
 {
 	ReviewAnswers::const_iterator it = m_mpReviewAnswers.find(iTimestamp);
 	if(it != m_mpReviewAnswers.constEnd())
@@ -125,7 +125,7 @@ gc::GamePlayData::AnswerValue gc::GamePlayData::getReviewAnswer(const gc::GamePl
 }
 
 // +-----------------------------------------------------------
-void gc::GamePlayData::setReviewAnswer(const gc::GamePlayData::ReviewQuestion eQuestion, const uint iTimestamp, const gc::GamePlayData::AnswerValue eAnswer)
+void gc::GameplayData::setReviewAnswer(const ReviewQuestion eQuestion, const uint iTimestamp, const AnswerValue eAnswer)
 {
 	ReviewAnswers::iterator it = m_mpReviewAnswers.find(iTimestamp);
 	if(it != m_mpReviewAnswers.end())
@@ -146,7 +146,7 @@ void gc::GamePlayData::setReviewAnswer(const gc::GamePlayData::ReviewQuestion eQ
 }
 
 // +-----------------------------------------------------------
-gc::GamePlayData::AnswerValue gc::GamePlayData::getGEQAnswer(const uint iQuestion) const
+gc::GameplayData::AnswerValue gc::GameplayData::getGEQAnswer(const uint iQuestion) const
 {
 	if(iQuestion < GEQ_SIZE)
 		return m_aGEQ[iQuestion];
@@ -155,14 +155,14 @@ gc::GamePlayData::AnswerValue gc::GamePlayData::getGEQAnswer(const uint iQuestio
 }
 
 // +-----------------------------------------------------------
-void gc::GamePlayData::setGEQAnswer(const int iQuestion, const gc::GamePlayData::AnswerValue eAnswer)
+void gc::GameplayData::setGEQAnswer(const int iQuestion, const AnswerValue eAnswer)
 {
 	if(iQuestion < GEQ_SIZE)
 		m_aGEQ[iQuestion] = eAnswer;
 }
 
 // +-----------------------------------------------------------
-bool gc::GamePlayData::save(const QString &sPath) const
+bool gc::GameplayData::save(const QString &sPath) const
 {
 	QString sSavePath;
 	if(sPath.right(1) != QDir::separator())
@@ -229,7 +229,7 @@ bool gc::GamePlayData::save(const QString &sPath) const
 }
 
 // +-----------------------------------------------------------
-bool gc::GamePlayData::isReviewCompleted() const
+bool gc::GameplayData::isReviewCompleted() const
 {
 	bool bRet = true;
 	ReviewAnswers::const_iterator it;
@@ -245,7 +245,7 @@ bool gc::GamePlayData::isReviewCompleted() const
 }
 
 // +-----------------------------------------------------------
-bool gc::GamePlayData::isGEQCompleted() const
+bool gc::GameplayData::isGEQCompleted() const
 {
 	bool bRet = true;
 	for(uint i = 0; i < GEQ_SIZE; i++)

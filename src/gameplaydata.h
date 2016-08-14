@@ -35,7 +35,7 @@ namespace gc
 	 * and also the answers for the GEQ (Game Experience Questionnaire) taken at the end
 	 * of the participation.
 	 */
-	class GamePlayData : public QObject
+	class GameplayData : public QObject
 	{
 		Q_OBJECT
 	public:
@@ -76,7 +76,7 @@ namespace gc
          * Class constructor.
 		 * @param iVideoDuration Integer with the duration of the videos captured, in seconds.
          */
-		GamePlayData(const uint iVideoDuration, const uint iSamples, const uint iInterval);
+		GameplayData(const uint iVideoDuration, const uint iSamples, const uint iInterval);
 
 		/**
 		 * Gets the stored age of the participant.
@@ -147,7 +147,7 @@ namespace gc
 		 * @return Value of the AnswerValue enumeration with the answer for frustration
 		 * in the given timestamp.
 		 */
-		gc::GamePlayData::AnswerValue getReviewAnswer(ReviewQuestion eQuestion, const uint iTimestamp) const;
+		AnswerValue getReviewAnswer(ReviewQuestion eQuestion, const uint iTimestamp) const;
 
 		/**
 		 * Sets the stored answer value for the given question at the given timestamp.
@@ -165,7 +165,7 @@ namespace gc
 		 * @param iQuestion Unsigned integer with the index of the question (in range [0, GEQ_SIZE-1]).
 		 * @return Value of the AnswerValue enumeration with the answer for the question.
 		 */
-		gc::GamePlayData::AnswerValue getGEQAnswer(const uint iQuestion) const;
+		AnswerValue getGEQAnswer(const uint iQuestion) const;
 
 		/**
 		 * Sets the stored answer value for the given GEQ question.

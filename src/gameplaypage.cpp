@@ -25,7 +25,7 @@
 #include "messagebox.h"
 
 // +-----------------------------------------------------------
-gc::GamePlayPage::GamePlayPage(QWidget *pParent) : QWizardPage(pParent)
+gc::GameplayPage::GameplayPage(QWidget *pParent) : QWizardPage(pParent)
 {
 	// Page layout and components
 	QVBoxLayout *pLayout = new QVBoxLayout(this);
@@ -49,14 +49,14 @@ gc::GamePlayPage::GamePlayPage(QWidget *pParent) : QWizardPage(pParent)
 	pLayout->addStretch();
 
 	// Connect to the required signals
-	connect(((Application*) qApp), &Application::gameplayTimeRemaining, this, &GamePlayPage::onGameplayTimeRemaining);
-	connect(((Application*) qApp), &Application::gameplayCompleted, this, &GamePlayPage::onGameplayCompleted);
-	connect(((Application*) qApp), &Application::gameplayCancelled, this, &GamePlayPage::onGameplayCancelled);
-	connect(((Application*) qApp), &Application::gameplayFailed, this, &GamePlayPage::onGameplayFailed);
+	connect(((Application*) qApp), &Application::gameplayTimeRemaining, this, &GameplayPage::onGameplayTimeRemaining);
+	connect(((Application*) qApp), &Application::gameplayCompleted, this, &GameplayPage::onGameplayCompleted);
+	connect(((Application*) qApp), &Application::gameplayCancelled, this, &GameplayPage::onGameplayCancelled);
+	connect(((Application*) qApp), &Application::gameplayFailed, this, &GameplayPage::onGameplayFailed);
 }
 
 // +-----------------------------------------------------------
-void gc::GamePlayPage::initializePage()
+void gc::GameplayPage::initializePage()
 {
 	Game *pGame = ((Application*) qApp)->gamePlayer()->currentGame();
 	m_pMessage->setText(tr("You are now playing %1. If you wish to quit the experiment, please quit from the game first.").arg(pGame->name()));
@@ -68,26 +68,26 @@ void gc::GamePlayPage::initializePage()
 }
 
 // +-----------------------------------------------------------
-void gc::GamePlayPage::startGameplay()
+void gc::GameplayPage::startGameplay()
 {
 	((Application*) qApp)->startGameplay();
 }
 
 // +-----------------------------------------------------------
-void gc::GamePlayPage::onGameplayTimeRemaining(unsigned int iTimeRemaining)
+void gc::GameplayPage::onGameplayTimeRemaining(unsigned int iTimeRemaining)
 {
 	QString sTime = QDateTime::fromTime_t(iTimeRemaining).toUTC().toString("mm:ss");
 	m_pRemainingTime->setText(tr("Remaining time playing: %1").arg(sTime));
 }
 
 // +-----------------------------------------------------------
-void gc::GamePlayPage::onGameplayCompleted()
+void gc::GameplayPage::onGameplayCompleted()
 {
 	wizard()->next();
 }
 
 // +-----------------------------------------------------------
-void gc::GamePlayPage::onGameplayCancelled()
+void gc::GameplayPage::onGameplayCancelled()
 {
 	Game *pGame = ((Application*) qApp)->gamePlayer()->currentGame();
 	MessageBox::infoMessage(this, tr("You have quit the game %1 before the required play time, hence quitting the experiment. Nevertheless, thank you very much for your time.").arg(pGame->name()));
@@ -95,7 +95,7 @@ void gc::GamePlayPage::onGameplayCancelled()
 }
 
 // +-----------------------------------------------------------
-void gc::GamePlayPage::onGameplayFailed(gc::Application::GameplayFailureReason eReason)
+void gc::GameplayPage::onGameplayFailed(gc::Application::GameplayFailureReason eReason)
 {
 	Game *pGame = ((Application*)qApp)->gamePlayer()->currentGame();
 	if(eReason == Application::FailedToStart)

@@ -164,6 +164,7 @@ void gc::VideoReviewer::onMediaStatusChanged(QMediaPlayer::MediaStatus eStatus)
 // +-----------------------------------------------------------
 void gc::VideoReviewer::onActionTriggered(int iAction)
 {
+	Q_UNUSED(iAction);
 	m_pMediaPlayer->setPosition(m_pProgressSlider->sliderPosition() * 1000);
 }
 

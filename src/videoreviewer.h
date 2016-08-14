@@ -46,28 +46,79 @@ namespace gc
          */
 		VideoReviewer(QWidget *pParent = NULL);
 
+		/**
+		 * Plays the video with the given filename.
+		 * @param sFileName Strig with the complete path and file name of the video to play.
+		 */
 		void playVideo(QString sFileName);
 
 	protected:
 
 	protected slots:
 
+		/**
+		 * Captures the signal indicating the buffering status of a video being loaded.
+		 * @param iPercentFilled Integer with the percentage loaded.
+		 */
 		void onBufferStatusChanged(int iPercentFilled);
 
+		/**
+		 * Captures the signal indicating the duration of the video loaded.
+		 * @param iDuration Integer of 64 bits with the duration in milliseconds of the video loaded.
+		 */
 		void onDurationChanged(qint64 iDuration);
 
+		/**
+		 * Captures the signal indicating changes in the position of video playback.
+		 * @param iPosition Integer of 64 bits with the current position of video in milliseconds.
+		 */
 		void onPositionChanged(qint64 iPosition);
 
+		/**
+		 * Captures the event of error in the media player.
+		 * @param eError Value of the QMediaPlayer::Error with the error that happened.
+		 */
 		void onError(QMediaPlayer::Error eError);
 
+		/**
+		 * Captures the event of changes in the media status.
+		 * @param eStatus Value of the enumeration QMediaPlayer::MediaStatus with the
+		 * current status of the media player.
+		 */
 		void onMediaStatusChanged(QMediaPlayer::MediaStatus eStatus);
 
+		/**
+		 * Captures the change events on the video progress slider, as the participant
+		 * or the system itself moves the slider position.
+		 * @param iAction Constant indicating the type of action performed on the
+		 * slider. It is not used, since all actions simply update the video current
+		 * position.
+		 */
 		void onActionTriggered(int iAction);
 
+		/**
+		 * Captures the play/paused toggle event of the video control button.
+		 */
 		void onPlayPauseClicked();
 
+		/**
+		 * Captures the signal indicating that a question in the questionnaire shown has
+		 * been changed by the participant.
+		 * @param iIndex Unsigned integer with the index of the question changed.
+		 * @param eType Value of the Questionnaire::QuestionType enumeration with the
+		 * type of the question changed.
+		 * @param oValue QVariant with the new value of the question. The contents depend
+		 * upon the question type. If the type is Integer, the value is an unsigned integer
+		 * with the content typed by the participant on the question. If the type is String,
+		 * the value is a QString with the content typed by the participant on the question.
+		 * If the type is Likert, the value is an integer representing the index of the option
+		 * chosen by the participant on the question.
+		 */
 		void onQuestionChanged(const uint iIndex, const Questionnaire::QuestionType eType, const QVariant oValue);
 
+		/**
+		 * Captures the signal indicating that the questionnaire shown has been completed.
+		 */
 		void onQuestionnaireCompleted();
 
 	private:
@@ -92,7 +143,6 @@ namespace gc
 
 		/** Holds the questionnaire displayed to the user at each video tick. */
 		Questionnaire *m_pQuestionnaire;
-
 	};
 }
 
