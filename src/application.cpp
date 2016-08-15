@@ -429,3 +429,9 @@ uint gc::Application::getGameplayReviewInterval() const
 {
 	return m_iGameplayReviewInterval;
 }
+
+// +-----------------------------------------------------------
+gc::GameplayData* gc::Application::getGameplayData()
+{
+	return &m_oGameplayData;
+}

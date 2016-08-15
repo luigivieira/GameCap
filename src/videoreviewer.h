@@ -143,6 +143,9 @@ namespace gc
 
 		/** Holds the questionnaire displayed to the user at each video tick. */
 		Questionnaire *m_pQuestionnaire;
+
+		/** Ticks for the sample capture in gameplay review. */
+		QVector<uint> m_vTicks;
 	};
 }
 

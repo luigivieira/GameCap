@@ -167,6 +167,12 @@ namespace gc
 		 */
 		uint getGameplayReviewInterval() const;
 
+		/**
+		 * Gets the pointer to the gameplay data instance.
+		 * @return Instance of the GameplayData used to store the captured data.
+		 */
+		GameplayData* getGameplayData();
+
 	protected slots:
 
 		/**

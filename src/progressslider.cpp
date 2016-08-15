@@ -35,6 +35,21 @@ gc::ProgressSlider::ProgressSlider(const uint iNumberOfTicks, const uint iTickIn
 }
 
 // +-----------------------------------------------------------
+QVector<uint> gc::ProgressSlider::getTicks() const
+{
+	QVector<uint> vRet;
+	int iCurrent = maximum() - 1;
+	uint iCount = m_iNumberOfTicks;
+	while (iCount > 0 && iCurrent >= minimum())
+	{
+		vRet.push_back(iCurrent);
+		iCurrent -= tickInterval();
+		iCount--;
+	}
+	return vRet;
+}
+
+// +-----------------------------------------------------------
 void gc::ProgressSlider::setTickPosition(TickPosition ePosition)
 {
 	QSlider::setTickPosition(ePosition);
@@ -58,23 +73,19 @@ void gc::ProgressSlider::paintEvent(QPaintEvent *pEvent)
 	QRect oHandle = style()->subControlRect(QStyle::CC_Slider, &oOpt, QStyle::SC_SliderHandle, this);
 
 	// draw tick marks manually
-	int iInterval = tickInterval();
-	if(iInterval == 0)
-		iInterval = pageStep();
+	QVector<uint> vTicks = getTicks();
 
 	QPen oPen(QColor("#a5a294"));
 	oPen.setWidth(4);
 	oPainter.setPen(oPen);
-	int iCurrent = maximum() - 1;
-	int h = height();
+
 	double dRange = static_cast<double>(maximum() - minimum());
-	for (int i = m_iNumberOfTicks; i > 0; i--)
+	foreach(uint iTick, vTicks)
 	{
-		double dPos = ((iCurrent - minimum()) / dRange) * (width() - oHandle.width()) + (oHandle.width() / 2.0);
+		double dPos = ((iTick - minimum()) / dRange) * (width() - oHandle.width()) + (oHandle.width() / 2.0);
 		int x = round(dPos) - 1;
 		int y = rect().top() + height() / 2;
-		oPainter.drawLine(x, y - h, x, y + h);
-		iCurrent -= iInterval;
+		oPainter.drawLine(x, y - height(), x, y + height());
 	}
 }
 

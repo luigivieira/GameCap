@@ -93,6 +93,8 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 
 	connect(m_pQuestionnaire, &Questionnaire::questionChanged, this, &VideoReviewer::onQuestionChanged);
 	connect(m_pQuestionnaire, &Questionnaire::completed, this, &VideoReviewer::onQuestionnaireCompleted);
+
+	m_pQuestionnaire->hide();
 }
 
 // +-----------------------------------------------------------
@@ -115,18 +117,27 @@ void gc::VideoReviewer::onDurationChanged(qint64 iDuration)
 {
 	qDebug() << "onDurationChanged(" << iDuration << ")";
 	m_pProgressSlider->setMaximum(iDuration / 1000);
+	m_vTicks = m_pProgressSlider->getTicks();
 }
 
 // +-----------------------------------------------------------
 void gc::VideoReviewer::onPositionChanged(qint64 iPosition)
 {
-	m_pProgressSlider->setValue(iPosition / 1000);
+	uint iPos = iPosition / 1000;
+	m_pProgressSlider->setValue(iPos);
 
-	QTime oElapsed = QTime(0, 0, 0).addSecs(iPosition / 1000);
-	QTime oRemaining = QTime(0, 0, 0).addSecs((m_pMediaPlayer->duration() / 1000) - (iPosition / 1000));
+	QTime oElapsed = QTime(0, 0, 0).addSecs(iPos);
+	QTime oRemaining = QTime(0, 0, 0).addSecs((m_pMediaPlayer->duration() / 1000) - (iPos));
 
 	m_pElapsedTime->setText(oElapsed.hour() > 0 ? oElapsed.toString("HH:mm:ss") : oElapsed.toString("mm:ss"));
 	m_pRemainingTime->setText(oRemaining.hour() > 0 ? oRemaining.toString("HH:mm:ss") : oRemaining.toString("mm:ss"));
+
+	if(!m_pQuestionnaire->isVisible() && m_vTicks.contains(iPos))
+	{
+		//GameplayData *pData = static_cast<Application*>(qApp)->getGameplayData();
+		m_pQuestionnaire->show();
+		QTimer::singleShot(10, this, &VideoReviewer::onPlayPauseClicked);
+	}
 }
 
 // +-----------------------------------------------------------

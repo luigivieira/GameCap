@@ -21,6 +21,7 @@
 
 #include <QSlider>
 #include <QMouseEvent>
+#include <QVector>
 
 namespace gc
 {
@@ -44,6 +45,12 @@ namespace gc
          * The default is NULL.
          */
 		ProgressSlider(const uint iNumberOfTicks, const uint iTickInterval, QWidget *pParent = NULL);
+
+		/**
+		 * Queries the vector of all ticks in the progress of the video replay.
+		 * @return QVector<uint> with the seconds of each tick in the video.
+		 */
+		QVector<uint> getTicks() const;
 
 	protected:
 
