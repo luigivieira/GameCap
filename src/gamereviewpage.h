@@ -46,6 +46,8 @@ namespace gc
 		 */
 		void initializePage();
 
+		bool isComplete() const;
+
 	private:
 
 		/** Instance of the class used to allow the user reviewing the gameplay. */

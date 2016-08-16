@@ -21,6 +21,7 @@
 
 #include "progressslider.h"
 #include "questionnaire.h"
+#include "volumebutton.h"
 #include <QWidget>
 #include <QBoxLayout>
 #include <QPushButton>
@@ -52,7 +53,17 @@ namespace gc
 		 */
 		void playVideo(QString sFileName);
 
+	signals:
+
+		
+
 	protected:
+
+		/**
+		 * Shows the questionnaire and disable the controls of the video, so the subject
+		 * will have to answer it to proceed on the experiment.
+		 */
+		void showQuestionnaire();
 
 	protected slots:
 
@@ -135,6 +146,9 @@ namespace gc
 		/** Button to control the playing/pause of the video. */
 		QPushButton *m_pPlayPauseButton;
 
+		/** Button used to control the volume of the video. */
+		VolumeButton *m_pVolumeButton;
+
 		/** Display of the video elapsed time. */
 		QLabel *m_pElapsedTime;
 
@@ -146,6 +160,9 @@ namespace gc
 
 		/** Ticks for the sample capture in gameplay review. */
 		QVector<uint> m_vTicks;
+
+		/** Indication that the review is in a questionnaire position. */
+		bool m_bInQuestionnaire;
 	};
 }
 

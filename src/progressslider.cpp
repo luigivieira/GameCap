@@ -22,31 +22,15 @@
 #include <QStyleOptionSlider>
 
 // +-----------------------------------------------------------
-gc::ProgressSlider::ProgressSlider(const uint iNumberOfTicks, const uint iTickInterval, QWidget *pParent) : QSlider(Qt::Horizontal, pParent)
+gc::ProgressSlider::ProgressSlider(const QVector<uint> vTicks, QWidget *pParent) : QSlider(Qt::Horizontal, pParent)
 {
 	setCursor(Qt::PointingHandCursor);
-	m_iNumberOfTicks = iNumberOfTicks;
-	setTickInterval(iTickInterval);
+	m_vTicks = vTicks;
 
 	// Force horizontal orientation and no default ticks (the ticks will be drawn
 	// by the custom painting of this class)
 	setOrientation(Qt::Horizontal);
 	setTickPosition(QSlider::NoTicks);
-}
-
-// +-----------------------------------------------------------
-QVector<uint> gc::ProgressSlider::getTicks() const
-{
-	QVector<uint> vRet;
-	int iCurrent = maximum() - 1;
-	uint iCount = m_iNumberOfTicks;
-	while (iCount > 0 && iCurrent >= minimum())
-	{
-		vRet.push_back(iCurrent);
-		iCurrent -= tickInterval();
-		iCount--;
-	}
-	return vRet;
 }
 
 // +-----------------------------------------------------------
@@ -73,17 +57,15 @@ void gc::ProgressSlider::paintEvent(QPaintEvent *pEvent)
 	QRect oHandle = style()->subControlRect(QStyle::CC_Slider, &oOpt, QStyle::SC_SliderHandle, this);
 
 	// draw tick marks manually
-	QVector<uint> vTicks = getTicks();
-
 	QPen oPen(QColor("#a5a294"));
 	oPen.setWidth(4);
 	oPainter.setPen(oPen);
 
 	double dRange = static_cast<double>(maximum() - minimum());
-	foreach(uint iTick, vTicks)
+	foreach(uint iTick, m_vTicks)
 	{
 		double dPos = ((iTick - minimum()) / dRange) * (width() - oHandle.width()) + (oHandle.width() / 2.0);
-		int x = round(dPos) - 1;
+		int x = round(dPos);
 		int y = rect().top() + height() / 2;
 		oPainter.drawLine(x, y - height(), x, y + height());
 	}

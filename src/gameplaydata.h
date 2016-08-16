@@ -69,7 +69,7 @@ namespace gc
 		};
 
 		/** Questions asked during gameplay review. */
-		enum ReviewQuestion	{ Frustation, Involvement, Fun };
+		enum ReviewQuestion	{ Frustation = 0, Involvement = 1, Fun = 2 };
 
         /**
          * Class constructor.
@@ -198,6 +198,12 @@ namespace gc
 		 * @param Returns a boolean indicating true if the GEQ answers were all set.
 		 */
 		bool isGEQCompleted() const;
+
+		/**
+		 * Get the list of the review timestamps.
+		 * @return QVector of unsigned integers with the timestamps used for sampling the reviews.
+		 */
+		QVector<uint> getReviewTimestamps() const;
 
 	private:
 

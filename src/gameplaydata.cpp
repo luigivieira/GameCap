@@ -265,3 +265,13 @@ bool gc::GameplayData::isGEQCompleted() const
 	}
 	return bRet;
 }
+
+// +-----------------------------------------------------------
+QVector<uint> gc::GameplayData::getReviewTimestamps() const
+{
+	QVector<uint> vRet;
+	ReviewAnswers::const_iterator it;
+	for(it = m_mpReviewAnswers.cbegin(); it != m_mpReviewAnswers.cend(); ++it)
+		vRet.push_back(it.key());
+	return vRet;
+}

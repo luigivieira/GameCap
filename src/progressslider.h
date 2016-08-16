@@ -35,22 +35,11 @@ namespace gc
 
         /**
          * Class constructor.
-		 * @param iNumberOfTicks Integer with the number of ticks to be presented,
-		 * from the end of the progress bar towards the start according to the
-		 * configured interval between them.
-		 * @param iTickInterval Integer with the time interval, in seconds, 
-		 * between ticks. The number of ticks configured will be spaced according
-		 * to this time interval.
+		 * @param vTicks QVector of unsigned integers with the ticks to draw.
          * @param pParent Instance of a QWidget with the parent of this component.
          * The default is NULL.
          */
-		ProgressSlider(const uint iNumberOfTicks, const uint iTickInterval, QWidget *pParent = NULL);
-
-		/**
-		 * Queries the vector of all ticks in the progress of the video replay.
-		 * @return QVector<uint> with the seconds of each tick in the video.
-		 */
-		QVector<uint> getTicks() const;
+		ProgressSlider(const QVector<uint> vTicks, QWidget *pParent = NULL);
 
 	protected:
 
@@ -83,6 +72,9 @@ namespace gc
 
 		/** Number of ticks to display. */
 		uint m_iNumberOfTicks;
+
+		/** Ticks to draw. */
+		QVector<uint> m_vTicks;
 	};
 }
 

@@ -18,7 +18,6 @@
 
 #include "videoreviewer.h"
 #include "application.h"
-#include "volumebutton.h"
 #include <QFrame>
 #include <QStyle>
 #include <QTime>
@@ -64,16 +63,17 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 	pControlsLayout->addWidget(m_pPlayPauseButton);
 	connect(m_pPlayPauseButton, &QPushButton::clicked, this, &VideoReviewer::onPlayPauseClicked);
 
-	VolumeButton *pVolumeButton = new VolumeButton(this);
-	pVolumeButton->setObjectName("volumeButton");
-	pControlsLayout->addWidget(pVolumeButton);
-	connect(pVolumeButton, &VolumeButton::volumeChanged, m_pMediaPlayer, &QMediaPlayer::setVolume);
+	m_pVolumeButton = new VolumeButton(this);
+	m_pVolumeButton->setObjectName("volumeButton");
+	pControlsLayout->addWidget(m_pVolumeButton);
+	connect(m_pVolumeButton, &VolumeButton::volumeChanged, m_pMediaPlayer, &QMediaPlayer::setVolume);
 
 	m_pElapsedTime = new QLabel("00:00", this);
 	pControlsLayout->addWidget(m_pElapsedTime);
 	
-	Application *pApp = static_cast<Application*>(qApp);
-	m_pProgressSlider = new ProgressSlider(pApp->getGameplayReviewSamples(), pApp->getGameplayReviewInterval(), this);
+	GameplayData *pData = static_cast<Application*>(qApp)->getGameplayData();
+	QVector<uint> vTimeStamps = pData->getReviewTimestamps();
+	m_pProgressSlider = new ProgressSlider(vTimeStamps, this);
 	pControlsLayout->addWidget(m_pProgressSlider);
 	connect(m_pProgressSlider, &QSlider::actionTriggered, this, &VideoReviewer::onActionTriggered);
 
@@ -95,6 +95,7 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 	connect(m_pQuestionnaire, &Questionnaire::completed, this, &VideoReviewer::onQuestionnaireCompleted);
 
 	m_pQuestionnaire->hide();
+	m_bInQuestionnaire = false;
 }
 
 // +-----------------------------------------------------------
@@ -117,7 +118,6 @@ void gc::VideoReviewer::onDurationChanged(qint64 iDuration)
 {
 	qDebug() << "onDurationChanged(" << iDuration << ")";
 	m_pProgressSlider->setMaximum(iDuration / 1000);
-	m_vTicks = m_pProgressSlider->getTicks();
 }
 
 // +-----------------------------------------------------------
@@ -132,12 +132,30 @@ void gc::VideoReviewer::onPositionChanged(qint64 iPosition)
 	m_pElapsedTime->setText(oElapsed.hour() > 0 ? oElapsed.toString("HH:mm:ss") : oElapsed.toString("mm:ss"));
 	m_pRemainingTime->setText(oRemaining.hour() > 0 ? oRemaining.toString("HH:mm:ss") : oRemaining.toString("mm:ss"));
 
-	if(!m_pQuestionnaire->isVisible() && m_vTicks.contains(iPos))
+	if(!m_bInQuestionnaire)
 	{
-		//GameplayData *pData = static_cast<Application*>(qApp)->getGameplayData();
-		m_pQuestionnaire->show();
-		QTimer::singleShot(10, this, &VideoReviewer::onPlayPauseClicked);
+		GameplayData *pData = static_cast<Application*>(qApp)->getGameplayData();
+		QVector<uint> vTimeStamps = pData->getReviewTimestamps();
+		if(vTimeStamps.contains(iPos))
+		{
+			m_bInQuestionnaire = true;
+			QTimer::singleShot(10, this, &VideoReviewer::showQuestionnaire);
+		}
 	}
+}
+
+// +-----------------------------------------------------------
+void gc::VideoReviewer::showQuestionnaire()
+{
+	m_pQuestionnaire->show();
+	m_pPlayPauseButton->setEnabled(false);
+	m_pVolumeButton->setEnabled(false);
+	m_pElapsedTime->setEnabled(false);
+	m_pProgressSlider->setEnabled(false);
+	m_pRemainingTime->setEnabled(false);
+
+	VideoReviewer::onPlayPauseClicked();
+	//GameplayData *pData = static_cast<Application*>(qApp)->getGameplayData();
 }
 
 // +-----------------------------------------------------------
@@ -200,7 +218,14 @@ void gc::VideoReviewer::onPlayPauseClicked()
 // +-----------------------------------------------------------
 void gc::VideoReviewer::onQuestionChanged(const uint iIndex, const Questionnaire::QuestionType eType, const QVariant oValue)
 {
-	
+	GameplayData *pData = static_cast<Application*>(qApp)->getGameplayData();
+	uint iPos = m_pProgressSlider->sliderPosition();
+
+	GameplayData::ReviewQuestion eQuestion = static_cast<GameplayData::ReviewQuestion>(iIndex);
+	GameplayData::AnswerValue eAnswer = static_cast<GameplayData::AnswerValue>(oValue.toInt() - 2);
+	pData->setReviewAnswer(eQuestion, iPos, eAnswer);
+
+	pData->save("c:\\temp\\files");
 }
 
 // +-----------------------------------------------------------

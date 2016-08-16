@@ -100,8 +100,8 @@ void gc::Window::pageChanged(int iPageID)
 		default:
 			button(QWizard::CancelButton)->setVisible(true);
 			button(QWizard::CancelButton)->setEnabled(true);
-			button(QWizard::NextButton)->setVisible(true);
-			button(QWizard::NextButton)->setEnabled(true);
+			button(QWizard::NextButton)->setVisible(currentPage()->isComplete());
+			button(QWizard::NextButton)->setEnabled(currentPage()->isComplete());
 	}
 }
 
