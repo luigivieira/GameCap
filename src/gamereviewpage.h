@@ -46,12 +46,27 @@ namespace gc
 		 */
 		void initializePage();
 
+		/**
+		 * Overload the method that indicates to the main window that the review
+		 * is completed (so the continue button can be displayed).
+		 */
 		bool isComplete() const;
+
+	protected slots:
+
+		/**
+		 * Captures the indication from the VideoReviwer that the review has been
+		 * completed by the subject.
+		 */
+		void onReviewCompleted();
 
 	private:
 
 		/** Instance of the class used to allow the user reviewing the gameplay. */
 		VideoReviewer *m_pReviewer;
+
+		/** Indication that the review has been completed by the subject. */
+		bool m_bCompleted;
 	};
 }
 

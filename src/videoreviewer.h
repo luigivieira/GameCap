@@ -55,7 +55,11 @@ namespace gc
 
 	signals:
 
-		
+		/**
+		 * Signals that the review has been completed (i.e. the subject answered
+		 * the questions for all samples).
+		 */
+		void reviewCompleted();
 
 	protected:
 
@@ -65,7 +69,15 @@ namespace gc
 		 */
 		void showQuestionnaire();
 
+		/**
+		 * Hides the questionnaire and enable the controls of the video, so the subject
+		 * can continuo watching the review until the next sample position.
+		 */
 		void hideQuestionnaire();
+
+		void playVideo();
+
+		void pauseVideo();
 
 	protected slots:
 

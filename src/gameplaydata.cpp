@@ -37,7 +37,7 @@ void gc::GameplayData::newSubject(const uint iVideoDuration, const uint iSamples
 	m_eHoursPlayingVideogames = Empty;
 	m_bPlayedGameBefore = false;
 
-	uint iTimestamp = iVideoDuration;
+	uint iTimestamp = iVideoDuration - 5; // Ignore the last 5 seconds of the video
 	m_mpReviewAnswers.clear();
 	for (uint i = 0; i < iSamples; i++)
 	{

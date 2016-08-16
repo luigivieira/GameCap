@@ -30,12 +30,15 @@ gc::GameReviewPage::GameReviewPage(QWidget *pParent) : QWizardPage(pParent)
 
 	m_pReviewer = new VideoReviewer(this);
 	pLayout->addWidget(m_pReviewer);
+
+	connect(m_pReviewer, &VideoReviewer::reviewCompleted, this, &GameReviewPage::onReviewCompleted);
 }
 
 // +-----------------------------------------------------------
 void gc::GameReviewPage::initializePage()
 {
 	QString sFile = ((Application *) qApp)->getGameplayFile();
+	m_bCompleted = false;
 	emit completeChanged();
 	m_pReviewer->playVideo("C:\\Users\\luigi\\Downloads\\Big Buck Bunny.avi");
 }
@@ -43,5 +46,12 @@ void gc::GameReviewPage::initializePage()
 // +-----------------------------------------------------------
 bool gc::GameReviewPage::isComplete() const
 {
-	return false;
+	return m_bCompleted;
+}
+
+// +-----------------------------------------------------------
+void gc::GameReviewPage::onReviewCompleted()
+{
+	m_bCompleted = true;
+	emit completeChanged();
 }

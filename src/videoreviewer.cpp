@@ -164,7 +164,7 @@ void gc::VideoReviewer::showQuestionnaire()
 	m_pRemainingTime->setEnabled(false);
 
 	m_bInQuestionnaire = true;
-	VideoReviewer::onPlayPauseClicked();
+	pauseVideo();
 }
 
 // +-----------------------------------------------------------
@@ -179,7 +179,7 @@ void gc::VideoReviewer::hideQuestionnaire()
 
 	m_pMediaPlayer->setPosition(m_pMediaPlayer->position() + 1000);
 	m_bInQuestionnaire = false;
-	VideoReviewer::onPlayPauseClicked();
+	playVideo();
 }
 
 // +-----------------------------------------------------------
@@ -208,10 +208,32 @@ void gc::VideoReviewer::onMediaStatusChanged(QMediaPlayer::MediaStatus eStatus)
 			break;
 
 		case QMediaPlayer::EndOfMedia:
-			m_pPlayPauseButton->setProperty("state", "paused");
-			m_pPlayPauseButton->style()->unpolish(m_pPlayPauseButton);
-			m_pPlayPauseButton->style()->polish(m_pPlayPauseButton);
+			pauseVideo();
 			break;
+	}
+}
+
+// +-----------------------------------------------------------
+void gc::VideoReviewer::playVideo()
+{
+	if(m_pMediaPlayer->state() != QMediaPlayer::PlayingState)
+	{
+		m_pMediaPlayer->play();
+		m_pPlayPauseButton->setProperty("state", "playing");
+		m_pPlayPauseButton->style()->unpolish(m_pPlayPauseButton);
+		m_pPlayPauseButton->style()->polish(m_pPlayPauseButton);
+	}
+}
+
+// +-----------------------------------------------------------
+void gc::VideoReviewer::pauseVideo()
+{
+	if(m_pMediaPlayer->state() == QMediaPlayer::PlayingState)
+	{
+		m_pMediaPlayer->pause();
+		m_pPlayPauseButton->setProperty("state", "paused");
+		m_pPlayPauseButton->style()->unpolish(m_pPlayPauseButton);
+		m_pPlayPauseButton->style()->polish(m_pPlayPauseButton);
 	}
 }
 
@@ -225,18 +247,10 @@ void gc::VideoReviewer::onActionTriggered(int iAction)
 // +-----------------------------------------------------------
 void gc::VideoReviewer::onPlayPauseClicked()
 {
-	if (m_pPlayPauseButton->property("state") == "paused")
-	{
-		m_pMediaPlayer->play();
-		m_pPlayPauseButton->setProperty("state", "playing");
-	}
+	if(m_pMediaPlayer->state() != QMediaPlayer::PlayingState)
+		playVideo();
 	else
-	{
-		m_pMediaPlayer->pause();
-		m_pPlayPauseButton->setProperty("state", "paused");
-	}
-	m_pPlayPauseButton->style()->unpolish(m_pPlayPauseButton);
-	m_pPlayPauseButton->style()->polish(m_pPlayPauseButton);
+		pauseVideo();
 }
 
 // +-----------------------------------------------------------
@@ -254,4 +268,8 @@ void gc::VideoReviewer::onQuestionChanged(const uint iIndex, const Questionnaire
 void gc::VideoReviewer::onQuestionnaireCompleted()
 {
 	hideQuestionnaire();
+
+	GameplayData *pData = static_cast<Application*>(qApp)->getGameplayData();
+	if(pData->isReviewCompleted())
+		emit reviewCompleted();
 }
