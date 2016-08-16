@@ -114,7 +114,7 @@ bool gc::Questionnaire::isCompleted() const
 				break;
 
 			case Likert:
-				bRet = bRet && static_cast<LikertScale*>(m_vQuestionFields[i])->selected() != -1;
+				bRet = bRet && static_cast<LikertScale*>(m_vQuestionFields[i])->getSelected() != GameplayData::Undefined;
 				break;
 		}
 		if(!bRet)
@@ -142,11 +142,34 @@ void gc::Questionnaire::fieldChanged(const uint iIndex)
 			break;
 
 		case Likert:
-			vValue = static_cast<LikertScale*>(m_vQuestionFields[iIndex])->selected();
+			vValue = static_cast<LikertScale*>(m_vQuestionFields[iIndex])->getSelected();
 			break;
 	}
 	emit questionChanged(iIndex, eType, vValue);
 
 	if(isCompleted())
 		emit completed();
+}
+
+// +-----------------------------------------------------------
+void gc::Questionnaire::setQuestionValue(const uint iIndex, QVariant oValue)
+{
+	Q_ASSERT(static_cast<uint>(m_vQuestionTypes.size()) >= iIndex);
+	QuestionType eType = m_vQuestionTypes[iIndex];
+
+	Q_ASSERT(static_cast<uint>(m_vQuestionFields.size()) >= iIndex);
+	switch(eType)
+	{
+		case Integer:
+			static_cast<QSpinBox*>(m_vQuestionFields[iIndex])->setValue(oValue.toInt());
+			break;
+
+		case String:
+			static_cast<QLineEdit*>(m_vQuestionFields[iIndex])->setText(oValue.toString());
+			break;
+
+		case Likert:
+			static_cast<LikertScale*>(m_vQuestionFields[iIndex])->setSelected(static_cast<GameplayData::AnswerValue>(oValue.toInt()));
+			break;
+	}
 }

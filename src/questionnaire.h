@@ -60,6 +60,8 @@ namespace gc
 		 */
 		bool isCompleted() const;
 
+		void setQuestionValue(const uint iIndex, QVariant oValue);
+
 	protected slots:
 
 		/**
@@ -78,7 +80,10 @@ namespace gc
 		void completed();
 
 		/**
-		 *
+		 * Signals that the value of a question has changed.
+		 * @param iIndex Unsigned integer with the index of the question that has changed.
+		 * @param eType Type of the question that changed.
+		 * @param oValue QVariant with the new content of the question (depending on the type).
 		 */
 		void questionChanged(const uint iIndex, const QuestionType eType, const QVariant oValue);
 

@@ -41,7 +41,7 @@ gc::LikertScale::LikertScale(QWidget *pParent) : QWidget(pParent)
 		connect(pButton, &QRadioButton::toggled, this, &LikertScale::onButtonToggled);
 	}
 
-	m_iSelected = -1;
+	m_eSelected = GameplayData::Undefined;
 	updateTranslations();
 }
 
@@ -50,8 +50,8 @@ void gc::LikertScale::onButtonToggled(bool bChecked)
 {
 	if (bChecked)
 	{
-		m_iSelected = m_lButtons.indexOf((QRadioButton *) sender());
-		emit answerSelected(m_iSelected);
+		m_eSelected = static_cast<GameplayData::AnswerValue>(m_lButtons.indexOf((QRadioButton *) sender()) - 2);
+		emit answerSelected(m_eSelected);
 	}
 }
 
@@ -66,8 +66,31 @@ void gc::LikertScale::updateTranslations()
 }
 
 // +-----------------------------------------------------------
-int gc::LikertScale::selected() const
+gc::GameplayData::AnswerValue gc::LikertScale::getSelected() const
 {
-	return m_iSelected;
+	return m_eSelected;
 }
 
+// +-----------------------------------------------------------
+void gc::LikertScale::setSelected(const GameplayData::AnswerValue eSelected)
+{
+	foreach(QRadioButton *pButton, m_lButtons)
+		pButton->blockSignals(true);
+
+	if(eSelected == GameplayData::Undefined)
+	{
+		if(m_eSelected != GameplayData::Undefined)
+		{
+			m_lButtons[m_eSelected + 2]->setAutoExclusive(false);
+			m_lButtons[m_eSelected + 2]->setChecked(false);
+			m_lButtons[m_eSelected + 2]->setAutoExclusive(true);
+		}
+	}
+	else
+		m_lButtons[eSelected + 2]->setChecked(true);
+
+	foreach(QRadioButton *pButton, m_lButtons)
+		pButton->blockSignals(false);
+
+	m_eSelected = eSelected;
+}

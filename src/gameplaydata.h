@@ -49,6 +49,7 @@ namespace gc
 			Fairly     =  1,
 			Extremely  =  2
 		};
+		Q_ENUM(AnswerValue)
 
 		/** Possible values for the sex of the respondent. */
 		enum Sex

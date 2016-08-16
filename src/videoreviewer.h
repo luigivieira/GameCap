@@ -65,6 +65,8 @@ namespace gc
 		 */
 		void showQuestionnaire();
 
+		void hideQuestionnaire();
+
 	protected slots:
 
 		/**

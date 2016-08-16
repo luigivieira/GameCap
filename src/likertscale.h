@@ -19,6 +19,7 @@
 #ifndef LIKERT_SCALE_H
 #define LIKERT_SCALE_H
 
+#include "gameplaydata.h"
 #include <QWidget>
 #include <QLabel>
 #include <QRadioButton>
@@ -41,11 +42,16 @@ namespace gc
 		LikertScale(QWidget *pParent = NULL);
 
 		/**
-		 * Gets the index of the currently selected option.
-		 * @return Integer with the index of the currently selected option,
-		 * or -1 if no option is selected.
+		 * Gets the currently selected option.
+		 * @return Value of the GameplayData::AnswerValue enumeration with the selected option.
 		 */
-		int selected() const;
+		GameplayData::AnswerValue getSelected() const;
+
+		/**
+		 * Sets the currently selected option.
+		 * @param eSelected Value of the GameplayData::AnswerValue enumeration with the selected option.
+		 */
+		void setSelected(const GameplayData::AnswerValue eSelected);
 
 		/**
 		 * Updates the strings due to locale changes.
@@ -64,18 +70,17 @@ namespace gc
 
 		/**
 		 * Indicates that an answer has been selected/changed.
-		 * @param iSelected Integer with the index of the currently selected option,
-		 * or -1 if no option is selected.
+		 * @param eSelected Value of the GameplayData::AnswerValue enumeration with the selected option.
 		 */
-		void answerSelected(const int iSelected);
+		void answerSelected(const GameplayData::AnswerValue eSelected);
 
 	private:
 		
 		/** List of buttons for the options. */
 		QList<QRadioButton *> m_lButtons;
 
-		/** Index of the currently selected option. */
-		int m_iSelected;
+		/** Currently selected option. */
+		GameplayData::AnswerValue m_eSelected;
 	};
 }
 

@@ -137,16 +137,25 @@ void gc::VideoReviewer::onPositionChanged(qint64 iPosition)
 		GameplayData *pData = static_cast<Application*>(qApp)->getGameplayData();
 		QVector<uint> vTimeStamps = pData->getReviewTimestamps();
 		if(vTimeStamps.contains(iPos))
-		{
-			m_bInQuestionnaire = true;
 			QTimer::singleShot(10, this, &VideoReviewer::showQuestionnaire);
-		}
 	}
 }
 
 // +-----------------------------------------------------------
 void gc::VideoReviewer::showQuestionnaire()
 {
+	GameplayData *pData = static_cast<Application*>(qApp)->getGameplayData();
+	uint iPos = m_pProgressSlider->sliderPosition();
+
+	GameplayData::AnswerValue eAnswer = pData->getReviewAnswer(GameplayData::Frustation, iPos);
+	m_pQuestionnaire->setQuestionValue(GameplayData::Frustation, eAnswer);
+
+	eAnswer = pData->getReviewAnswer(GameplayData::Involvement, iPos);
+	m_pQuestionnaire->setQuestionValue(GameplayData::Involvement, eAnswer);
+
+	eAnswer = pData->getReviewAnswer(GameplayData::Fun, iPos);
+	m_pQuestionnaire->setQuestionValue(GameplayData::Fun, eAnswer);
+
 	m_pQuestionnaire->show();
 	m_pPlayPauseButton->setEnabled(false);
 	m_pVolumeButton->setEnabled(false);
@@ -154,8 +163,23 @@ void gc::VideoReviewer::showQuestionnaire()
 	m_pProgressSlider->setEnabled(false);
 	m_pRemainingTime->setEnabled(false);
 
+	m_bInQuestionnaire = true;
 	VideoReviewer::onPlayPauseClicked();
-	//GameplayData *pData = static_cast<Application*>(qApp)->getGameplayData();
+}
+
+// +-----------------------------------------------------------
+void gc::VideoReviewer::hideQuestionnaire()
+{
+	m_pPlayPauseButton->setEnabled(true);
+	m_pVolumeButton->setEnabled(true);
+	m_pElapsedTime->setEnabled(true);
+	m_pProgressSlider->setEnabled(true);
+	m_pRemainingTime->setEnabled(true);
+	m_pQuestionnaire->hide();
+
+	m_pMediaPlayer->setPosition(m_pMediaPlayer->position() + 1000);
+	m_bInQuestionnaire = false;
+	VideoReviewer::onPlayPauseClicked();
 }
 
 // +-----------------------------------------------------------
@@ -222,14 +246,12 @@ void gc::VideoReviewer::onQuestionChanged(const uint iIndex, const Questionnaire
 	uint iPos = m_pProgressSlider->sliderPosition();
 
 	GameplayData::ReviewQuestion eQuestion = static_cast<GameplayData::ReviewQuestion>(iIndex);
-	GameplayData::AnswerValue eAnswer = static_cast<GameplayData::AnswerValue>(oValue.toInt() - 2);
+	GameplayData::AnswerValue eAnswer = static_cast<GameplayData::AnswerValue>(oValue.toInt());
 	pData->setReviewAnswer(eQuestion, iPos, eAnswer);
-
-	pData->save("c:\\temp\\files");
 }
 
 // +-----------------------------------------------------------
 void gc::VideoReviewer::onQuestionnaireCompleted()
 {
-	
+	hideQuestionnaire();
 }
