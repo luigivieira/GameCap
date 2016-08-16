@@ -22,6 +22,7 @@
 #include "progressslider.h"
 #include "questionnaire.h"
 #include "volumebutton.h"
+#include "gameplaydata.h"
 #include <QWidget>
 #include <QBoxLayout>
 #include <QPushButton>
@@ -68,12 +69,6 @@ namespace gc
 		 * will have to answer it to proceed on the experiment.
 		 */
 		void showQuestionnaire();
-
-		/**
-		 * Hides the questionnaire and enable the controls of the video, so the subject
-		 * can continuo watching the review until the next sample position.
-		 */
-		void hideQuestionnaire();
 
 		void playVideo();
 
@@ -175,8 +170,7 @@ namespace gc
 		/** Ticks for the sample capture in gameplay review. */
 		QVector<uint> m_vTicks;
 
-		/** Indication that the review is in a questionnaire position. */
-		bool m_bInQuestionnaire;
+		GameplayData *m_pData;
 	};
 }
 

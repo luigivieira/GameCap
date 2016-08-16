@@ -19,6 +19,7 @@
 #ifndef PROGRESS_SLIDER_H
 #define PROGRESS_SLIDER_H
 
+#include "gameplaydata.h"
 #include <QSlider>
 #include <QMouseEvent>
 #include <QVector>
@@ -35,11 +36,10 @@ namespace gc
 
         /**
          * Class constructor.
-		 * @param vTicks QVector of unsigned integers with the ticks to draw.
          * @param pParent Instance of a QWidget with the parent of this component.
          * The default is NULL.
          */
-		ProgressSlider(const QVector<uint> vTicks, QWidget *pParent = NULL);
+		ProgressSlider(QWidget *pParent = NULL);
 
 	protected:
 
@@ -73,8 +73,8 @@ namespace gc
 		/** Number of ticks to display. */
 		uint m_iNumberOfTicks;
 
-		/** Ticks to draw. */
-		QVector<uint> m_vTicks;
+		/** Access to the gameplay data so the ticks can be drawn. */
+		GameplayData *m_pData;
 	};
 }
 

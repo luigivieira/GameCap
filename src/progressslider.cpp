@@ -17,15 +17,16 @@
  */
 
 #include "progressslider.h"
+#include "application.h"
 #include <QStyle>
 #include <QStylePainter>
 #include <QStyleOptionSlider>
 
 // +-----------------------------------------------------------
-gc::ProgressSlider::ProgressSlider(const QVector<uint> vTicks, QWidget *pParent) : QSlider(Qt::Horizontal, pParent)
+gc::ProgressSlider::ProgressSlider(QWidget *pParent) : QSlider(Qt::Horizontal, pParent)
 {
 	setCursor(Qt::PointingHandCursor);
-	m_vTicks = vTicks;
+	m_pData = static_cast<Application*>(qApp)->getGameplayData();
 
 	// Force horizontal orientation and no default ticks (the ticks will be drawn
 	// by the custom painting of this class)
@@ -57,13 +58,20 @@ void gc::ProgressSlider::paintEvent(QPaintEvent *pEvent)
 	QRect oHandle = style()->subControlRect(QStyle::CC_Slider, &oOpt, QStyle::SC_SliderHandle, this);
 
 	// draw tick marks manually
-	QPen oPen(QColor("#a5a294"));
-	oPen.setWidth(4);
-	oPainter.setPen(oPen);
+	QPen oIncomplete(QColor("#A5A294"));
+	oIncomplete.setWidth(4);
+
+	QPen oComplete(QColor("#FFA500"));
+	oComplete.setWidth(4);
 
 	double dRange = static_cast<double>(maximum() - minimum());
-	foreach(uint iTick, m_vTicks)
+	foreach(uint iTick, m_pData->getReviewTimestamps())
 	{
+		if(m_pData->isReviewSampleCompleted(iTick))
+			oPainter.setPen(oComplete);
+		else
+			oPainter.setPen(oIncomplete);
+
 		double dPos = ((iTick - minimum()) / dRange) * (width() - oHandle.width()) + (oHandle.width() / 2.0);
 		int x = round(dPos);
 		int y = rect().top() + height() / 2;

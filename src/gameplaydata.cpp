@@ -236,6 +236,18 @@ bool gc::GameplayData::save(const QString &sPath) const
 }
 
 // +-----------------------------------------------------------
+bool gc::GameplayData::isReviewSampleCompleted(const uint iTimestamp)
+{
+	ReviewAnswers::const_iterator it = m_mpReviewAnswers.find(iTimestamp);
+	if(it != m_mpReviewAnswers.cend())
+		return it.value().eFrustration != Undefined &&
+			   it.value().eInvolvement != Undefined &&
+			   it.value().eFun != Undefined;
+	else
+		return true;
+}
+
+// +-----------------------------------------------------------
 bool gc::GameplayData::isReviewCompleted() const
 {
 	bool bRet = true;

@@ -71,9 +71,7 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 	m_pElapsedTime = new QLabel("00:00", this);
 	pControlsLayout->addWidget(m_pElapsedTime);
 	
-	GameplayData *pData = static_cast<Application*>(qApp)->getGameplayData();
-	QVector<uint> vTimeStamps = pData->getReviewTimestamps();
-	m_pProgressSlider = new ProgressSlider(vTimeStamps, this);
+	m_pProgressSlider = new ProgressSlider(this);
 	pControlsLayout->addWidget(m_pProgressSlider);
 	connect(m_pProgressSlider, &QSlider::actionTriggered, this, &VideoReviewer::onActionTriggered);
 
@@ -95,7 +93,7 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 	connect(m_pQuestionnaire, &Questionnaire::completed, this, &VideoReviewer::onQuestionnaireCompleted);
 
 	m_pQuestionnaire->hide();
-	m_bInQuestionnaire = false;
+	m_pData = static_cast<Application*>(qApp)->getGameplayData();
 }
 
 // +-----------------------------------------------------------
@@ -131,55 +129,37 @@ void gc::VideoReviewer::onPositionChanged(qint64 iPosition)
 
 	m_pElapsedTime->setText(oElapsed.hour() > 0 ? oElapsed.toString("HH:mm:ss") : oElapsed.toString("mm:ss"));
 	m_pRemainingTime->setText(oRemaining.hour() > 0 ? oRemaining.toString("HH:mm:ss") : oRemaining.toString("mm:ss"));
-
-	if(!m_bInQuestionnaire)
+	
+	if(m_pData->getReviewTimestamps().contains(iPos))
 	{
-		GameplayData *pData = static_cast<Application*>(qApp)->getGameplayData();
-		QVector<uint> vTimeStamps = pData->getReviewTimestamps();
-		if(vTimeStamps.contains(iPos))
+		if(!m_pQuestionnaire->isVisible())
 			QTimer::singleShot(10, this, &VideoReviewer::showQuestionnaire);
 	}
+	else
+	{
+		if(m_pQuestionnaire->isVisible())
+			m_pQuestionnaire->hide();
+	}
+
 }
 
 // +-----------------------------------------------------------
 void gc::VideoReviewer::showQuestionnaire()
 {
-	GameplayData *pData = static_cast<Application*>(qApp)->getGameplayData();
+	pauseVideo();
+
 	uint iPos = m_pProgressSlider->sliderPosition();
 
-	GameplayData::AnswerValue eAnswer = pData->getReviewAnswer(GameplayData::Frustation, iPos);
+	GameplayData::AnswerValue eAnswer = m_pData->getReviewAnswer(GameplayData::Frustation, iPos);
 	m_pQuestionnaire->setQuestionValue(GameplayData::Frustation, eAnswer);
 
-	eAnswer = pData->getReviewAnswer(GameplayData::Involvement, iPos);
+	eAnswer = m_pData->getReviewAnswer(GameplayData::Involvement, iPos);
 	m_pQuestionnaire->setQuestionValue(GameplayData::Involvement, eAnswer);
 
-	eAnswer = pData->getReviewAnswer(GameplayData::Fun, iPos);
+	eAnswer = m_pData->getReviewAnswer(GameplayData::Fun, iPos);
 	m_pQuestionnaire->setQuestionValue(GameplayData::Fun, eAnswer);
 
 	m_pQuestionnaire->show();
-	m_pPlayPauseButton->setEnabled(false);
-	m_pVolumeButton->setEnabled(false);
-	m_pElapsedTime->setEnabled(false);
-	m_pProgressSlider->setEnabled(false);
-	m_pRemainingTime->setEnabled(false);
-
-	m_bInQuestionnaire = true;
-	pauseVideo();
-}
-
-// +-----------------------------------------------------------
-void gc::VideoReviewer::hideQuestionnaire()
-{
-	m_pPlayPauseButton->setEnabled(true);
-	m_pVolumeButton->setEnabled(true);
-	m_pElapsedTime->setEnabled(true);
-	m_pProgressSlider->setEnabled(true);
-	m_pRemainingTime->setEnabled(true);
-	m_pQuestionnaire->hide();
-
-	m_pMediaPlayer->setPosition(m_pMediaPlayer->position() + 1000);
-	m_bInQuestionnaire = false;
-	playVideo();
 }
 
 // +-----------------------------------------------------------
@@ -256,20 +236,16 @@ void gc::VideoReviewer::onPlayPauseClicked()
 // +-----------------------------------------------------------
 void gc::VideoReviewer::onQuestionChanged(const uint iIndex, const Questionnaire::QuestionType eType, const QVariant oValue)
 {
-	GameplayData *pData = static_cast<Application*>(qApp)->getGameplayData();
 	uint iPos = m_pProgressSlider->sliderPosition();
 
 	GameplayData::ReviewQuestion eQuestion = static_cast<GameplayData::ReviewQuestion>(iIndex);
 	GameplayData::AnswerValue eAnswer = static_cast<GameplayData::AnswerValue>(oValue.toInt());
-	pData->setReviewAnswer(eQuestion, iPos, eAnswer);
+	m_pData->setReviewAnswer(eQuestion, iPos, eAnswer);
 }
 
 // +-----------------------------------------------------------
 void gc::VideoReviewer::onQuestionnaireCompleted()
 {
-	hideQuestionnaire();
-
-	GameplayData *pData = static_cast<Application*>(qApp)->getGameplayData();
-	if(pData->isReviewCompleted())
+	if(m_pData->isReviewCompleted())
 		emit reviewCompleted();
 }

@@ -189,7 +189,13 @@ namespace gc
 		bool save(const QString &sPath) const;
 
 		/**
-		 * Queries if the review answers were all set to a differente value than Undefined.
+		 * Queries if the review answers for the given timestamp were all set to a differente value than Undefined.
+		 * @param Returns a boolean indicating true if the review answers were all set.
+		 */
+		bool isReviewSampleCompleted(const uint iTimestamp);
+
+		/**
+		 * Queries if the review answers for all timestamps were all set to a differente value than Undefined.
 		 * @param Returns a boolean indicating true if the review answers were all set.
 		 */
 		bool isReviewCompleted() const;
