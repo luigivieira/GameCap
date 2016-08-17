@@ -170,7 +170,11 @@ namespace gc
 		/** Ticks for the sample capture in gameplay review. */
 		QVector<uint> m_vTicks;
 
+		/** Instance of the GameplayData used to store the provided answers. */
 		GameplayData *m_pData;
+
+		/** Previous state of the video playback when the questionnaire is shown. */
+		QMediaPlayer::State m_ePreviousState;
 	};
 }
 

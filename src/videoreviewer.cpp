@@ -146,6 +146,7 @@ void gc::VideoReviewer::onPositionChanged(qint64 iPosition)
 // +-----------------------------------------------------------
 void gc::VideoReviewer::showQuestionnaire()
 {
+	m_ePreviousState = m_pMediaPlayer->state();
 	pauseVideo();
 
 	uint iPos = m_pProgressSlider->sliderPosition();
@@ -248,4 +249,7 @@ void gc::VideoReviewer::onQuestionnaireCompleted()
 {
 	if(m_pData->isReviewCompleted())
 		emit reviewCompleted();
+
+	if(m_ePreviousState == QMediaPlayer::PlayingState)
+		playVideo();
 }
