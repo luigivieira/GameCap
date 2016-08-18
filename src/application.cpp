@@ -328,6 +328,8 @@ void gc::Application::onTimeout()
 {
 	if(m_bWaitingForVideoFiles)
 	{
+		// Wait for the two videos to appear in the configured path,
+		// so the amount of time configured for gameplay is recorded *exactly*
 		if(m_pVideoCapturer->getCapturedVideoFiles().size() == 2)
 		{
 			m_bWaitingForVideoFiles = false;
