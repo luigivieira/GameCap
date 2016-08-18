@@ -103,6 +103,7 @@ void gc::VideoCapturer::startCapture(QString sGameplayTargetName, QString sPlaye
 		deleteFiles();
 
 		m_bFailSignalSent = false;
+		m_bCrashedDuringExecution = false;
 		m_eState = Starting;
 
 		m_aStartedFlags[0] = m_aStartedFlags[1] = false;
@@ -160,18 +161,36 @@ void gc::VideoCapturer::onProcessFinished(int iExitCode, QProcess::ExitStatus eE
 	{
 		qDebug("OBS for gameplay capture ended with exit code [%d] and exit status [%s]", iExitCode, (eExitStatus == QProcess::NormalExit ? "normal" : "closed"));
 		m_aStartedFlags[0] = false;
+		if(m_eState != Stopping) // If it was not killed by this program
+		{
+			m_eState = Stopping;
+			m_bCrashedDuringExecution = true;
+			m_oPlayerCap.kill();
+		}
 	}
 	else
 	{
 		qDebug("OBS for player capture ended with exit code [%d] and exit status [%s]", iExitCode, (eExitStatus == QProcess::NormalExit ? "normal" : "closed"));
 		m_aStartedFlags[1] = false;
+		if(m_eState != Stopping) // If it was not killed by this program
+		{
+			m_eState = Stopping;
+			m_bCrashedDuringExecution = true;
+			m_oGameplayCap.kill();
+		}
 	}
 
 	if (!m_aStartedFlags[0] && !m_aStartedFlags[1])
 	{
 		qDebug() << "Video recording ended.";
 		m_eState = Stopped;
-		if (!m_bFailSignalSent)
+		if(m_bCrashedDuringExecution)
+		{
+			qWarning() << "One of the instances of OBS crashed, and video files could not be recorded.";
+			deleteFiles();
+			emit captureEnded(FailedToSave);
+		}
+		else if (!m_bFailSignalSent)
 		{
 			if(saveFiles())
 				emit captureEnded(Closed);

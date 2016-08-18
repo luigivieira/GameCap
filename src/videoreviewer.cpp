@@ -166,7 +166,38 @@ void gc::VideoReviewer::showQuestionnaire()
 // +-----------------------------------------------------------
 void gc::VideoReviewer::onError(QMediaPlayer::Error eError)
 {
-	qDebug() << "onError(" << eError << ")";
+	char *sMsg;
+	switch(eError)
+	{
+		case QMediaPlayer::ResourceError:
+			sMsg = "Resource Error";
+			break;
+
+		case QMediaPlayer::FormatError:
+			sMsg = "Format Error";
+			break;
+
+		case QMediaPlayer::NetworkError:
+			sMsg = "Network Error";
+			break;
+
+		case QMediaPlayer::AccessDeniedError:
+			sMsg = "Access Denied";
+			break;
+
+		case QMediaPlayer::ServiceMissingError:
+			sMsg = "Service Missing";
+			break;
+
+		case QMediaPlayer::MediaIsPlaylist:
+			sMsg = "Media Is Playlist";
+			break;
+
+		default:
+			sMsg = "Unknown Error";
+			break;
+	}
+	qFatal("Media error: %s", sMsg);
 }
 
 // +-----------------------------------------------------------
@@ -178,18 +209,14 @@ void gc::VideoReviewer::onMediaStatusChanged(QMediaPlayer::MediaStatus eStatus)
 	{
 		case QMediaPlayer::UnknownMediaStatus:
 		case QMediaPlayer::InvalidMedia:
-			break;
-
-		case QMediaPlayer::NoMedia:
-		case QMediaPlayer::LoadingMedia:
-		case QMediaPlayer::LoadedMedia:
-		case QMediaPlayer::StalledMedia:
-		case QMediaPlayer::BufferingMedia:
-		case QMediaPlayer::BufferedMedia:
+			qFatal("Media error: Invalid Media");
 			break;
 
 		case QMediaPlayer::EndOfMedia:
 			pauseVideo();
+			break;
+
+		default:
 			break;
 	}
 }

@@ -126,6 +126,12 @@ namespace gc
 		 */
 		bool m_bFailSignalSent;
 
+		/**
+		 * Indicates that one or two of the OBS instances crashed after they started
+		 * capturing the videos.
+		 */
+		bool m_bCrashedDuringExecution;
+
 		/** Name of the file to save the gameplayer video file. */
 		QString m_sGameplayTargetName;
 
