@@ -20,6 +20,7 @@
 #define MESSAGE_BOX_H
 
 #include "window.h"
+#include "basepage.h"
 #include <QDialog>
 #include <QLabel>
 #include <QDialogButtonBox>
@@ -66,7 +67,7 @@ namespace gc
 		 * @param sMessage String with the message for the dialog.
 		 * @return Boolean with true if the user clicked "Yes", and false if the user clicked "No".
 		 */
-		static bool yesNoQuestion(QWizardPage *pParent, QString sMessage);
+		static bool yesNoQuestion(BasePage *pParent, QString sMessage);
 
 		/**
 		 * Shows a message dialog with an Ok button.
@@ -85,7 +86,7 @@ namespace gc
 		 * @param pParent Instance of the class that will parent this dialog.
 		 * @param sMessage String with the message for the dialog.
 		 */
-		static void infoMessage(QWizardPage *pParent, QString sMessage);
+		static void infoMessage(BasePage *pParent, QString sMessage);
 
 	protected:
 

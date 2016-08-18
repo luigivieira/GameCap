@@ -22,7 +22,7 @@
 #include <QUrl>
 
 // +-----------------------------------------------------------
-gc::GameReviewPage::GameReviewPage(QWidget *pParent) : QWizardPage(pParent)
+gc::GameReviewPage::GameReviewPage(QWidget *pParent) : BasePage(pParent)
 {
 	// Main page layout
 	QVBoxLayout *pLayout = new QVBoxLayout(this);

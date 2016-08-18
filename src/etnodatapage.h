@@ -19,14 +19,14 @@
 #ifndef ETNO_DATA_PAGE_H
 #define ETNO_DATA_PAGE_H
 
-#include <QWizardPage>
+#include "basepage.h"
 
 namespace gc
 {
 	/**
 	* Page class in the wizard application used to capture etnographic data.
 	*/
-	class EtnoDataPage : public QWizardPage
+	class EtnoDataPage : public BasePage
 	{
 		Q_OBJECT
 	public:

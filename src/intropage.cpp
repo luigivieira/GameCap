@@ -20,7 +20,7 @@
 #include <QBoxLayout>
 
 // +-----------------------------------------------------------
-gc::IntroPage::IntroPage(QWidget *pParent) : QWizardPage(pParent)
+gc::IntroPage::IntroPage(QWidget *pParent) : BasePage(pParent)
 {
 	// Main page layout
 	QVBoxLayout *pLayout = new QVBoxLayout(this);

@@ -20,7 +20,7 @@
 #define GAME_INFO_PAGE_H
 
 #include "application.h"
-#include <QWizardPage>
+#include "basepage.h"
 #include <QLabel>
 
 namespace gc
@@ -28,7 +28,7 @@ namespace gc
 	/**
 	* Page class in the wizard application used to display information on the selected game.
 	*/
-	class GameInfoPage : public QWizardPage
+	class GameInfoPage : public BasePage
 	{
 		Q_OBJECT
 	public:

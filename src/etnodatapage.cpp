@@ -19,7 +19,7 @@
 #include "etnodatapage.h"
 
 // +-----------------------------------------------------------
-gc::EtnoDataPage::EtnoDataPage(QWidget *pParent) : QWizardPage(pParent)
+gc::EtnoDataPage::EtnoDataPage(QWidget *pParent) : BasePage(pParent)
 {
     
 }

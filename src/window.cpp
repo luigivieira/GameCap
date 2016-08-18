@@ -83,6 +83,9 @@ gc::Window::Window(QWidget *pParent) : QWizard(pParent)
 // +-----------------------------------------------------------
 void gc::Window::pageChanged(int iPageID)
 {
+	if(iPageID == -1)
+		return;
+
 	switch (iPageID)
 	{
 		case Page_GamePlay:

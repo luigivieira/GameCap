@@ -193,9 +193,10 @@ void gc::VideoCapturer::onProcessError(QProcess::ProcessError eError)
 		if (sender() == &m_oGameplayCap)
 		{
 			qWarning() << "OBS for gameplay capture failed to start.";
-			m_eState = Stopping;
+			m_eState = Stopped;
 			if (m_oPlayerCap.state() == QProcess::Running)
 				m_oPlayerCap.kill();
+
 			if (!m_bFailSignalSent)
 			{
 				deleteFiles();
@@ -206,7 +207,7 @@ void gc::VideoCapturer::onProcessError(QProcess::ProcessError eError)
 		else
 		{
 			qWarning() << "OBS for player's face capture failed to start.";
-			m_eState = Stopping;
+			m_eState = Stopped;
 			if (m_oGameplayCap.state() == QProcess::Running)
 				m_oGameplayCap.kill();
 

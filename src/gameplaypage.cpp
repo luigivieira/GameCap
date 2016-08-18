@@ -25,7 +25,7 @@
 #include "messagebox.h"
 
 // +-----------------------------------------------------------
-gc::GameplayPage::GameplayPage(QWidget *pParent) : QWizardPage(pParent)
+gc::GameplayPage::GameplayPage(QWidget *pParent) : BasePage(pParent)
 {
 	// Page layout and components
 	QVBoxLayout *pLayout = new QVBoxLayout(this);
@@ -70,7 +70,7 @@ void gc::GameplayPage::initializePage()
 // +-----------------------------------------------------------
 void gc::GameplayPage::startGameplay()
 {
-	((Application*) qApp)->startGameplay();
+	static_cast<Application*>(qApp)->startGameplay();
 }
 
 // +-----------------------------------------------------------

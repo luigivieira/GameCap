@@ -16,28 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FUN_DATA_PAGE_H
-#define FUN_DATA_PAGE_H
-
 #include "basepage.h"
 
-namespace gc
+// +-----------------------------------------------------------
+gc::BasePage::BasePage(QWidget *pParent) : QWizardPage(pParent)
 {
-	/**
-	* Page class in the wizard application used to capture fun data regarding the game.
-	*/
-	class FunDataPage : public BasePage
-	{
-		Q_OBJECT
-	public:
-
-        /**
-         * Class constructor.
-         * @param pParent Instance of a QWidget with the parent of this page.
-         * The default is NULL.
-         */
-		FunDataPage(QWidget *pParent = NULL);
-	};
 }
 
-#endif // FUN_DATA_PAGE_H
+// +-----------------------------------------------------------
+gc::Window* gc::BasePage::window() const
+{
+	return static_cast<Window*>(wizard());
+}

@@ -16,18 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GAME_REVIEW_PAGE_H
-#define GAME_REVIEW_PAGE_H
+#ifndef BASE_PAGE_H
+#define BASE_PAGE_H
 
-#include "basepage.h"
-#include "videoreviewer.h"
+#include "window.h"
+#include <QWizardPage>
 
 namespace gc
 {
 	/**
-	* Page class in the wizard application used to review the gameplay and collect review data.
-	*/
-	class GameReviewPage : public BasePage
+	 * Base page class for the window pages.
+	 */
+	class BasePage : public QWizardPage
 	{
 		Q_OBJECT
 	public:
@@ -37,37 +37,14 @@ namespace gc
          * @param pParent Instance of a QWidget with the parent of this page.
          * The default is NULL.
          */
-		GameReviewPage(QWidget *pParent = NULL);
-
-	protected:
+		BasePage(QWidget *pParent = NULL);
 
 		/**
-		 * Initialization method called everytime the page is displayed.
+		 * Queries the pointer to the main window that contains this page.
+		 * @return Instance of Window with the window that contains this page.
 		 */
-		void initializePage();
-
-		/**
-		 * Overload the method that indicates to the main window that the review
-		 * is completed (so the continue button can be displayed).
-		 */
-		bool isComplete() const;
-
-	protected slots:
-
-		/**
-		 * Captures the indication from the VideoReviwer that the review has been
-		 * completed by the subject.
-		 */
-		void onReviewCompleted();
-
-	private:
-
-		/** Instance of the class used to allow the user reviewing the gameplay. */
-		VideoReviewer *m_pReviewer;
-
-		/** Indication that the review has been completed by the subject. */
-		bool m_bCompleted;
+		Window* window() const;
 	};
 }
 
-#endif // GAME_REVIEW_PAGE_H
+#endif // GAME_INFO_PAGE_H

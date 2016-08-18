@@ -20,7 +20,7 @@
 #define INTRO_PAGE_H
 
 #include "application.h"
-#include <QWizardPage>
+#include "basepage.h"
 #include <QLabel>
 
 namespace gc
@@ -28,7 +28,7 @@ namespace gc
 	/**
 	* Page class in the wizard application used to display introductory information.
 	*/
-	class IntroPage : public QWizardPage
+	class IntroPage : public BasePage
 	{
 		Q_OBJECT
 	public:

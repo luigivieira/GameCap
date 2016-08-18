@@ -116,9 +116,9 @@ void gc::MessageBox::fadeIn()
 }
 
 // +-----------------------------------------------------------
-bool gc::MessageBox::yesNoQuestion(QWizardPage *pParent, QString sMessage)
+bool gc::MessageBox::yesNoQuestion(BasePage *pParent, QString sMessage)
 {
-	MessageBox oBox((Window *) pParent->parent());
+	MessageBox oBox(pParent->window());
 	return oBox.yesNoQuestion(sMessage);
 }
 
@@ -139,9 +139,9 @@ bool gc::MessageBox::yesNoQuestion(QString sMessage)
 }
 
 // +-----------------------------------------------------------
-void gc::MessageBox::infoMessage(QWizardPage *pParent, QString sMessage)
+void gc::MessageBox::infoMessage(BasePage *pParent, QString sMessage)
 {
-	MessageBox oBox((Window *) pParent->parent());
+	MessageBox oBox(pParent->window());
 	oBox.infoMessage(sMessage);
 }
 

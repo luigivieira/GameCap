@@ -20,7 +20,7 @@
 #include <QBoxLayout>
 
 // +-----------------------------------------------------------
-gc::GameInfoPage::GameInfoPage(QWidget *pParent) : QWizardPage(pParent)
+gc::GameInfoPage::GameInfoPage(QWidget *pParent) : BasePage(pParent)
 {
 	// Main page layout
 	QVBoxLayout *pLayout = new QVBoxLayout(this);

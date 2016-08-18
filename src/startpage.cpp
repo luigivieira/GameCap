@@ -26,7 +26,7 @@
 #include <QButtonGroup>
 
 // +-----------------------------------------------------------
-gc::StartPage::StartPage(QWidget *pParent) : QWizardPage(pParent)
+gc::StartPage::StartPage(QWidget *pParent) : BasePage(pParent)
 {
 	// Main page layout
 	QVBoxLayout *pLayout = new QVBoxLayout(this);

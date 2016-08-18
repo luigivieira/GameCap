@@ -19,7 +19,7 @@
 #include "fundatapage.h"
 
 // +-----------------------------------------------------------
-gc::FunDataPage::FunDataPage(QWidget *pParent) : QWizardPage(pParent)
+gc::FunDataPage::FunDataPage(QWidget *pParent) : BasePage(pParent)
 {
     
 }

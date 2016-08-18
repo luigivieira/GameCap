@@ -19,14 +19,14 @@
 #ifndef END_PAGE_H
 #define END_PAGE_H
 
-#include <QWizardPage>
+#include "basepage.h"
 
 namespace gc
 {
 	/**
 	* Page class in the wizard application used to conclude the experiment.
 	*/
-	class EndPage : public QWizardPage
+	class EndPage : public BasePage
 	{
 		Q_OBJECT
 	public:

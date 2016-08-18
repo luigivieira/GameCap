@@ -21,7 +21,7 @@
 #include <QBoxLayout>
 
 // +-----------------------------------------------------------
-gc::ReviewInfoPage::ReviewInfoPage(QWidget *pParent) : QWizardPage(pParent)
+gc::ReviewInfoPage::ReviewInfoPage(QWidget *pParent) : BasePage(pParent)
 {
 	// Main page layout
 	QVBoxLayout *pLayout = new QVBoxLayout(this);

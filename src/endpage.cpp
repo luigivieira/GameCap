@@ -19,7 +19,7 @@
 #include "endpage.h"
 
 // +-----------------------------------------------------------
-gc::EndPage::EndPage(QWidget *pParent) : QWizardPage(pParent)
+gc::EndPage::EndPage(QWidget *pParent) : BasePage(pParent)
 {
     
 }

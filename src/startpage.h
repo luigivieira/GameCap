@@ -20,7 +20,7 @@
 #define START_PAGE_H
 
 #include "application.h"
-#include <QWizardPage>
+#include "basepage.h"
 #include <QLabel>
 #include <QPushButton>
 #include <QList>
@@ -30,7 +30,7 @@ namespace gc
 	/**
 	* Page class in the wizard application used to initiate the experiment.
 	*/
-	class StartPage : public QWizardPage
+	class StartPage : public BasePage
 	{
 		Q_OBJECT
 	public:

@@ -19,7 +19,7 @@
 #ifndef REVIEW_INFO_PAGE_H
 #define REVIEW_INFO_PAGE_H
 
-#include <QWizardPage>
+#include "basepage.h"
 #include <QLabel>
 
 namespace gc
@@ -27,7 +27,7 @@ namespace gc
 	/**
 	* Page class in the wizard application used to display instructions on the review process.
 	*/
-	class ReviewInfoPage : public QWizardPage
+	class ReviewInfoPage : public BasePage
 	{
 		Q_OBJECT
 	public:
