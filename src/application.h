@@ -29,6 +29,7 @@
 #include <QObject>
 #include <fstream>
 #include <vector>
+#include <QTimer>
 
 namespace gc
 {
@@ -309,6 +310,13 @@ namespace gc
 
 		/** Manages the gameplay data captured for the current subject. */
 		GameplayData m_oGameplayData;
+
+		/**
+		 * Indicates that the capture of gameplay is waiting for the video files
+		 * to be created. This is used so the gameplay timer can be more precisely
+		 * started once the videos are in fact being captured.
+		 */
+		bool m_bWaitingForVideoFiles;
 	};
 }
 

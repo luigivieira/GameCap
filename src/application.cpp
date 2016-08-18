@@ -45,6 +45,8 @@ using namespace std;
 // +-----------------------------------------------------------
 gc::Application::Application(int& argc, char** argv): QApplication(argc, argv)
 {
+	m_bWaitingForVideoFiles = false;
+
 	// Create/Open the log file
 	m_eLogLevel = Fatal;
 	QFileInfo oAppFile = QFileInfo(QCoreApplication::applicationFilePath());
@@ -324,11 +326,24 @@ void gc::Application::handleLogOutput(QtMsgType eType, const QMessageLogContext 
 // +-----------------------------------------------------------
 void gc::Application::onTimeout()
 {
-	m_iTimeRemaining--;
-	if (m_iTimeRemaining <= 0)
-		stopGameplay();
+	if(m_bWaitingForVideoFiles)
+	{
+		if(m_pVideoCapturer->getCapturedVideoFiles().size() == 2)
+		{
+			m_bWaitingForVideoFiles = false;
+			m_iTimeRemaining = m_iGameplayTimeLimit;
+			m_oTimer.setInterval(1000);
+			emit gameplayTimeRemaining(m_iTimeRemaining);
+		}
+	}
 	else
-		emit gameplayTimeRemaining(m_iTimeRemaining);
+	{
+		m_iTimeRemaining--;
+		if(m_iTimeRemaining <= 0)
+			stopGameplay();
+		else
+			emit gameplayTimeRemaining(m_iTimeRemaining);
+	}
 }
 
 // +-----------------------------------------------------------
@@ -361,9 +376,8 @@ void gc::Application::stopGameplay()
 // +-----------------------------------------------------------
 void gc::Application::onGameplayStarted()
 {
-	m_iTimeRemaining = m_iGameplayTimeLimit;
-	m_oTimer.start(1000);
-	emit gameplayTimeRemaining(m_iTimeRemaining);
+	m_oTimer.start(100);
+	m_bWaitingForVideoFiles = true;
 }
 
 // +-----------------------------------------------------------

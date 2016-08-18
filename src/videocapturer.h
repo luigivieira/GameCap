@@ -20,7 +20,6 @@
 #define VIDEO_CAPTURER_H
 
 #include <QProcess>
-#include <QTimer>
 
 namespace gc
 {
@@ -56,6 +55,13 @@ namespace gc
 		 * Stops the capture of the gameplay and player's face videos.
 		 */
 		void stopCapture();
+
+		/**
+		 * Get the list of video files created by the video capturer.
+		 * @return QStringList with the list of files created. The files are given
+		 * with the complete path + name + extension.
+		 */
+		QStringList getCapturedVideoFiles() const;
 
 	protected slots:
 

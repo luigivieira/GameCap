@@ -42,7 +42,7 @@ gc::VideoCapturer::VideoCapturer(QObject *pParent): QObject(pParent)
 	m_eState = Stopped;
 
 	// Read the OBS settings
-	QSettings *pSettings = ((Application*) qApp)->getSettings();
+	QSettings *pSettings = static_cast<Application*>(qApp)->getSettings();
 
 	pSettings->beginGroup(GROUP_OBS);
 	m_sOBSFileName = pSettings->value(SETTING_PATH).toString();
@@ -224,15 +224,9 @@ void gc::VideoCapturer::onProcessError(QProcess::ProcessError eError)
 // +-----------------------------------------------------------
 void gc::VideoCapturer::deleteFiles()
 {
-	QDir oGameplayDir(m_sGameplayPath);
-	oGameplayDir.setFilter(QDir::NoDotAndDotDot | QDir::Files);
-	foreach(QString sFile, oGameplayDir.entryList())
-		oGameplayDir.remove(sFile);
-
-	QDir oPlayerDir(m_sPlayerPath);
-	oPlayerDir.setFilter(QDir::NoDotAndDotDot | QDir::Files);
-	foreach(QString sFile, oPlayerDir.entryList())
-		oPlayerDir.remove(sFile);
+	QStringList oFiles = getCapturedVideoFiles();
+	foreach(QString sFile, oFiles)
+		QFile::remove(sFile);
 }
 
 // +-----------------------------------------------------------
@@ -279,4 +273,22 @@ bool gc::VideoCapturer::saveFiles()
 		QFile::remove(sPlayerSourceName);
 		return true;
 	}
+}
+
+// +-----------------------------------------------------------
+QStringList gc::VideoCapturer::getCapturedVideoFiles() const
+{
+	QStringList oRet;
+
+	QDir oGameplayDir(m_sGameplayPath);
+	oGameplayDir.setFilter(QDir::NoDotAndDotDot | QDir::Files);
+	foreach(QString sFile, oGameplayDir.entryList())
+		oRet.push_back(sFile);
+
+	QDir oPlayerDir(m_sPlayerPath);
+	oPlayerDir.setFilter(QDir::NoDotAndDotDot | QDir::Files);
+	foreach(QString sFile, oPlayerDir.entryList())
+		oRet.push_back(sFile);
+
+	return oRet;
 }
