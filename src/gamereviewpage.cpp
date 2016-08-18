@@ -37,10 +37,10 @@ gc::GameReviewPage::GameReviewPage(QWidget *pParent) : BasePage(pParent)
 // +-----------------------------------------------------------
 void gc::GameReviewPage::initializePage()
 {
-	QString sFile = ((Application *) qApp)->getGameplayFile();
 	m_bCompleted = false;
 	emit completeChanged();
-	m_pReviewer->playVideo("C:\\Users\\luigi\\Downloads\\Big Buck Bunny.avi");
+	QString sFile = static_cast<Application*>(qApp)->getGameplayFile();
+	m_pReviewer->playVideo(sFile);
 }
 
 // +-----------------------------------------------------------
