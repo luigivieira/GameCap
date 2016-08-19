@@ -70,8 +70,16 @@ namespace gc
 		 */
 		void showQuestionnaire();
 
+		/**
+		 * Starts or continues playing the video of the gameplay, updating the icons on
+		 * playback controls accordingly.
+		 */
 		void playVideo();
 
+		/**
+		 * Pauses the video of the gameplay, updating the icons on
+		 * playback controls accordingly.
+		 */
 		void pauseVideo();
 
 	protected slots:
