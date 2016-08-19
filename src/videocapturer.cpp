@@ -301,13 +301,13 @@ QStringList gc::VideoCapturer::getCapturedVideoFiles() const
 
 	QDir oGameplayDir(m_sGameplayPath);
 	oGameplayDir.setFilter(QDir::NoDotAndDotDot | QDir::Files);
-	foreach(QString sFile, oGameplayDir.entryList())
-		oRet.push_back(sFile);
+	foreach(QFileInfo oFile, oGameplayDir.entryInfoList())
+		oRet.push_back(oFile.absoluteFilePath());
 
 	QDir oPlayerDir(m_sPlayerPath);
 	oPlayerDir.setFilter(QDir::NoDotAndDotDot | QDir::Files);
-	foreach(QString sFile, oPlayerDir.entryList())
-		oRet.push_back(sFile);
+	foreach(QFileInfo oFile, oPlayerDir.entryInfoList())
+		oRet.push_back(oFile.absoluteFilePath());
 
 	return oRet;
 }
