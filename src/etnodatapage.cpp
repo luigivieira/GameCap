@@ -28,11 +28,16 @@ gc::EtnoDataPage::EtnoDataPage(QWidget *pParent) : BasePage(pParent)
 	m_pQuestionnaire = new Questionnaire(this);
 	pLayout->addWidget(m_pQuestionnaire);
 
-	m_pQuestionnaire->addQuestion(Questionnaire::Integer); // Age
+	m_pQuestionnaire->addQuestion(Questionnaire::Integer);   // Age
 	m_pQuestionnaire->addQuestion(Questionnaire::Likert, 2); // Sex
 	m_pQuestionnaire->addQuestion(Questionnaire::Likert, 2); // Play games
 	m_pQuestionnaire->addQuestion(Questionnaire::Likert, 4); // Hours per week playing
 	m_pQuestionnaire->addQuestion(Questionnaire::Likert, 2); // Playged game before
+
+	connect(m_pQuestionnaire, &Questionnaire::completed, this, &EtnoDataPage::onCompleted);
+	connect(m_pQuestionnaire, &Questionnaire::questionChanged, this, &EtnoDataPage::onQuestionChanged);
+
+	m_pData = static_cast<Application*>(qApp)->getGameplayData();
 }
 
 // +-----------------------------------------------------------
@@ -56,4 +61,52 @@ void gc::EtnoDataPage::initializePage()
 
 	m_pQuestionnaire->setQuestionTitle(4, tr("Have you played %1 (the game you just played) before?").arg(pGame->name()));
 	m_pQuestionnaire->setLikertOptionTitles(4, QStringList({ tr("Yes"), tr("No") }));
+
+	m_bCompleted = false;
+	emit completeChanged();
+}
+
+// +-----------------------------------------------------------
+bool gc::EtnoDataPage::isComplete() const
+{
+	return m_bCompleted;
+}
+
+// +-----------------------------------------------------------
+void gc::EtnoDataPage::onCompleted()
+{
+	m_bCompleted = true;
+	emit completeChanged();
+}
+
+// +-----------------------------------------------------------
+void gc::EtnoDataPage::onQuestionChanged(const uint iIndex, const Questionnaire::QuestionType eType, const QVariant oValue)
+{
+	switch(iIndex)
+	{
+		case 0: // Age
+			m_pData->setAge(oValue.toInt());
+			if(m_pData->getAge() == 0)
+			{
+				m_bCompleted = false;
+				emit completeChanged();
+			}
+			break;
+
+		case 1: // Sex
+			m_pData->setSex(static_cast<GameplayData::Sex>(oValue.toInt()));
+			break;
+
+		case 3: // Play games
+			m_pData->setPlaysVideogames(oValue.toBool());
+			break;
+
+		case 4: // Hours per week playing
+			m_pData->setHoursPlayingVideogames(static_cast<GameplayData::HoursPlayingVideogames>(oValue.toInt()));
+			break;
+
+		case 5: // Playged game before
+			m_pData->setHasPlayedGameBefore(oValue.toBool());
+			break;
+	}
 }
