@@ -21,5 +21,18 @@
 // +-----------------------------------------------------------
 gc::EtnoDataPage::EtnoDataPage(QWidget *pParent) : BasePage(pParent)
 {
-    
+	// Main page layout
+	QVBoxLayout *pLayout = new QVBoxLayout(this);
+
+	m_pQuestionnaire = new Questionnaire(this);
+	pLayout->addWidget(m_pQuestionnaire);
+
+	m_pQuestionnaire->addQuestion(Questionnaire::Integer); // Age
+}
+
+// +-----------------------------------------------------------
+void gc::EtnoDataPage::initializePage()
+{
+	m_pQuestionnaire->setTitle(tr("Etnographic Information"));
+	m_pQuestionnaire->setDescription(tr("Please answer the questions bellow. They won't allow to identify you, but are useful to help with the analysis of the collected data."));
 }

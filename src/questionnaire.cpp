@@ -23,7 +23,7 @@
 #include <QFrame>
 
 // +-----------------------------------------------------------
-gc::Questionnaire::Questionnaire(const QString sTitle, const QString sDescription, QWidget *pParent): QWidget(pParent)
+gc::Questionnaire::Questionnaire(QWidget *pParent): QWidget(pParent)
 {
 	m_pMainLayout = new QVBoxLayout(this);
 
@@ -33,12 +33,12 @@ gc::Questionnaire::Questionnaire(const QString sTitle, const QString sDescriptio
 	QBoxLayout *pHeaderLayout = new QVBoxLayout();
 	m_pMainLayout->addLayout(pHeaderLayout);
 
-	m_pTitle = new QLabel(sTitle, this);
+	m_pTitle = new QLabel(this);
 	m_pTitle->setWordWrap(true);
 	m_pTitle->setObjectName("questionnaireTitle");
 	pHeaderLayout->addWidget(m_pTitle);
 
-	m_pDescription = new QLabel(sDescription, this);
+	m_pDescription = new QLabel(this);
 	m_pDescription->setWordWrap(true);
 	m_pDescription->setObjectName("questionnaireDescription");
 	pHeaderLayout->addWidget(m_pDescription);
@@ -54,8 +54,27 @@ gc::Questionnaire::Questionnaire(const QString sTitle, const QString sDescriptio
 }
 
 // +-----------------------------------------------------------
-bool gc::Questionnaire::addQuestion(const QuestionType eType, const QString sTitle)
+void gc::Questionnaire::setTitle(QString sTitle)
 {
+	m_pTitle->setText(sTitle);
+}
+
+// +-----------------------------------------------------------
+void gc::Questionnaire::setDescription(QString sDescription)
+{
+	m_pDescription->setText(sDescription);
+}
+
+// +-----------------------------------------------------------
+uint gc::Questionnaire::getNumberOfQuestions() const
+{
+	return static_cast<uint>(m_vQuestionFields.size());
+}
+
+// +-----------------------------------------------------------
+bool gc::Questionnaire::addQuestion(const QuestionType eType, uint iOptions)
+{
+	Q_ASSERT(!(eType == Likert && iOptions == 0));
 	QBoxLayout *pLayout = NULL;
 	QWidget *pField = NULL;
 	switch(eType)
@@ -74,14 +93,14 @@ bool gc::Questionnaire::addQuestion(const QuestionType eType, const QString sTit
 
 		case Likert:
 			pLayout = new QVBoxLayout();
-			pField = new LikertScale(this);
-			connect(static_cast<LikertScale*>(pField), &LikertScale::answerSelected, m_pMapper, static_cast<void(QSignalMapper::*)()>(&QSignalMapper::map));
+			pField = new LikertScale(iOptions, this);
+			connect(static_cast<LikertScale*>(pField), &LikertScale::selectionChanged, m_pMapper, static_cast<void(QSignalMapper::*)()>(&QSignalMapper::map));
 			break;
 
 		default:
 			return false;
 	}
-	QLabel *pLabel = new QLabel(sTitle, this);
+	QLabel *pLabel = new QLabel(this);
 	pLabel->setObjectName("questionnaireQuestion");
 
 	pLayout->addWidget(pLabel);
@@ -94,6 +113,13 @@ bool gc::Questionnaire::addQuestion(const QuestionType eType, const QString sTit
 
 	m_pMapper->setMapping(pField, m_vQuestionFields.length() - 1);
 	return true;
+}
+
+// +-----------------------------------------------------------
+void gc::Questionnaire::setQuestionTitle(const uint iIndex, const QString sTitle)
+{
+	Q_ASSERT(static_cast<uint>(m_vQuestionLabels.size()) >= iIndex);
+	m_vQuestionLabels[iIndex]->setText(sTitle);
 }
 
 // +-----------------------------------------------------------
@@ -114,7 +140,7 @@ bool gc::Questionnaire::isCompleted() const
 				break;
 
 			case Likert:
-				bRet = bRet && static_cast<LikertScale*>(m_vQuestionFields[i])->getSelected() != GameplayData::Undefined;
+				bRet = bRet && static_cast<LikertScale*>(m_vQuestionFields[i])->getSelected() != -1;
 				break;
 		}
 		if(!bRet)
@@ -169,7 +195,20 @@ void gc::Questionnaire::setQuestionValue(const uint iIndex, QVariant oValue)
 			break;
 
 		case Likert:
-			static_cast<LikertScale*>(m_vQuestionFields[iIndex])->setSelected(static_cast<GameplayData::AnswerValue>(oValue.toInt()));
+			static_cast<LikertScale*>(m_vQuestionFields[iIndex])->setSelected(oValue.toInt());
 			break;
 	}
+}
+
+// +-----------------------------------------------------------
+void gc::Questionnaire::setLikertOptionTitles(const uint iIndex, const QStringList &lTitles)
+{
+	Q_ASSERT(static_cast<uint>(m_vQuestionTypes.size()) >= iIndex);
+	QuestionType eType = m_vQuestionTypes[iIndex];
+
+	if(eType != Likert)
+		return;
+
+	LikertScale *pQuestion = static_cast<LikertScale*>(m_vQuestionFields[iIndex]);
+	pQuestion->setOptionTitles(lTitles);
 }

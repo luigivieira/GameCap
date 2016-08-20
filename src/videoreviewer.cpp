@@ -79,15 +79,28 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 	pControlsLayout->addWidget(m_pRemainingTime);
 
 	// Create the sample questionnaire
-	QString sTitle = tr("How were you feeling at that time?");
-	QString sDescription = tr("Please indicate how you were feeling while playing the game at the time the video is paused, for each of the following items.");
-	m_pQuestionnaire = new Questionnaire(sTitle, sDescription, this);
+	m_pQuestionnaire = new Questionnaire(this);
+	m_pQuestionnaire->setTitle(tr("How were you feeling at that time?"));
+	m_pQuestionnaire->setDescription(tr("Please indicate how you were feeling while playing the game at the time the video is paused, for each of the following items."));
 	pLayout->addSpacing(20);
 	pLayout->addWidget(m_pQuestionnaire);
 
-	m_pQuestionnaire->addQuestion(Questionnaire::Likert, tr("1. I was feeling frustrated."));
-	m_pQuestionnaire->addQuestion(Questionnaire::Likert, tr("2. I was feeling involved."));
-	m_pQuestionnaire->addQuestion(Questionnaire::Likert, tr("3. I was having fun."));
+	m_pQuestionnaire->addQuestion(Questionnaire::Likert, 5);
+	m_pQuestionnaire->setQuestionTitle(0, tr("1. I was feeling frustrated."));
+	m_pQuestionnaire->addQuestion(Questionnaire::Likert, 5);
+	m_pQuestionnaire->setQuestionTitle(1, tr("2. I was feeling involved."));
+	m_pQuestionnaire->addQuestion(Questionnaire::Likert, 5);
+	m_pQuestionnaire->setQuestionTitle(2, tr("3. I was having fun."));
+
+	QStringList lOptions = {
+		tr("not at all"),
+		tr("slightly"),
+		tr("moderately"),
+		tr("fairly"),
+		tr("extremely")
+	};
+	for(uint i = 0; i < m_pQuestionnaire->getNumberOfQuestions(); i++)
+		m_pQuestionnaire->setLikertOptionTitles(i, lOptions);
 
 	connect(m_pQuestionnaire, &Questionnaire::questionChanged, this, &VideoReviewer::onQuestionChanged);
 	connect(m_pQuestionnaire, &Questionnaire::completed, this, &VideoReviewer::onQuestionnaireCompleted);
@@ -152,13 +165,13 @@ void gc::VideoReviewer::showQuestionnaire()
 	uint iPos = m_pProgressSlider->sliderPosition();
 
 	GameplayData::AnswerValue eAnswer = m_pData->getReviewAnswer(GameplayData::Frustation, iPos);
-	m_pQuestionnaire->setQuestionValue(GameplayData::Frustation, eAnswer);
+	m_pQuestionnaire->setQuestionValue(GameplayData::Frustation, (eAnswer == GameplayData::Undefined) ? -1 : eAnswer + 2);
 
 	eAnswer = m_pData->getReviewAnswer(GameplayData::Involvement, iPos);
-	m_pQuestionnaire->setQuestionValue(GameplayData::Involvement, eAnswer);
+	m_pQuestionnaire->setQuestionValue(GameplayData::Involvement, (eAnswer == GameplayData::Undefined) ? -1 : eAnswer + 2);
 
 	eAnswer = m_pData->getReviewAnswer(GameplayData::Fun, iPos);
-	m_pQuestionnaire->setQuestionValue(GameplayData::Fun, eAnswer);
+	m_pQuestionnaire->setQuestionValue(GameplayData::Fun, (eAnswer == GameplayData::Undefined) ? -1 : eAnswer + 2);
 
 	m_pQuestionnaire->show();
 }
@@ -267,7 +280,7 @@ void gc::VideoReviewer::onQuestionChanged(const uint iIndex, const Questionnaire
 	uint iPos = m_pProgressSlider->sliderPosition();
 
 	GameplayData::ReviewQuestion eQuestion = static_cast<GameplayData::ReviewQuestion>(iIndex);
-	GameplayData::AnswerValue eAnswer = static_cast<GameplayData::AnswerValue>(oValue.toInt());
+	GameplayData::AnswerValue eAnswer = static_cast<GameplayData::AnswerValue>(oValue.toInt() - 2);
 	m_pData->setReviewAnswer(eQuestion, iPos, eAnswer);
 }
 

@@ -19,7 +19,6 @@
 #ifndef LIKERT_SCALE_H
 #define LIKERT_SCALE_H
 
-#include "gameplaydata.h"
 #include <QWidget>
 #include <QLabel>
 #include <QRadioButton>
@@ -27,7 +26,7 @@
 namespace gc
 {
 	/**
-	 * Implements a 5-values likert-scaled question.
+	 * Implements a likert-scaled question.
 	 */
 	class LikertScale : public QWidget
 	{
@@ -36,27 +35,37 @@ namespace gc
 
         /**
          * Class constructor.
+		 * @param iAnswers Unsigned integer with the number of answers allowed.
          * @param pParent Instance of a QWidget with the parent of this component.
          * The default is NULL.
          */
-		LikertScale(QWidget *pParent = NULL);
+		LikertScale(const uint iAnswers, QWidget *pParent = NULL);
 
 		/**
 		 * Gets the currently selected option.
-		 * @return Value of the GameplayData::AnswerValue enumeration with the selected option.
+		 * @return Integer with the index of the currently selected option, or -1 if no
+		 * option is selected.
 		 */
-		GameplayData::AnswerValue getSelected() const;
+		uint getSelected() const;
 
 		/**
 		 * Sets the currently selected option.
-		 * @param eSelected Value of the GameplayData::AnswerValue enumeration with the selected option.
+		 * @param iSelected Integer with the index of the currently selected option, or -1
+		 * if no option is selected.
 		 */
-		void setSelected(const GameplayData::AnswerValue eSelected);
+		void setSelected(const uint iSelected);
 
 		/**
-		 * Updates the strings due to locale changes.
+		 * Sets the titles for the options in the likert scale.
+		 * @param lTitles QStringList with the list of titles.
 		 */
-		void updateTranslations();
+		void setOptionTitles(const QStringList &lTitles);
+
+		/**
+		 * Gets the number of options in this likert scale.
+		 * @return Unsigned integer with the number of configured options.
+		 */
+		uint getNumberOfOptions() const;
 
 	protected slots:
 
@@ -70,9 +79,10 @@ namespace gc
 
 		/**
 		 * Indicates that an answer has been selected/changed.
-		 * @param eSelected Value of the GameplayData::AnswerValue enumeration with the selected option.
+		 * @param iSelected Integer with the index of the selected option (or -1 if no
+		 * option is selected).
 		 */
-		void answerSelected(const GameplayData::AnswerValue eSelected);
+		void selectionChanged(const uint iSelected);
 
 	private:
 		
@@ -80,7 +90,7 @@ namespace gc
 		QList<QRadioButton *> m_lButtons;
 
 		/** Currently selected option. */
-		GameplayData::AnswerValue m_eSelected;
+		uint m_iSelected;
 	};
 }
 

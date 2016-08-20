@@ -20,7 +20,7 @@
 #include <QBoxLayout>
 
 // +-----------------------------------------------------------
-gc::LikertScale::LikertScale(QWidget *pParent) : QWidget(pParent)
+gc::LikertScale::LikertScale(const uint iAnswers, QWidget *pParent) : QWidget(pParent)
 {
 	QVBoxLayout *pLayout = new QVBoxLayout();
 	setLayout(pLayout);
@@ -28,11 +28,8 @@ gc::LikertScale::LikertScale(QWidget *pParent) : QWidget(pParent)
 	QHBoxLayout *pOptionsLayout = new QHBoxLayout();
 	pLayout->addLayout(pOptionsLayout);
 
-	m_lButtons.append(new QRadioButton(this));
-	m_lButtons.append(new QRadioButton(this));
-	m_lButtons.append(new QRadioButton(this));
-	m_lButtons.append(new QRadioButton(this));
-	m_lButtons.append(new QRadioButton(this));
+	for(uint i = 0; i < iAnswers; i++)
+		m_lButtons.append(new QRadioButton(this));
 
 	foreach(QRadioButton *pButton, m_lButtons)
 	{
@@ -41,8 +38,7 @@ gc::LikertScale::LikertScale(QWidget *pParent) : QWidget(pParent)
 		connect(pButton, &QRadioButton::toggled, this, &LikertScale::onButtonToggled);
 	}
 
-	m_eSelected = GameplayData::Undefined;
-	updateTranslations();
+	m_iSelected = -1;
 }
 
 // +-----------------------------------------------------------
@@ -50,47 +46,55 @@ void gc::LikertScale::onButtonToggled(bool bChecked)
 {
 	if (bChecked)
 	{
-		m_eSelected = static_cast<GameplayData::AnswerValue>(m_lButtons.indexOf((QRadioButton *) sender()) - 2);
-		emit answerSelected(m_eSelected);
+		m_iSelected = m_lButtons.indexOf((QRadioButton *) sender());
+		emit selectionChanged(m_iSelected);
 	}
 }
 
 // +-----------------------------------------------------------
-void gc::LikertScale::updateTranslations()
+void gc::LikertScale::setOptionTitles(const QStringList &lTitles)
 {
-	m_lButtons[0]->setText(tr("not at all"));
-	m_lButtons[1]->setText(tr("slightly"));
-	m_lButtons[2]->setText(tr("moderately"));
-	m_lButtons[3]->setText(tr("fairly"));
-	m_lButtons[4]->setText(tr("extremely"));
+	Q_ASSERT(lTitles.size() == m_lButtons.size());
+	for(int i = 0; i < m_lButtons.size(); i++)
+	{
+		QRadioButton *pButton = m_lButtons[i];
+		pButton->setText(lTitles[i]);
+	}
 }
 
 // +-----------------------------------------------------------
-gc::GameplayData::AnswerValue gc::LikertScale::getSelected() const
+uint gc::LikertScale::getNumberOfOptions() const
 {
-	return m_eSelected;
+	return static_cast<uint>(m_lButtons.size());
 }
 
 // +-----------------------------------------------------------
-void gc::LikertScale::setSelected(const GameplayData::AnswerValue eSelected)
+uint gc::LikertScale::getSelected() const
 {
+	return m_iSelected;
+}
+
+// +-----------------------------------------------------------
+void gc::LikertScale::setSelected(const uint iSelected)
+{
+	Q_ASSERT(iSelected >= static_cast<uint>(m_lButtons.size()));
 	foreach(QRadioButton *pButton, m_lButtons)
 		pButton->blockSignals(true);
 
-	if(eSelected == GameplayData::Undefined)
+	if(iSelected == -1)
 	{
-		if(m_eSelected != GameplayData::Undefined)
+		if(m_iSelected != -1)
 		{
-			m_lButtons[m_eSelected + 2]->setAutoExclusive(false);
-			m_lButtons[m_eSelected + 2]->setChecked(false);
-			m_lButtons[m_eSelected + 2]->setAutoExclusive(true);
+			m_lButtons[m_iSelected]->setAutoExclusive(false);
+			m_lButtons[m_iSelected]->setChecked(false);
+			m_lButtons[m_iSelected]->setAutoExclusive(true);
 		}
 	}
 	else
-		m_lButtons[eSelected + 2]->setChecked(true);
+		m_lButtons[iSelected]->setChecked(true);
 
 	foreach(QRadioButton *pButton, m_lButtons)
 		pButton->blockSignals(false);
 
-	m_eSelected = eSelected;
+	m_iSelected = iSelected;
 }

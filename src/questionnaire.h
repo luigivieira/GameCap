@@ -44,15 +44,50 @@ namespace gc
 		 * Class constructor.
 		 * @param pParent Instance for the QObject that is the parent of this one. Default is NULL.
 		 */
-		Questionnaire(const QString sTitle, const QString sDescription, QWidget *pParent = NULL);
+		Questionnaire(QWidget *pParent = NULL);
+
+		/**
+		 * Sets the questionnaire title.
+		 * @param sTitle QString with the questionnaire title.
+		 */
+		void setTitle(QString sTitle);
+
+		/**
+		 * Sets the questionnaire description.
+		 * @param sDescription QString with the questionnaire description.
+		 */
+		void setDescription(QString sDescription);
 
 		/**
 		 * Adds a new question to this questionnaire.
-		 * @param eType Value of the enumeration QuestionType with the type of the question to add.
-		 * @param sTitle String with the title (label) of the question.
+		 * @param eType Value of the enumeration QuestionType with the type of the question
+		 * to add.
+		 * @param iOptions Integer with the number of options. Default is 0, because this
+		 * parameter is only used if eType is Likert.
 		 * @return Boolean indicating if the question was successfully added or not.
 		 */
-		bool addQuestion(const QuestionType eType, const QString sTitle);
+		bool addQuestion(const QuestionType eType, uint iOptions = 0);
+
+		/**
+		 * Gets the number of questions added to this questionnaire.
+		 * @return Unsigned integer with the number of questions in the questionnaire.
+		 */
+		uint getNumberOfQuestions() const;
+
+		/**
+		 * Sets the title for the given question.
+		 * @param iIndex Index of the question in the questionnaire.
+		 * @param sTitle String with the new title for the question.
+		 */
+		void setQuestionTitle(const uint iIndex, const QString sTitle);
+
+		/**
+		 * Sets the value of the given question.
+		 * @param iIndex Index of the question in the questionnaire.
+		 * @param oValue QVariant with the new value for the question (stored accordingly
+		 * to the question type defined when it was added).
+		 */
+		void setQuestionValue(const uint iIndex, QVariant oValue);
 
 		/**
 		 * Queries if the questionnaire is completed.
@@ -60,7 +95,13 @@ namespace gc
 		 */
 		bool isCompleted() const;
 
-		void setQuestionValue(const uint iIndex, QVariant oValue);
+		/**
+		 * Sets the option titles for the given likert question. This method only
+		 * executes if the given question is indeed of the type Likert.
+		 * @param iIndex Index of the question in the questionnaire.
+		 * @param lTitles QStringList with the list of titles.
+		 */
+		void setLikertOptionTitles(const uint iIndex, const QStringList &lTitles);
 
 	protected slots:
 

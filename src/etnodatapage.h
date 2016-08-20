@@ -20,12 +20,13 @@
 #define ETNO_DATA_PAGE_H
 
 #include "basepage.h"
+#include "questionnaire.h"
 
 namespace gc
 {
 	/**
-	* Page class in the wizard application used to capture etnographic data.
-	*/
+	 * Page class in the wizard application used to capture etnographic data.
+	 */
 	class EtnoDataPage : public BasePage
 	{
 		Q_OBJECT
@@ -37,6 +38,18 @@ namespace gc
          * The default is NULL.
          */
 		EtnoDataPage(QWidget *pParent = NULL);
+
+	protected:
+
+		/**
+		 * Initialization method called everytime the page is displayed.
+		 */
+		void initializePage();
+
+	private:
+
+		/** Holds the questionnaire displayed to the user at each video tick. */
+		Questionnaire *m_pQuestionnaire;
 	};
 }
 
