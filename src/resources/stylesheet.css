@@ -211,6 +211,40 @@ gc--Questionnaire QLabel#questionnaireQuestion
     font-size: 25px;
 }
 
+gc--Questionnaire QWidget#highlightedRow
+{
+	background-color: #efefef;
+}
+
+gc--Questionnaire QSpinBox
+{
+	padding-left: 10px;
+	width: 160px;
+	height: 40px;
+	font-size: 20px;
+	border: 1px solid #91a1b5;
+	border-radius: 10px;
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #d4dfea, stop: 1 #f6f7fa);
+}
+
+gc--Questionnaire QSpinBox:hover
+{
+	border: 1px solid #35445f;
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #9ab2cc, stop: 1 #f6f7fa);
+}
+
+gc--Questionnaire QSpinBox::up-arrow
+{
+    width: 20px;
+    height: 20px;
+}
+
+gc--Questionnaire QSpinBox::down-arrow
+{
+    width: 20px;
+    height: 20px;
+}
+
 gc--LikertScale QRadioButton
 {
     font-size: 20px;

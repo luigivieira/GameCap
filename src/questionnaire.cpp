@@ -75,24 +75,22 @@ uint gc::Questionnaire::getNumberOfQuestions() const
 bool gc::Questionnaire::addQuestion(const QuestionType eType, uint iOptions)
 {
 	Q_ASSERT(!(eType == Likert && iOptions == 0));
-	QBoxLayout *pLayout = NULL;
 	QWidget *pField = NULL;
 	switch(eType)
 	{
 		case Integer:
-			pLayout = new QHBoxLayout();
 			pField = new QSpinBox(this);
+			static_cast<QSpinBox*>(pField)->setButtonSymbols(QAbstractSpinBox::NoButtons);
+			pField->setCursor(Qt::PointingHandCursor);
 			connect(static_cast<QSpinBox*>(pField), static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), m_pMapper, static_cast<void(QSignalMapper::*)()>(&QSignalMapper::map));
 			break;
 
 		case String:
-			pLayout = new QHBoxLayout();
 			pField = new QLineEdit(this);
 			connect(static_cast<QLineEdit*>(pField), &QLineEdit::editingFinished, m_pMapper, static_cast<void(QSignalMapper::*)()>(&QSignalMapper::map));
 			break;
 
 		case Likert:
-			pLayout = new QVBoxLayout();
 			pField = new LikertScale(iOptions, this);
 			connect(static_cast<LikertScale*>(pField), &LikertScale::selectionChanged, m_pMapper, static_cast<void(QSignalMapper::*)()>(&QSignalMapper::map));
 			break;
@@ -100,18 +98,39 @@ bool gc::Questionnaire::addQuestion(const QuestionType eType, uint iOptions)
 		default:
 			return false;
 	}
+
+	QWidget *pQuestionBg = new QWidget(this);
+	int iLeft, iRight, iTop, iBottom;
+	pQuestionBg->getContentsMargins(&iLeft, &iTop, &iRight, &iBottom);
+	pQuestionBg->setContentsMargins(iLeft, iTop + 10, iRight, iBottom + 10);
+	m_pMainLayout->addWidget(pQuestionBg);
+
+
+	QBoxLayout *pQuestionLayout = new QVBoxLayout(pQuestionBg);
+	pQuestionLayout->setAlignment(Qt::AlignLeft);
+
 	QLabel *pLabel = new QLabel(this);
 	pLabel->setObjectName("questionnaireQuestion");
 
-	pLayout->addWidget(pLabel);
-	pLayout->addWidget(pField);
-	m_pMainLayout->addLayout(pLayout);
+	pQuestionLayout->addWidget(pLabel);
+
+	QHBoxLayout *pFieldLayout = new QHBoxLayout();
+	pFieldLayout->setAlignment(Qt::AlignLeft);
+
+	pQuestionLayout->addLayout(pFieldLayout);
+	pFieldLayout->addSpacing(40);
+	pFieldLayout->addWidget(pField);
 
 	m_vQuestionTypes.push_back(eType);
 	m_vQuestionLabels.push_back(pLabel);
 	m_vQuestionFields.push_back(pField);
 
 	m_pMapper->setMapping(pField, m_vQuestionFields.length() - 1);
+
+	if(m_vQuestionTypes.size() % 2)
+		pQuestionBg->setObjectName("highlightedRow");
+		//pQuestionBg->setStyleSheet("background-color: #efefef");
+
 	return true;
 }
 

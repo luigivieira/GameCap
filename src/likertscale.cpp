@@ -26,6 +26,7 @@ gc::LikertScale::LikertScale(const uint iAnswers, QWidget *pParent) : QWidget(pP
 	setLayout(pLayout);
 
 	QHBoxLayout *pOptionsLayout = new QHBoxLayout();
+	pOptionsLayout->setAlignment(Qt::AlignLeft);
 	pLayout->addLayout(pOptionsLayout);
 
 	for(uint i = 0; i < iAnswers; i++)
@@ -34,6 +35,8 @@ gc::LikertScale::LikertScale(const uint iAnswers, QWidget *pParent) : QWidget(pP
 	foreach(QRadioButton *pButton, m_lButtons)
 	{
 		pButton->setCursor(Qt::PointingHandCursor);
+		if(pOptionsLayout->count() > 0)
+			pOptionsLayout->addSpacing(60);
 		pOptionsLayout->addWidget(pButton);
 		connect(pButton, &QRadioButton::toggled, this, &LikertScale::onButtonToggled);
 	}
