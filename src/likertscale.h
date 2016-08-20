@@ -46,14 +46,14 @@ namespace gc
 		 * @return Integer with the index of the currently selected option, or -1 if no
 		 * option is selected.
 		 */
-		uint getSelected() const;
+		int getSelected() const;
 
 		/**
 		 * Sets the currently selected option.
 		 * @param iSelected Integer with the index of the currently selected option, or -1
 		 * if no option is selected.
 		 */
-		void setSelected(const uint iSelected);
+		void setSelected(const int iSelected);
 
 		/**
 		 * Sets the titles for the options in the likert scale.
@@ -90,7 +90,7 @@ namespace gc
 		QList<QRadioButton *> m_lButtons;
 
 		/** Currently selected option. */
-		uint m_iSelected;
+		int m_iSelected;
 	};
 }
 

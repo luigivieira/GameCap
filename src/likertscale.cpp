@@ -69,15 +69,15 @@ uint gc::LikertScale::getNumberOfOptions() const
 }
 
 // +-----------------------------------------------------------
-uint gc::LikertScale::getSelected() const
+int gc::LikertScale::getSelected() const
 {
 	return m_iSelected;
 }
 
 // +-----------------------------------------------------------
-void gc::LikertScale::setSelected(const uint iSelected)
+void gc::LikertScale::setSelected(const int iSelected)
 {
-	Q_ASSERT(iSelected >= static_cast<uint>(m_lButtons.size()));
+	Q_ASSERT(iSelected == -1 || iSelected < m_lButtons.size());
 	foreach(QRadioButton *pButton, m_lButtons)
 		pButton->blockSignals(true);
 
