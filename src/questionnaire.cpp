@@ -21,12 +21,16 @@
 #include <QLineEdit>
 #include "likertscale.h"
 #include <QFrame>
+#include <QScrollArea>
+#include <QDesktopWidget>
+#include <QApplication>
 
 // +-----------------------------------------------------------
 gc::Questionnaire::Questionnaire(QWidget *pParent): QWidget(pParent)
 {
 	m_pMainLayout = new QVBoxLayout(this);
 
+	// Create the header
 	QBoxLayout *pLayout = new QHBoxLayout();
 	m_pMainLayout->addLayout(pLayout);
 
@@ -43,12 +47,26 @@ gc::Questionnaire::Questionnaire(QWidget *pParent): QWidget(pParent)
 	m_pDescription->setObjectName("questionnaireDescription");
 	pHeaderLayout->addWidget(m_pDescription);
 
+	// Create a separating line
 	QFrame *pLine = new QFrame(this);
 	pLine->setFrameStyle(QFrame::HLine | QFrame::Raised);
 	pLine->setLineWidth(1);
 	m_pMainLayout->addWidget(pLine);
 	m_pMainLayout->addSpacing(10);
 
+	// Create the questions area
+	QScrollArea *pScrollArea = new QScrollArea(this);
+	//pScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	pScrollArea->setLayout(new QVBoxLayout());
+	m_pMainLayout->addWidget(pScrollArea);
+
+	m_pQuestionsArea = new QWidget(this);
+	pScrollArea->setWidget(m_pQuestionsArea);
+	m_pQuestionsArea->setLayout(new QVBoxLayout());
+	m_pQuestionsArea->layout()->setSizeConstraint(QLayout::SetMinimumSize);
+	m_pQuestionsArea->setMinimumWidth(QApplication::desktop()->screenGeometry().width() - 145);
+
+	// Connections
 	m_pMapper = new QSignalMapper(this);
 	connect(m_pMapper, static_cast<void(QSignalMapper::*)(int)>(&QSignalMapper::mapped), this, &Questionnaire::fieldChanged);
 }
@@ -99,21 +117,22 @@ bool gc::Questionnaire::addQuestion(const QuestionType eType, uint iOptions)
 			return false;
 	}
 
+	// Create the row area
 	QWidget *pQuestionBg = new QWidget(this);
 	int iLeft, iRight, iTop, iBottom;
 	pQuestionBg->getContentsMargins(&iLeft, &iTop, &iRight, &iBottom);
 	pQuestionBg->setContentsMargins(iLeft, iTop + 10, iRight, iBottom + 10);
-	m_pMainLayout->addWidget(pQuestionBg);
-
+	m_pQuestionsArea->layout()->addWidget(pQuestionBg);
 
 	QBoxLayout *pQuestionLayout = new QVBoxLayout(pQuestionBg);
 	pQuestionLayout->setAlignment(Qt::AlignLeft);
 
+	// Create the question label
 	QLabel *pLabel = new QLabel(this);
 	pLabel->setObjectName("questionnaireQuestion");
-
 	pQuestionLayout->addWidget(pLabel);
 
+	// Create the question field
 	QHBoxLayout *pFieldLayout = new QHBoxLayout();
 	pFieldLayout->setAlignment(Qt::AlignLeft);
 
@@ -121,16 +140,16 @@ bool gc::Questionnaire::addQuestion(const QuestionType eType, uint iOptions)
 	pFieldLayout->addSpacing(40);
 	pFieldLayout->addWidget(pField);
 
+	// Save the question created
 	m_vQuestionTypes.push_back(eType);
 	m_vQuestionLabels.push_back(pLabel);
 	m_vQuestionFields.push_back(pField);
 
-	m_pMapper->setMapping(pField, m_vQuestionFields.length() - 1);
-
 	if(m_vQuestionTypes.size() % 2)
 		pQuestionBg->setObjectName("highlightedRow");
-		//pQuestionBg->setStyleSheet("background-color: #efefef");
 
+	// Connections
+	m_pMapper->setMapping(pField, m_vQuestionFields.length() - 1);
 	return true;
 }
 

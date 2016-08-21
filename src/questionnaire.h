@@ -150,6 +150,9 @@ namespace gc
 
 		/** Signal mapper used for triggering the changed signal upon field updates. */
 		QSignalMapper *m_pMapper;
+
+		/** Area with the questions (excluding the header). */
+		QWidget *m_pQuestionsArea;
 	};
 }
 
