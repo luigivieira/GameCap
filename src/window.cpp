@@ -172,24 +172,29 @@ void gc::Window::done(int iRet)
 // +-----------------------------------------------------------
 bool gc::Window::eventFilter(QObject *pSender, QEvent *pEvent)
 {
-	if (pSender == this && pEvent->type() == QEvent::KeyPress)
+	if(pSender == this && pEvent->type() == QEvent::KeyPress)
 	{
 		QKeyEvent *pKeyEvent = (QKeyEvent*) pEvent;
 
 		// The Ctrl or the Q keys clean up the hooking buffer
-		if (pKeyEvent->key() == Qt::Key_Control || pKeyEvent->key() == Qt::Key_Q)
+		if(pKeyEvent->key() == Qt::Key_Control || pKeyEvent->key() == Qt::Key_Q)
 			m_sHookedKeys = "";
 
 		// If Ctrl is pressed together with other keys, then search for
 		// the "Q-U-I-T" sequence by "hooking" the last 4 pressed letters
-		if (pKeyEvent->modifiers() & Qt::ControlModifier && 
+		if(pKeyEvent->modifiers() & Qt::ControlModifier && 
 			(pKeyEvent->key() >= Qt::Key_0 && pKeyEvent->key() <= Qt::Key_Z))
 		{
 			m_sHookedKeys += (char) pKeyEvent->key();
-			if (m_sHookedKeys.length() == 4)
+			if(m_sHookedKeys.length() == 4)
 			{
-				if (m_sHookedKeys.left(4) == "QUIT")
+				if(m_sHookedKeys.left(4) == "QUIT")
+				{
+					if(currentId() == Page_GameReview)
+						currentPage()->validatePage();
+					static_cast<Application*>(qApp)->rejectSubject();
 					Application::quit();
+				}
 				else // Wrong sequence
 					m_sHookedKeys = "";
 			}
