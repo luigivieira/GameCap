@@ -110,6 +110,9 @@ namespace gc
 
 		/** Main window of the application. */
 		Window *m_pMainWindow;
+
+		/** The page that is faded out/in. */
+		QWidget *m_pPage;
 	};
 }
 

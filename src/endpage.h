@@ -42,8 +42,8 @@ namespace gc
 	protected:
 
 		/**
-		* Initialization method called everytime the page is displayed.
-		*/
+		 * Initialization method called everytime the page is displayed.
+		 */
 		void initializePage();
 
 	private:

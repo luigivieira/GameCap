@@ -26,11 +26,13 @@
 #include <QPropertyAnimation>
 #include <QScreen>
 #include <QDebug>
+#include <QThread>
 
 // +-----------------------------------------------------------
 gc::MessageBox::MessageBox(gc::Window *pParent): QDialog(pParent)
 {
 	m_pMainWindow = pParent;
+	m_pPage = NULL;
 
 	setAttribute(Qt::WA_TranslucentBackground);
 	setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
@@ -82,14 +84,15 @@ gc::MessageBox::~MessageBox()
 // +-----------------------------------------------------------
 void gc::MessageBox::fadeOut()
 {
-	QWidget *pWidget = m_pMainWindow->currentPage();
-	if (!pWidget->graphicsEffect())
+	m_pPage = m_pMainWindow->currentPage();
+
+	if(!m_pPage->graphicsEffect())
 	{
-		QGraphicsOpacityEffect *pEffect = new QGraphicsOpacityEffect(pWidget);
-		pWidget->setGraphicsEffect(pEffect);
+		QGraphicsOpacityEffect *pEffect = new QGraphicsOpacityEffect(m_pPage);
+		m_pPage->setGraphicsEffect(pEffect);
 	}
 
-	QPropertyAnimation *pAnim = new QPropertyAnimation(pWidget->graphicsEffect(), "opacity");
+	QPropertyAnimation *pAnim = new QPropertyAnimation(m_pPage->graphicsEffect(), "opacity");
 	pAnim->setDuration(350);
 	pAnim->setStartValue(1);
 	pAnim->setEndValue(0.1);
@@ -100,14 +103,14 @@ void gc::MessageBox::fadeOut()
 // +-----------------------------------------------------------
 void gc::MessageBox::fadeIn()
 {
-	QWidget *pWidget = m_pMainWindow->currentPage();
-	if (!pWidget->graphicsEffect())
+	Q_ASSERT(m_pPage);
+	if(!m_pPage->graphicsEffect())
 	{
-		QGraphicsOpacityEffect *pEffect = new QGraphicsOpacityEffect(pWidget);
-		pWidget->setGraphicsEffect(pEffect);
+		QGraphicsOpacityEffect *pEffect = new QGraphicsOpacityEffect(m_pPage);
+		m_pPage->setGraphicsEffect(pEffect);
 	}
 
-	QPropertyAnimation *pAnim = new QPropertyAnimation(pWidget->graphicsEffect(), "opacity");
+	QPropertyAnimation *pAnim = new QPropertyAnimation(m_pPage->graphicsEffect(), "opacity");
 	pAnim->setDuration(350);
 	pAnim->setStartValue(0.1);
 	pAnim->setEndValue(1);
