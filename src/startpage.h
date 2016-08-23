@@ -73,7 +73,7 @@ namespace gc
 		/** Message about selecting the language. */
 		QLabel *m_pMessage;
 
-		/** Version and copyright information. */
+		/** Version information. */
 		QLabel *m_pInfo;
 
 		/**

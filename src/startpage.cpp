@@ -132,7 +132,7 @@ void gc::StartPage::languageToggled(int iId, bool bChecked)
 void gc::StartPage::languageChanged(Application::Language eLanguage)
 {
 	m_pMessage->setText(tr("Please choose the language to be used in the experiment:"));
-	m_pInfo->setText(tr("version %1\nflag images from %2").arg(GC_VERSION).arg("http://www.freeflagicons.com/"));
+	m_pInfo->setText(tr("version %1").arg(GC_VERSION));
 	switch (eLanguage)
 	{
 		case Application::EN_UK:
