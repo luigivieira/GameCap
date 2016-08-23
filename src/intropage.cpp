@@ -21,10 +21,15 @@
 // +-----------------------------------------------------------
 gc::IntroPage::IntroPage(QWidget *pParent) : BasePage(pParent)
 {
+	layout()->setMargin(50);
+
 	m_pText = new QLabel(this);
 	m_pText->setAlignment(Qt::AlignJustify);
 	m_pText->setWordWrap(true);
+
+	static_cast<QBoxLayout*>(layout())->addStretch();
 	layout()->addWidget(m_pText);
+	static_cast<QBoxLayout*>(layout())->addStretch();
 }
 
 // +-----------------------------------------------------------

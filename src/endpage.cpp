@@ -21,5 +21,19 @@
 // +-----------------------------------------------------------
 gc::EndPage::EndPage(QWidget *pParent) : BasePage(pParent)
 {
-    
+	m_pText = new QLabel(this);
+	m_pText->setWordWrap(true);
+	m_pText->setAlignment(Qt::AlignCenter);
+
+	static_cast<QBoxLayout*>(layout())->addStretch();
+	layout()->addWidget(m_pText);
+	static_cast<QBoxLayout*>(layout())->addStretch();
+
+	layout()->setAlignment(Qt::AlignCenter | Qt::AlignHCenter);
+}
+
+// +-----------------------------------------------------------
+void gc::EndPage::initializePage()
+{
+	m_pText->setText(tr("Thank you very much for your help.\n\nPlease click on Conclude to save your data and end your participation.\nAfter that you are free to go."));
 }

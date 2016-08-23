@@ -19,7 +19,6 @@
 #ifndef INTRO_PAGE_H
 #define INTRO_PAGE_H
 
-#include "application.h"
 #include "basepage.h"
 #include <QLabel>
 

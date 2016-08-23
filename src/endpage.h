@@ -20,6 +20,7 @@
 #define END_PAGE_H
 
 #include "basepage.h"
+#include <QLabel>
 
 namespace gc
 {
@@ -37,6 +38,18 @@ namespace gc
          * The default is NULL.
          */
 		EndPage(QWidget *pParent = NULL);
+
+	protected:
+
+		/**
+		* Initialization method called everytime the page is displayed.
+		*/
+		void initializePage();
+
+	private:
+
+		/** Text presented in this page. */
+		QLabel *m_pText;
 	};
 }
 

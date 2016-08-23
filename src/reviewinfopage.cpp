@@ -25,7 +25,10 @@ gc::ReviewInfoPage::ReviewInfoPage(QWidget *pParent) : BasePage(pParent)
 	m_pMessage = new QLabel(this);
 	m_pMessage->setAlignment(Qt::AlignJustify);
 	m_pMessage->setWordWrap(true);
+
+	static_cast<QBoxLayout*>(layout())->addStretch();
 	layout()->addWidget(m_pMessage);
+	static_cast<QBoxLayout*>(layout())->addStretch();
 }
 
 // +-----------------------------------------------------------
