@@ -139,6 +139,7 @@ gc::Application::Application(int& argc, char** argv): QApplication(argc, argv)
 // +-----------------------------------------------------------
 gc::Application::~Application()
 {
+	qInstallMessageHandler(0);
 	// Update and close the log file
     m_oLogFile.flush();
 	m_oLogFile.close();
