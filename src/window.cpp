@@ -128,31 +128,37 @@ void gc::Window::languageChanged(Application::Language eLanguage)
 // +-----------------------------------------------------------
 void gc::Window::reject()
 {
-	// Do nothing if the current page is the start
-	if(currentId() == Page_Start)
-		return;
-
-	// If current page is GamePlay, check if the game is still running.
-	// If it is not, then an error happened.
-	if(currentId() == Page_GamePlay)
+	switch(currentId())
 	{
-		if(static_cast<Application*>(qApp)->gamePlayer()->running())
+		// Prevent from rejecting if the current page is the start
+		case Page_Start:
 			return;
-		else
-		{
-			static_cast<Application*>(qApp)->rejectSubject();
-			restart();
-			return;
-		}
-	}
 
-	// Confirm quiting the experiment only if not in any of the previous conditions
-	MessageBox oBox(this);
-	if (currentId() == Page_GamePlay || oBox.yesNoQuestion(tr("Do you confirm quitting the experiment?")))
-	{
-		oBox.infoMessage(tr("You have chosen to quit the experiment. Nevertheless, thank you very much for your time."));
-		static_cast<Application*>(qApp)->rejectSubject();
-		restart();
+		// In  Gameplay, check if the game is still running.
+		// If it is not, then an error happened (and a message has already
+		// been displayed to the subject).
+		// It it is running, prevent from rejecting.
+		case Page_GamePlay:
+			if(!static_cast<Application*>(qApp)->gamePlayer()->running())
+			{
+				static_cast<Application*>(qApp)->rejectSubject();
+				restart();
+			}
+			return;
+
+		// Confirm quiting the experiment only if not in any of the previous conditions
+		default:
+			MessageBox oBox(this);
+			if(oBox.yesNoQuestion(tr("Do you confirm quitting the experiment?")))
+			{
+				// Stop and unload the video, if the user confirmed quitting
+				if(currentId() == Page_GameReview)
+					currentPage()->validatePage();
+
+				oBox.infoMessage(tr("You have chosen to quit the experiment. Nevertheless, thank you very much for your time."));
+				static_cast<Application*>(qApp)->rejectSubject();
+				restart();
+			}
 	}
 }
 
