@@ -100,6 +100,11 @@ void gc::Window::pageChanged(int iPageID)
 			button(QWizard::CancelButton)->setEnabled(false);
 			break;
 
+		case Page_End:
+			button(QWizard::NextButton)->setVisible(false);
+			button(QWizard::NextButton)->setEnabled(false);
+			break;
+
 		case Page_Intro:
 			static_cast<Application*>(qApp)->newSubject();
 

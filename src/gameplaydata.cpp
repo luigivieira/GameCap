@@ -33,8 +33,8 @@ void gc::GameplayData::setup(const uint iVideoDuration, const uint iSamples, con
 	// Initialization of the data with default values
 	m_iAge = 0;
 	m_eSex = Unknown;
-	m_bPlayVideogames = false;
-	m_eHoursPlayingVideogames = Empty;
+	m_bPlayGames = false;
+	m_eHoursPerWeekPlayingGames = NoAnswer;
 	m_bPlayedGameBefore = false;
 
 	int iTimestamp = iVideoDuration - 5; // Ignore the last 5 seconds of the video
@@ -76,27 +76,27 @@ void gc::GameplayData::setSex(const Sex eSex)
 }
 
 // +-----------------------------------------------------------
-bool gc::GameplayData::getPlaysVideogames() const
+bool gc::GameplayData::getPlaysGames() const
 {
-	return m_bPlayVideogames;
+	return m_bPlayGames;
 }
 
 // +-----------------------------------------------------------
-void gc::GameplayData::setPlaysVideogames(const bool bPlays)
+void gc::GameplayData::setPlaysGames(const bool bPlays)
 {
-	m_bPlayVideogames = bPlays;
+	m_bPlayGames = bPlays;
 }
 
 // +-----------------------------------------------------------
-gc::GameplayData::HoursPlayingVideogames gc::GameplayData::getHoursPlayingVideogames() const
+gc::GameplayData::HoursPerWeekPlayingGames gc::GameplayData::getHoursPerWeekPlayingGames() const
 {
-	return m_eHoursPlayingVideogames;
+	return m_eHoursPerWeekPlayingGames;
 }
 
 // +-----------------------------------------------------------
-void gc::GameplayData::setHoursPlayingVideogames(const HoursPlayingVideogames eHours)
+void gc::GameplayData::setHoursPerWeekPlayingGames(const HoursPerWeekPlayingGames eHours)
 {
-	m_eHoursPlayingVideogames = eHours;
+	m_eHoursPerWeekPlayingGames = eHours;
 }
 
 // +-----------------------------------------------------------
@@ -186,9 +186,29 @@ bool gc::GameplayData::save(const QString &sPath) const
 		return false;
 
 	QTextStream oDemOut(&oDemFile);
-	oDemOut << "Age;Sex;PlayVideogames;HoursPlayingVideogames;PlayedGameBefore" << endl;
-	oDemOut << m_iAge << ";" << m_eSex << ";" << m_bPlayVideogames << ";" <<
-		       m_eHoursPlayingVideogames << ";" << m_bPlayedGameBefore;
+	oDemOut << "Age;Sex;PlayGames;HoursPerWeekPlayingGames;PlayedGameBefore" << endl;
+	oDemOut << m_iAge << ";";
+	oDemOut << (m_eSex == Male ? "Male" : (m_eSex == Female) ? "Female" : "Unknown") << ";";
+	oDemOut << (m_bPlayGames ? "Yes" : "No") << ";";
+	switch(m_eHoursPerWeekPlayingGames)
+	{
+		case _0To2:
+			oDemOut << "0-2" << ";";
+			break;
+		case _2To5:
+			oDemOut << "2-5" << ";";
+			break;
+		case _5To10:
+			oDemOut << "5-10" << ";";
+			break;
+		case _10Plus:
+			oDemOut << "10+" << ";";
+			break;
+		default:
+			oDemOut << "--" << ";";
+			break;
+	}
+	oDemOut << (m_bPlayedGameBefore ? "Yes" : "No");
 
 	oDemFile.close();
 

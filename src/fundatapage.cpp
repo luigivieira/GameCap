@@ -111,5 +111,5 @@ void gc::FunDataPage::onCompleted()
 // +-----------------------------------------------------------
 void gc::FunDataPage::onQuestionChanged(const uint iIndex, const Questionnaire::QuestionType eType, const QVariant oValue)
 {
-	m_pData->setGEQAnswer(iIndex, static_cast<GameplayData::AnswerValue>(oValue.toInt() + 2));
+	m_pData->setGEQAnswer(iIndex, static_cast<GameplayData::AnswerValue>(oValue.toInt() - 2));
 }

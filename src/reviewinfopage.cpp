@@ -22,6 +22,8 @@
 // +-----------------------------------------------------------
 gc::ReviewInfoPage::ReviewInfoPage(QWidget *pParent) : BasePage(pParent)
 {
+	layout()->setMargin(50);
+
 	m_pMessage = new QLabel(this);
 	m_pMessage->setAlignment(Qt::AlignJustify);
 	m_pMessage->setWordWrap(true);

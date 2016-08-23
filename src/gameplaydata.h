@@ -54,19 +54,19 @@ namespace gc
 		/** Possible values for the sex of the respondent. */
 		enum Sex
 		{
-			Unknown = 99,
-			Male    = 1,
-			Female  = 2
+			Unknown = -1,
+			Male    = 0,
+			Female  = 1
 		};
 
-		/** Possible values for the number of hours playing videogames. */
-		enum HoursPlayingVideogames
+		/** Possible values for the number of hours playing digital games per week. */
+		enum HoursPerWeekPlayingGames
 		{
-			Empty   = 99,
-			_0To2   = 1,
-			_2To5   = 2,
-			_5To10  = 3,
-			_10Plus = 4
+			NoAnswer = -1,
+			_0To2    = 0,
+			_2To5    = 1,
+			_5To10   = 2,
+			_10Plus  = 3
 		};
 
 		/** Questions asked during gameplay review. */
@@ -111,28 +111,28 @@ namespace gc
 		void setSex(const Sex eSex);
 
 		/**
-		 * Gets the stored indication on whether the subject plays videogames.
-		 * @return Boolean indicating if the subject plays or not videogames.
+		 * Gets the stored indication on whether the subject plays diital games.
+		 * @return Boolean indicating if the subject plays or not digital games.
 		 */
-		bool getPlaysVideogames() const;
+		bool getPlaysGames() const;
 
 		/**
-		 * Sets the stored indication on whether the subject plays videogames.
-		 * @param bPlays Boolean indicating if the subject plays or not videogames.
+		 * Sets the stored indication on whether the subject plays digital games.
+		 * @param bPlays Boolean indicating if the subject plays or not digital games.
 		 */
-		void setPlaysVideogames(const bool bPlays);
+		void setPlaysGames(const bool bPlays);
 
 		/**
-		 * Gets the stored number of hours per week the subject plays videogames.
-		 * @return Value of the HoursPlayingVideogames enumeration with the number of hours.
+		 * Gets the stored number of hours per week the subject plays games.
+		 * @return Value of the HoursPerWeekPlayingGames enumeration with the number of hours.
 		 */
-		HoursPlayingVideogames getHoursPlayingVideogames() const;
+		HoursPerWeekPlayingGames getHoursPerWeekPlayingGames() const;
 
 		/**
 		 * Sets the stored number of hours per week the subject plays videogames.
 		 * @param eHours Value of the HoursPlayingVideogames enumeration with the number of hours.
 		 */
-		void setHoursPlayingVideogames(const HoursPlayingVideogames eHours);
+		void setHoursPerWeekPlayingGames(const HoursPerWeekPlayingGames eHours);
 
 		/**
 		 * Gets the stored indication on whether the subject has played the tested game before.
@@ -220,11 +220,11 @@ namespace gc
 		/** Sex of the subject. */
 		Sex m_eSex;
 
-		/** Indication if the subject usually plays videogames. */
-		bool m_bPlayVideogames;
+		/** Indication if the subject usually plays digital games. */
+		bool m_bPlayGames;
 
-		/** Number of hours per week the subject usually plays videogames. */
-		HoursPlayingVideogames m_eHoursPlayingVideogames;
+		/** Number of hours per week the subject usually plays games. */
+		HoursPerWeekPlayingGames m_eHoursPerWeekPlayingGames;
 
 		/** Indication if the subject has played before the game used in the experiment. */
 		bool m_bPlayedGameBefore;

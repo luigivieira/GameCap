@@ -93,16 +93,16 @@ void gc::EtnoDataPage::onQuestionChanged(const uint iIndex, const Questionnaire:
 			m_pData->setSex(static_cast<GameplayData::Sex>(oValue.toInt()));
 			break;
 
-		case 3: // Play games
-			m_pData->setPlaysVideogames(oValue.toBool());
+		case 2: // Play games
+			m_pData->setPlaysGames(!oValue.toBool());
 			break;
 
-		case 4: // Hours per week playing
-			m_pData->setHoursPlayingVideogames(static_cast<GameplayData::HoursPlayingVideogames>(oValue.toInt()));
+		case 3: // Hours per week playing
+			m_pData->setHoursPerWeekPlayingGames(static_cast<GameplayData::HoursPerWeekPlayingGames>(oValue.toInt()));
 			break;
 
-		case 5: // Playged game before
-			m_pData->setHasPlayedGameBefore(oValue.toBool());
+		case 4: // Playged game before
+			m_pData->setHasPlayedGameBefore(!oValue.toBool());
 			break;
 	}
 }
