@@ -65,6 +65,8 @@ void gc::EtnoDataPage::initializePage()
 
 	m_bCompleted = false;
 	emit completeChanged();
+
+	m_pQuestionnaire->setFocus();
 }
 
 // +-----------------------------------------------------------

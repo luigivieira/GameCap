@@ -85,7 +85,8 @@ void gc::FunDataPage::initializePage()
 		tr("extremely")
 	};
 
-	for(int i = (GEQ_SIZE - 1); i >= 0; i--)
+	//for(int i = (GEQ_SIZE - 1); i >= 0; i--)
+	for(int i = 0; i < GEQ_SIZE; i++)
 	{
 		m_pQuestionnaire->setQuestionTitle(i, lQuestions[i]);
 		m_pQuestionnaire->setLikertOptionTitles(i, lOptions);
@@ -94,6 +95,8 @@ void gc::FunDataPage::initializePage()
 
 	m_bCompleted = false;
 	emit completeChanged();
+
+	m_pQuestionnaire->setFocus();
 }
 
 // +-----------------------------------------------------------

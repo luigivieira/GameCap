@@ -75,6 +75,12 @@ namespace gc
 		 */
 		void onButtonToggled(bool bChecked);
 
+		/**
+		 * Reimplements the focus method, so the first option can gain the focus of the
+		 * likert scale.
+		 */
+		void setFocus();
+
 	signals:
 
 		/**

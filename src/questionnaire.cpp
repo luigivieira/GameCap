@@ -22,6 +22,7 @@
 #include "likertscale.h"
 #include <QFrame>
 #include <QStyle>
+#include <QTimer>
 
 // +-----------------------------------------------------------
 gc::Questionnaire::Questionnaire(QWidget *pParent): QWidget(pParent)
@@ -275,4 +276,28 @@ void gc::Questionnaire::setLikertOptionTitles(const uint iIndex, const QStringLi
 
 	LikertScale *pQuestion = static_cast<LikertScale*>(m_vQuestionFields[iIndex]);
 	pQuestion->setOptionTitles(lTitles);
+}
+
+// +-----------------------------------------------------------
+void gc::Questionnaire::setFocus()
+{
+	QWidget::setFocus();
+	if(m_vQuestionFields.size() > 0)
+	{
+		switch(m_vQuestionTypes[0])
+		{
+			case Integer:
+				static_cast<QSpinBox*>(m_vQuestionFields[0])->selectAll();
+				break;
+
+			case String:
+				static_cast<QLineEdit*>(m_vQuestionFields[0])->selectAll();
+				break;
+
+			case Likert:
+				//static_cast<QSpinBox*>(m_vQuestionFields[0])->selectAll();
+				break;
+		}
+		QTimer::singleShot(0, m_vQuestionFields[0], SLOT(setFocus()));
+	}
 }

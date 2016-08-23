@@ -180,6 +180,7 @@ void gc::VideoReviewer::showQuestionnaire()
 	m_pQuestionnaire->setQuestionValue(GameplayData::Fun, (eAnswer == GameplayData::Undefined) ? -1 : eAnswer + 2);
 
 	m_pQuestionnaire->show();
+	m_pQuestionnaire->setFocus();
 }
 
 // +-----------------------------------------------------------

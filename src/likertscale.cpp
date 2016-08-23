@@ -18,6 +18,7 @@
 
 #include "likertscale.h"
 #include <QBoxLayout>
+#include <QTimer>
 
 // +-----------------------------------------------------------
 gc::LikertScale::LikertScale(const uint iAnswers, QWidget *pParent) : QWidget(pParent)
@@ -100,4 +101,12 @@ void gc::LikertScale::setSelected(const int iSelected)
 		pButton->blockSignals(false);
 
 	m_iSelected = iSelected;
+}
+
+// +-----------------------------------------------------------
+void gc::LikertScale::setFocus()
+{
+	QWidget::setFocus();
+	if(m_lButtons.size() > 0)
+		QTimer::singleShot(0, m_lButtons[0], SLOT(setFocus()));
 }

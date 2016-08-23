@@ -104,6 +104,12 @@ namespace gc
 		 */
 		void setLikertOptionTitles(const uint iIndex, const QStringList &lTitles);
 
+		/**
+		 * Reimplements the focus method, so the first field can gain the focus of the
+		 * questionnaire.
+		 */
+		void setFocus();
+
 	protected slots:
 
 		/**
