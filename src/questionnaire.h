@@ -24,6 +24,7 @@
 #include <QVector>
 #include <QBoxLayout>
 #include <QSignalMapper>
+#include <QScrollArea>
 
 namespace gc
 {
@@ -153,6 +154,9 @@ namespace gc
 
 		/** Area with the questions (excluding the header). */
 		QWidget *m_pQuestionsArea;
+
+		/** Scroll area used to show all questions. */
+		QScrollArea *m_pScrollArea;
 	};
 }
 

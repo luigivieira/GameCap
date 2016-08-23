@@ -21,7 +21,6 @@
 #include <QLineEdit>
 #include "likertscale.h"
 #include <QFrame>
-#include <QScrollArea>
 #include <QStyle>
 
 // +-----------------------------------------------------------
@@ -54,14 +53,14 @@ gc::Questionnaire::Questionnaire(QWidget *pParent): QWidget(pParent)
 	m_pMainLayout->addSpacing(10);
 
 	// Create the questions area
-	QScrollArea *pScrollArea = new QScrollArea(this);
-	pScrollArea->setWidgetResizable(true);
-	pScrollArea->setLayout(new QVBoxLayout());
-	pScrollArea->layout()->setMargin(0);
-	m_pMainLayout->addWidget(pScrollArea);
+	m_pScrollArea = new QScrollArea(this);
+	m_pScrollArea->setWidgetResizable(true);
+	m_pScrollArea->setLayout(new QVBoxLayout());
+	m_pScrollArea->layout()->setMargin(0);
+	m_pMainLayout->addWidget(m_pScrollArea);
 
 	m_pQuestionsArea = new QWidget(this);
-	pScrollArea->setWidget(m_pQuestionsArea);
+	m_pScrollArea->setWidget(m_pQuestionsArea);
 	m_pQuestionsArea->setLayout(new QVBoxLayout());
 	m_pQuestionsArea->layout()->setSizeConstraint(QLayout::SetMinAndMaxSize);
 	m_pQuestionsArea->layout()->setMargin(0);
@@ -235,20 +234,34 @@ void gc::Questionnaire::setQuestionValue(const uint iIndex, QVariant oValue)
 	QuestionType eType = m_vQuestionTypes[iIndex];
 
 	Q_ASSERT(static_cast<uint>(m_vQuestionFields.size()) >= iIndex);
+	bool bUndefined = false;
 	switch(eType)
 	{
 		case Integer:
 			static_cast<QSpinBox*>(m_vQuestionFields[iIndex])->setValue(oValue.toInt());
+			if(oValue.toInt() <= 0)
+				bUndefined = true;
 			break;
 
 		case String:
 			static_cast<QLineEdit*>(m_vQuestionFields[iIndex])->setText(oValue.toString());
+			if(oValue.toString().length() == 0)
+				bUndefined = true;
 			break;
 
 		case Likert:
 			static_cast<LikertScale*>(m_vQuestionFields[iIndex])->setSelected(oValue.toInt());
+			if(oValue.toInt() == -1)
+				bUndefined = true;
 			break;
 	}
+
+	QLabel *pLabel = m_vQuestionLabels[iIndex];
+	pLabel->setProperty("undefined", bUndefined);
+	pLabel->style()->unpolish(pLabel);
+	pLabel->style()->polish(pLabel);
+
+	m_pScrollArea->ensureVisible(pLabel->x(), pLabel->y());
 }
 
 // +-----------------------------------------------------------

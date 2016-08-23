@@ -45,18 +45,23 @@ void gc::EtnoDataPage::initializePage()
 	m_pQuestionnaire->setDescription(tr("Please answer the questions bellow. They won't allow to identify you, but are useful to help with the analysis of the collected data."));
 
 	m_pQuestionnaire->setQuestionTitle(0, tr("How old are you?"));
+	m_pQuestionnaire->setQuestionValue(0, 0);
 
 	m_pQuestionnaire->setQuestionTitle(1, tr("What is your sex?"));
 	m_pQuestionnaire->setLikertOptionTitles(1, QStringList({ tr("Male"), tr("Female") }));
+	m_pQuestionnaire->setQuestionValue(1, -1);
 
 	m_pQuestionnaire->setQuestionTitle(2, tr("Do you usually play digital games?"));
 	m_pQuestionnaire->setLikertOptionTitles(2, QStringList({ tr("Yes"), tr("No") }));
+	m_pQuestionnaire->setQuestionValue(2, -1);
 	
 	m_pQuestionnaire->setQuestionTitle(3, tr("How many hours per week do you spend playing digital games?"));
 	m_pQuestionnaire->setLikertOptionTitles(3, QStringList({ tr("0-2 hours"), tr("2-5 hours"), tr("5-10 hours"), tr("10+ hours") }));
+	m_pQuestionnaire->setQuestionValue(3, -1);
 
 	m_pQuestionnaire->setQuestionTitle(4, tr("Have you played %1 (the game you just played) before?").arg(pGame->name()));
 	m_pQuestionnaire->setLikertOptionTitles(4, QStringList({ tr("Yes"), tr("No") }));
+	m_pQuestionnaire->setQuestionValue(4, -1);
 
 	m_bCompleted = false;
 	emit completeChanged();
