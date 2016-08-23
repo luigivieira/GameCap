@@ -21,12 +21,8 @@
 // +-----------------------------------------------------------
 gc::EtnoDataPage::EtnoDataPage(QWidget *pParent) : BasePage(pParent)
 {
-	// Main page layout
-	QVBoxLayout *pLayout = new QVBoxLayout(this);
-	pLayout->setMargin(50);
-
 	m_pQuestionnaire = new Questionnaire(this);
-	pLayout->addWidget(m_pQuestionnaire);
+	layout()->addWidget(m_pQuestionnaire);
 
 	m_pQuestionnaire->addQuestion(Questionnaire::Integer);   // Age
 	m_pQuestionnaire->addQuestion(Questionnaire::Likert, 2); // Sex

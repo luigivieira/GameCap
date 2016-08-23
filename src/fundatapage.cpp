@@ -21,12 +21,8 @@
 // +-----------------------------------------------------------
 gc::FunDataPage::FunDataPage(QWidget *pParent) : BasePage(pParent)
 {
-	// Main page layout
-	QVBoxLayout *pLayout = new QVBoxLayout(this);
-	pLayout->setMargin(50);
-
 	m_pQuestionnaire = new Questionnaire(this);
-	pLayout->addWidget(m_pQuestionnaire);
+	layout()->addWidget(m_pQuestionnaire);
 
 	for(uint i = 0; i < GEQ_SIZE; i++)
 		m_pQuestionnaire->addQuestion(Questionnaire::Likert, 5);

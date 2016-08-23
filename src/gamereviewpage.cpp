@@ -18,18 +18,13 @@
 
 #include "gamereviewpage.h"
 #include "application.h"
-#include <QBoxLayout>
 #include <QUrl>
 
 // +-----------------------------------------------------------
 gc::GameReviewPage::GameReviewPage(QWidget *pParent) : BasePage(pParent)
 {
-	// Main page layout
-	QVBoxLayout *pLayout = new QVBoxLayout(this);
-	pLayout->setMargin(50);
-
 	m_pReviewer = new VideoReviewer(this);
-	pLayout->addWidget(m_pReviewer);
+	layout()->addWidget(m_pReviewer);
 
 	connect(m_pReviewer, &VideoReviewer::reviewCompleted, this, &GameReviewPage::onReviewCompleted);
 }

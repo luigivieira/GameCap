@@ -17,19 +17,14 @@
  */
 
 #include "intropage.h"
-#include <QBoxLayout>
 
 // +-----------------------------------------------------------
 gc::IntroPage::IntroPage(QWidget *pParent) : BasePage(pParent)
 {
-	// Main page layout
-	QVBoxLayout *pLayout = new QVBoxLayout(this);
-	pLayout->setMargin(50);
-
 	m_pText = new QLabel(this);
 	m_pText->setAlignment(Qt::AlignJustify);
 	m_pText->setWordWrap(true);
-	pLayout->addWidget(m_pText);
+	layout()->addWidget(m_pText);
 }
 
 // +-----------------------------------------------------------

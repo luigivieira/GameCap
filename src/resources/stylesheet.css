@@ -206,9 +206,16 @@ gc--Questionnaire QLabel#questionnaireDescription
     font-size: 30px;
 }
 
-gc--Questionnaire QLabel#questionnaireQuestion
+gc--Questionnaire QLabel#questionnaireQuestion[undefined=false]
 {
     font-size: 25px;
+	color: black;
+}
+
+gc--Questionnaire QLabel#questionnaireQuestion[undefined=true]
+{
+	font-size: 25px;
+	color: red;
 }
 
 gc--Questionnaire QWidget#highlightedRow

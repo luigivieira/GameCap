@@ -17,19 +17,14 @@
  */
 
 #include "gameinfopage.h"
-#include <QBoxLayout>
 
 // +-----------------------------------------------------------
 gc::GameInfoPage::GameInfoPage(QWidget *pParent) : BasePage(pParent)
 {
-	// Main page layout
-	QVBoxLayout *pLayout = new QVBoxLayout(this);
-	pLayout->setMargin(50);
-
 	m_pMessage = new QLabel(this);
 	m_pMessage->setAlignment(Qt::AlignJustify);
 	m_pMessage->setWordWrap(true);
-	pLayout->addWidget(m_pMessage);
+	layout()->addWidget(m_pMessage);
 }
 
 // +-----------------------------------------------------------

@@ -18,7 +18,6 @@
 
 #include "gameplaypage.h"
 #include "window.h"
-#include <QBoxLayout>
 #include <QDateTime>
 #include <QMessageBox>
 #include <QTimer>
@@ -27,9 +26,8 @@
 // +-----------------------------------------------------------
 gc::GameplayPage::GameplayPage(QWidget *pParent) : BasePage(pParent)
 {
-	// Page layout and components
-	QVBoxLayout *pLayout = new QVBoxLayout(this);
-	pLayout->setMargin(50);
+	QBoxLayout *pLayout = static_cast<QBoxLayout*>(layout());
+
 	pLayout->setAlignment(Qt::AlignCenter);
 
 	pLayout->addStretch();

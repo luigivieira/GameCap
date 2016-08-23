@@ -21,6 +21,9 @@
 // +-----------------------------------------------------------
 gc::BasePage::BasePage(QWidget *pParent) : QWizardPage(pParent)
 {
+	setLayout(new QVBoxLayout());
+	static_cast<QBoxLayout*>(layout())->setMargin(10);
+	layout()->setSizeConstraint(QLayout::SetMinimumSize);
 }
 
 // +-----------------------------------------------------------

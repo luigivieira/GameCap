@@ -82,7 +82,6 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 	m_pQuestionnaire = new Questionnaire(this);
 	m_pQuestionnaire->setTitle(tr("How were you feeling at that time?"));
 	m_pQuestionnaire->setDescription(tr("Please indicate how you were feeling while playing the game at the time the video is paused, for each of the following items."));
-	pLayout->addSpacing(20);
 	pLayout->addWidget(m_pQuestionnaire);
 
 	m_pQuestionnaire->addQuestion(Questionnaire::Likert, 5);

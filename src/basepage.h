@@ -21,6 +21,8 @@
 
 #include "window.h"
 #include <QWizardPage>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 namespace gc
 {

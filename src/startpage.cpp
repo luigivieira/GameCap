@@ -19,8 +19,6 @@
 #include "startpage.h"
 #include "application.h"
 #include "version.h"
-#include <QHBoxLayout>
-#include <QVBoxLayout>
 #include <QPixmap>
 #include <QLabel>
 #include <QButtonGroup>
@@ -28,8 +26,8 @@
 // +-----------------------------------------------------------
 gc::StartPage::StartPage(QWidget *pParent) : BasePage(pParent)
 {
-	// Main page layout
-	QVBoxLayout *pLayout = new QVBoxLayout(this);
+	QBoxLayout *pLayout = static_cast<QBoxLayout*>(layout());
+	pLayout->setMargin(0);
 
 	// ----------------------------------------------
 	// Create the header with the logo

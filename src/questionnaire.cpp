@@ -22,8 +22,7 @@
 #include "likertscale.h"
 #include <QFrame>
 #include <QScrollArea>
-#include <QDesktopWidget>
-#include <QApplication>
+#include <QStyle>
 
 // +-----------------------------------------------------------
 gc::Questionnaire::Questionnaire(QWidget *pParent): QWidget(pParent)
@@ -56,15 +55,16 @@ gc::Questionnaire::Questionnaire(QWidget *pParent): QWidget(pParent)
 
 	// Create the questions area
 	QScrollArea *pScrollArea = new QScrollArea(this);
-	//pScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	pScrollArea->setWidgetResizable(true);
 	pScrollArea->setLayout(new QVBoxLayout());
+	pScrollArea->layout()->setMargin(0);
 	m_pMainLayout->addWidget(pScrollArea);
 
 	m_pQuestionsArea = new QWidget(this);
 	pScrollArea->setWidget(m_pQuestionsArea);
 	m_pQuestionsArea->setLayout(new QVBoxLayout());
-	m_pQuestionsArea->layout()->setSizeConstraint(QLayout::SetMinimumSize);
-	m_pQuestionsArea->setMinimumWidth(QApplication::desktop()->screenGeometry().width() - 145);
+	m_pQuestionsArea->layout()->setSizeConstraint(QLayout::SetMinAndMaxSize);
+	m_pQuestionsArea->layout()->setMargin(0);
 
 	// Connections
 	m_pMapper = new QSignalMapper(this);
@@ -119,9 +119,7 @@ bool gc::Questionnaire::addQuestion(const QuestionType eType, uint iOptions)
 
 	// Create the row area
 	QWidget *pQuestionBg = new QWidget(this);
-	int iLeft, iRight, iTop, iBottom;
-	pQuestionBg->getContentsMargins(&iLeft, &iTop, &iRight, &iBottom);
-	pQuestionBg->setContentsMargins(iLeft, iTop + 10, iRight, iBottom + 10);
+	pQuestionBg->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	m_pQuestionsArea->layout()->addWidget(pQuestionBg);
 
 	QBoxLayout *pQuestionLayout = new QVBoxLayout(pQuestionBg);
@@ -130,6 +128,9 @@ bool gc::Questionnaire::addQuestion(const QuestionType eType, uint iOptions)
 	// Create the question label
 	QLabel *pLabel = new QLabel(this);
 	pLabel->setObjectName("questionnaireQuestion");
+	pLabel->setProperty("undefined", true);
+	pLabel->style()->unpolish(pLabel);
+	pLabel->style()->polish(pLabel);
 	pQuestionLayout->addWidget(pLabel);
 
 	// Create the question field
@@ -195,24 +196,36 @@ void gc::Questionnaire::fieldChanged(const uint iIndex)
 
 	Q_ASSERT(static_cast<uint>(m_vQuestionFields.size()) >= iIndex);
 	QVariant vValue = QVariant::Invalid;
+	bool bUndefined = false;
 	switch(eType)
 	{
 		case Integer:
 			vValue = static_cast<QSpinBox*>(m_vQuestionFields[iIndex])->value();
+			if(vValue.toInt() <= 0)
+				bUndefined = true;
 			break;
 
 		case String:
 			vValue = static_cast<QLineEdit*>(m_vQuestionFields[iIndex])->text();
+			if(vValue.toString().length() == 0)
+				bUndefined = true;
 			break;
 
 		case Likert:
 			vValue = static_cast<LikertScale*>(m_vQuestionFields[iIndex])->getSelected();
+			if(vValue.toInt() == -1)
+				bUndefined = true;
 			break;
 	}
 	emit questionChanged(iIndex, eType, vValue);
 
 	if(isCompleted())
 		emit completed();
+
+	QLabel *pLabel = m_vQuestionLabels[iIndex];
+	pLabel->setProperty("undefined", bUndefined);
+	pLabel->style()->unpolish(pLabel);
+	pLabel->style()->polish(pLabel);
 }
 
 // +-----------------------------------------------------------
