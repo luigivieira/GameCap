@@ -54,6 +54,11 @@ namespace gc
 		 */
 		void playVideo(QString sFileName);
 
+		/** 
+		 * Stops and uloads the video currently being played.
+		 */
+		void stopVideo();
+
 	signals:
 
 		/**

@@ -46,6 +46,14 @@ namespace gc
 		 */
 		void initializePage();
 
+
+		/** 
+		 * Validates and terminates the page, stopping and unloading the video when
+		 * the subject clicks on "Continue".
+		 * @return True if the process can continue, false otherwise.
+		 */
+		bool validatePage();
+
 		/**
 		 * Overload the method that indicates to the main window that the review
 		 * is completed (so the continue button can be displayed).

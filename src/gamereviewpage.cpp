@@ -39,6 +39,13 @@ void gc::GameReviewPage::initializePage()
 }
 
 // +-----------------------------------------------------------
+bool gc::GameReviewPage::validatePage()
+{
+	m_pReviewer->stopVideo();
+	return true;
+}
+
+// +-----------------------------------------------------------
 bool gc::GameReviewPage::isComplete() const
 {
 	return m_bCompleted;

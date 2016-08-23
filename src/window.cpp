@@ -76,7 +76,7 @@ gc::Window::Window(QWidget *pParent) : QWizard(pParent)
 
 	// Simulate an event of language changed with the current language, so the wizard
 	// can start with the proper language
-	Application::Language eLanguage = ((Application *)qApp)->getLanguage();
+	Application::Language eLanguage = static_cast<Application*>(qApp)->getLanguage();
 	languageChanged(eLanguage);
 }
 
@@ -100,6 +100,9 @@ void gc::Window::pageChanged(int iPageID)
 			button(QWizard::CancelButton)->setEnabled(false);
 			break;
 
+		case Page_Intro:
+			static_cast<Application*>(qApp)->newSubject();
+
 		default:
 			button(QWizard::CancelButton)->setVisible(true);
 			button(QWizard::CancelButton)->setEnabled(true);
@@ -121,17 +124,18 @@ void gc::Window::languageChanged(Application::Language eLanguage)
 void gc::Window::reject()
 {
 	// Do nothing if the current page is the start
-	if (currentId() == Page_Start)
+	if(currentId() == Page_Start)
 		return;
 
 	// If current page is GamePlay, check if the game is still running.
 	// If it is not, then an error happened.
-	if (currentId() == Page_GamePlay)
+	if(currentId() == Page_GamePlay)
 	{
-		if (((Application*) qApp)->gamePlayer()->running())
+		if(static_cast<Application*>(qApp)->gamePlayer()->running())
 			return;
 		else
 		{
+			static_cast<Application*>(qApp)->rejectSubject();
 			restart();
 			return;
 		}
@@ -142,6 +146,7 @@ void gc::Window::reject()
 	if (currentId() == Page_GamePlay || oBox.yesNoQuestion(tr("Do you confirm quitting the experiment?")))
 	{
 		oBox.infoMessage(tr("You have chosen to quit the experiment. Nevertheless, thank you very much for your time."));
+		static_cast<Application*>(qApp)->rejectSubject();
 		restart();
 	}
 }
@@ -149,7 +154,7 @@ void gc::Window::reject()
 // +-----------------------------------------------------------
 void gc::Window::done(int iRet)
 {
-	((Application*) qApp)->newSubject();
+	static_cast<Application*>(qApp)->confirmSubject();
 	restart();
 }
 

@@ -140,6 +140,11 @@ namespace gc
 		void rejectSubject();
 
 		/**
+		 * Confirms the data of the current subject, saving his/her data.
+		 */
+		void confirmSubject();
+
+		/**
 		 * Starts the gameplay session in the experiment.
 		 */
 		void startGameplay();
@@ -239,6 +244,12 @@ namespace gc
 	protected:
 
 		/**
+		 * Gets the folder where the subject data is stored.
+		 * @return QString with the subject data folder.
+		 */
+		QString getSubjectDataFolder() const;
+
+		/**
 		 * Log and exception message handler for application events.
  		 * @param eType QtMsgType enum value with the type of the log event.
 		 * @param oContext QMessageLogContext instance with information on
@@ -307,6 +318,9 @@ namespace gc
 
 		/** File with the gameplay video for the current subject. */
 		QString m_sGameplayFile;
+
+		/** File with the player video of the current subject. */
+		QString m_sPlayerFile;
 
 		/** Manages the gameplay data captured for the current subject. */
 		GameplayData m_oGameplayData;

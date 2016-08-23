@@ -84,7 +84,7 @@ namespace gc
 		 * @param iSamples Integer with the number of samples collected in the gameplay review.
 		 * @param iInterval Integer with the time interval (in seconds) for each collection in the gameplay review.
 		 */
-		void newSubject(const uint iVideoDuration, const uint iSamples, const uint iInterval);
+		void setup(const uint iVideoDuration, const uint iSamples, const uint iInterval);
 
 		/**
 		 * Gets the stored age of the subject.

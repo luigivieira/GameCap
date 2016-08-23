@@ -28,7 +28,7 @@ gc::GameplayData::GameplayData(QObject *pParent): QObject(pParent)
 }
 
 // +-----------------------------------------------------------
-void gc::GameplayData::newSubject(const uint iVideoDuration, const uint iSamples, const uint iInterval)
+void gc::GameplayData::setup(const uint iVideoDuration, const uint iSamples, const uint iInterval)
 {
 	// Initialization of the data with default values
 	m_iAge = 0;

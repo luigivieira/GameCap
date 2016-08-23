@@ -118,6 +118,13 @@ void gc::VideoReviewer::playVideo(QString sFileName)
 }
 
 // +-----------------------------------------------------------
+void gc::VideoReviewer::stopVideo()
+{
+	m_pMediaPlayer->stop();
+	m_pMediaPlayer->setMedia(QMediaContent());
+}
+
+// +-----------------------------------------------------------
 void gc::VideoReviewer::onBufferStatusChanged(int iPercentFilled)
 {
 	qDebug() << "onBufferStatusChanged(" << iPercentFilled << ")";

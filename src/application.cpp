@@ -40,8 +40,6 @@ using namespace std;
 #define SETTING_GAMEPLAY_REVIEW_INTERVAL "gameplayReviewInterval"
 #define SETTING_LAST_SUBJECT_ID "lastSubjectID"
 
-#define SUBJECT_FOLDER QString().sprintf("%s%csubject_%03d%c", qPrintable(m_sDataPath), QDir::separator(), m_iSubjectID, QDir::separator())
-
 // +-----------------------------------------------------------
 gc::Application::Application(int& argc, char** argv): QApplication(argc, argv)
 {
@@ -136,9 +134,6 @@ gc::Application::Application(int& argc, char** argv): QApplication(argc, argv)
 
 	// Sets the default language
 	setLanguage(m_eCurrentLanguage);
-
-	// Finally, prepare a new subject
-	newSubject();
 }
 
 // +-----------------------------------------------------------
@@ -156,15 +151,36 @@ uint gc::Application::getSubjectID() const
 }
 
 // +-----------------------------------------------------------
+QString gc::Application::getSubjectDataFolder() const
+{
+	return QString().sprintf("%s%csubject_%03d%c", qPrintable(m_sDataPath), QDir::separator(), m_iSubjectID, QDir::separator());
+}
+
+// +-----------------------------------------------------------
 void gc::Application::newSubject()
 {
 	m_iSubjectID++;
-	m_oGameplayData.newSubject(m_iGameplayTimeLimit, m_iGameplayReviewSamples, m_iGameplayReviewInterval);
+	QDir oDir(getSubjectDataFolder());
+	if(!oDir.exists())
+		oDir.mkdir(getSubjectDataFolder());
+
+	m_oGameplayData.setup(m_iGameplayTimeLimit, m_iGameplayReviewSamples, m_iGameplayReviewInterval);
 	m_pGamePlayer->selectNextGame();
 }
 
 // +-----------------------------------------------------------
 void gc::Application::rejectSubject()
+{
+	QDir oDir(getSubjectDataFolder());
+	if(oDir.exists())
+		oDir.removeRecursively();
+	m_iSubjectID--;
+
+	m_oGameplayData.setup(m_iGameplayTimeLimit, m_iGameplayReviewSamples, m_iGameplayReviewInterval);
+}
+
+// +-----------------------------------------------------------
+void gc::Application::confirmSubject()
 {
 
 }
@@ -351,14 +367,10 @@ void gc::Application::onTimeout()
 // +-----------------------------------------------------------
 void gc::Application::startGameplay()
 {
-	QDir oDir(SUBJECT_FOLDER);
-	if (!oDir.exists())
-		oDir.mkdir(SUBJECT_FOLDER);
-
-	m_sGameplayFile = SUBJECT_FOLDER + "gameplay.mp4";
-	QString sPlayerFile = SUBJECT_FOLDER + "player.mp4";
+	m_sGameplayFile = getSubjectDataFolder() + "gameplay.mp4";
+	m_sPlayerFile = getSubjectDataFolder() + "player.mp4";
 	m_bFailureSignalled = false;
-	m_pVideoCapturer->startCapture(m_sGameplayFile, sPlayerFile);
+	m_pVideoCapturer->startCapture(m_sGameplayFile, m_sPlayerFile);
 }
 
 // +-----------------------------------------------------------
