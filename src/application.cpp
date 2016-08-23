@@ -183,6 +183,11 @@ void gc::Application::rejectSubject()
 void gc::Application::confirmSubject()
 {
 	m_oGameplayData.save(getSubjectDataFolder());
+
+	// Save the last subject processed
+	m_pSettings->beginGroup(GROUP_MAIN);
+	m_pSettings->setValue(SETTING_LAST_SUBJECT_ID, m_iSubjectID);
+	m_pSettings->endGroup();
 }
 
 // +-----------------------------------------------------------
