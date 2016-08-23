@@ -182,7 +182,7 @@ void gc::Application::rejectSubject()
 // +-----------------------------------------------------------
 void gc::Application::confirmSubject()
 {
-
+	m_oGameplayData.save(getSubjectDataFolder());
 }
 
 // +-----------------------------------------------------------
