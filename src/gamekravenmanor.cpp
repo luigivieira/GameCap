@@ -39,11 +39,11 @@ QString gc::GameKravenManor::genre()
 // +-----------------------------------------------------------
 QString gc::GameKravenManor::goal()
 {
-	return tr("to collect all 8 letters without looking at or being caught by the Slender Man");
+	return tr("explore the manor and discover its misteries");
 }
 
 // +-----------------------------------------------------------
 QString gc::GameKravenManor::howToPlay()
 {
-	return tr("move around with the W-A-S-D keys (press shift to run), turn the torch on and off with the left mouse button, and collect the letters by clicking them with right mouse button");
+	return tr("use the mouse to look at stuff and the keyboard keys to interact with it: W-S-A-D moves around, E activates, R throws, J opens the journal, F turns the torch on/off and Shift runs");
 }

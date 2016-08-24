@@ -39,11 +39,11 @@ QString gc::GameCogs::genre()
 // +-----------------------------------------------------------
 QString gc::GameCogs::goal()
 {
-	return tr("to take all the penguins to safety");
+	return tr("solve the puzzles in each level");
 }
 
 // +-----------------------------------------------------------
 QString gc::GameCogs::howToPlay()
 {
-	return tr("with the right button of the mouse, select an ability and then select a penguin to do it");
+	return tr("use the left mouse button to move the pieces and the right mouse button to rotate the scene (when needed)");
 }

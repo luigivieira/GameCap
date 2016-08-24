@@ -41,7 +41,7 @@ void gc::EthnoDataPage::initializePage()
 {
 	Game *pGame = static_cast<Application*>(qApp)->gamePlayer()->currentGame();
 
-	m_pQuestionnaire->setTitle(tr("Etnographic Information"));
+	m_pQuestionnaire->setTitle(tr("Ethnographic Information"));
 	m_pQuestionnaire->setDescription(tr("Please answer the questions bellow about yourself."));
 
 	m_pQuestionnaire->setQuestionTitle(0, tr("How old are you?"));

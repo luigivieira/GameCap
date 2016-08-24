@@ -59,7 +59,7 @@ O botão Continuar da tela seguinte apenas será habilitado quando você tiver r
     <name>gc::EthnoDataPage</name>
     <message>
         <location filename="../ethnodatapage.cpp" line="44"/>
-        <source>Etnographic Information</source>
+        <source>Ethnographic Information</source>
         <translation>Dados Etnográficos</translation>
     </message>
     <message>
@@ -355,6 +355,24 @@ O botão Continuar da tela seguinte somente será habilitado quando você tiver 
     </message>
 </context>
 <context>
+    <name>gc::GameCogs</name>
+    <message>
+        <location filename="../gamecogs.cpp" line="36"/>
+        <source>puzzle</source>
+        <translation>quebra-cabeças</translation>
+    </message>
+    <message>
+        <location filename="../gamecogs.cpp" line="42"/>
+        <source>solve the puzzles in each level</source>
+        <translation>resolver os quebra-cabeças em cada nívell</translation>
+    </message>
+    <message>
+        <location filename="../gamecogs.cpp" line="48"/>
+        <source>use the left mouse button to move the pieces and the right mouse button to rotate the scene (when needed)</source>
+        <translation>utilize o botão esquerdo do mouse para mover as peças e o botão direito do mouse para rotacionar a cena (quando necessário)</translation>
+    </message>
+</context>
+<context>
     <name>gc::GameInfoPage</name>
     <message>
         <location filename="../gameinfopage.cpp" line="39"/>
@@ -371,39 +389,39 @@ Quando estiver pronto(a) para começar a jogar, clique em Continuar.</translatio
     </message>
 </context>
 <context>
-    <name>gc::GamePingus</name>
+    <name>gc::GameKravenManor</name>
     <message>
-        <location filename="../gamepingus.cpp" line="36"/>
-        <source>puzzle</source>
-        <translation>quebra-cabeças</translation>
-    </message>
-    <message>
-        <location filename="../gamepingus.cpp" line="42"/>
-        <source>to take all the penguins to safety</source>
-        <translation>salvar todos os pinguins</translation>
-    </message>
-    <message>
-        <location filename="../gamepingus.cpp" line="48"/>
-        <source>with the right button of the mouse, select an ability and then select a penguin to do it</source>
-        <translation>com o botão direito do moues, selecione a habilidade e então selecione o pinguim para executá-la</translation>
-    </message>
-</context>
-<context>
-    <name>gc::GameSlender</name>
-    <message>
-        <location filename="../gameslender.cpp" line="36"/>
+        <location filename="../gamekravenmanor.cpp" line="36"/>
         <source>horror</source>
         <translation>terror</translation>
     </message>
     <message>
-        <location filename="../gameslender.cpp" line="42"/>
-        <source>to collect all 8 letters without looking at or being caught by the Slender Man</source>
-        <translation>coletar as 8 letras sem olhar para o Slender Man ou ser capturado por ele</translation>
+        <location filename="../gamekravenmanor.cpp" line="42"/>
+        <source>explore the manor and discover its misteries</source>
+        <translation>explorar a mansão e descobrir seus mistérios</translation>
     </message>
     <message>
-        <location filename="../gameslender.cpp" line="48"/>
-        <source>move around with the W-A-S-D keys (press shift to run), turn the torch on and off with the left mouse button, and collect the letters by clicking them with right mouse button</source>
-        <translation>mova-se com as teclas W-A-S-D (pressione shift para correr), ligue e desligue a lanterna com o botão esquerdo do mouse, e colete as cartas clicando nelas com o botão direito do mouse </translation>
+        <location filename="../gamekravenmanor.cpp" line="48"/>
+        <source>use the mouse to look at stuff and the keyboard keys to interact with it: W-S-A-D moves around, E activates, R throws, J opens the journal, F turns the torch on/off and Shift runs</source>
+        <translation>utilize o mouse para olhar ao redor e as teclas do teclado para interagir: W-S-A-D move, E ativa, R atira, J abre o jornal, F liga/desliga a lanterna e Shift corre</translation>
+    </message>
+</context>
+<context>
+    <name>gc::GameMelterMan</name>
+    <message>
+        <location filename="../gamemelterman.cpp" line="36"/>
+        <source>platform</source>
+        <translation>plataforma</translation>
+    </message>
+    <message>
+        <location filename="../gamemelterman.cpp" line="42"/>
+        <source>reach the exit door without being killed</source>
+        <translation>alcançar a porta de saída sem ser morto</translation>
+    </message>
+    <message>
+        <location filename="../gamemelterman.cpp" line="48"/>
+        <source>use the left mouse button to melt stuff in your way, the right mouse button to vacuum the melted stuff and the S keyboard key to shoot the vacuumed stuff and build new stuff</source>
+        <translation>utilize o botão esquerdo do mouse para derreter coisas no caminho, o botão direito do mouse para aspirar as coisas derretidas e a tecla S do teclado para atirar as coisas aspiradas e criar novas coisas</translation>
     </message>
 </context>
 <context>
@@ -436,22 +454,6 @@ Quando estiver pronto(a) para começar a jogar, clique em Continuar.</translatio
 </context>
 <context>
     <name>gc::IntroPage</name>
-    <message>
-        <source>Welcome.
-
-Thank you for your participation. The whole experiment will take around 20 minutes to complete, in which you will have to play a game (10 minutes), review a video of your game session (5 minutes) and then answer a short questionnaire (5 minutes).
-
-You should have received, read and signed a term of consent explaining the details of this experiment and the ethics rules applicable. If you have not received it or if you still have any doubts, then please do not proceed.
-
-Finally, please remember that if you no longer wish to participate you can quit at any moment, with no explanation or justification required.</source>
-        <translation type="vanished">Bem vindo(a).
-
-Obrigado por sua participação. Todo o experimento levará cerca de 20 minutos para ser completado, em que você deverá jogar um jogo (10 minutos), revisar um vídeo da sua sessão de jogo (5 minutos) and então responder a um questionário curto (5 minutos).
-
-Você deve ter recebido, lido e assinado um termo de consentimento explicando os detalhes deste experimento e as regras éticas aplicáveis. Se você não o recebeu ou se ainda tem qualquer dúvida, então, por favor, não prossiga.
-
-Finalmente, lembre-se, por favor, que se você não mais desejar participar você pode desistir a qualquer momento, sem precisar fornecer qualquer explicação ou justificativa.</translation>
-    </message>
     <message>
         <location filename="../intropage.cpp" line="38"/>
         <source>Welcome and thank you for your participation.
@@ -497,12 +499,6 @@ Durante a reprodução, o botão Continuar da tela seguinte somente será habili
         <location filename="../startpage.cpp" line="135"/>
         <source>version %1</source>
         <translation>versão %1</translation>
-    </message>
-    <message>
-        <source>version %1
-flag images from %2</source>
-        <translation type="vanished">versão %1
-imagens das bandeiras de %2</translation>
     </message>
 </context>
 <context>
@@ -561,10 +557,6 @@ imagens das bandeiras de %2</translation>
 <context>
     <name>gc::Window</name>
     <message>
-        <source>Go Back</source>
-        <translation type="vanished">Voltar</translation>
-    </message>
-    <message>
         <location filename="../window.cpp" line="126"/>
         <source>Continue</source>
         <translation>Continuar</translation>
@@ -573,6 +565,11 @@ imagens das bandeiras de %2</translation>
         <location filename="../window.cpp" line="127"/>
         <source>Finish</source>
         <translation>Terminar</translation>
+    </message>
+    <message>
+        <location filename="../window.cpp" line="128"/>
+        <source>Quit</source>
+        <translation>Desistir</translation>
     </message>
     <message>
         <location filename="../window.cpp" line="155"/>
@@ -585,23 +582,6 @@ imagens das bandeiras de %2</translation>
 Thank you very much for your time.</source>
         <translation>Todos os seus dados foram eliminados. Se você tiver dúvidas, você pode perguntá-las ao pesquisador responsável.
 Muito obrigado pelo seu tempo.</translation>
-    </message>
-    <message>
-        <source>Conclude</source>
-        <translation type="vanished">Concluir</translation>
-    </message>
-    <message>
-        <location filename="../window.cpp" line="128"/>
-        <source>Quit</source>
-        <translation>Desistir</translation>
-    </message>
-    <message>
-        <source>Quit the experiment</source>
-        <translation type="vanished">Desistir do experimento</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to quit the experiment?</source>
-        <translation type="vanished">Tem certeza de que você deseja desistir do experimento?</translation>
     </message>
 </context>
 </TS>

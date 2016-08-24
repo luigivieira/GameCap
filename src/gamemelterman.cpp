@@ -39,11 +39,11 @@ QString gc::GameMelterMan::genre()
 // +-----------------------------------------------------------
 QString gc::GameMelterMan::goal()
 {
-	return tr("to take all the penguins to safety");
+	return tr("reach the exit door without being killed");
 }
 
 // +-----------------------------------------------------------
 QString gc::GameMelterMan::howToPlay()
 {
-	return tr("with the right button of the mouse, select an ability and then select a penguin to do it");
+	return tr("use the left mouse button to melt stuff in your way, the right mouse button to vacuum the melted stuff and the S keyboard key to shoot the vacuumed stuff and build new stuff");
 }
