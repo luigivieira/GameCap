@@ -58,10 +58,10 @@ void gc::ProgressSlider::paintEvent(QPaintEvent *pEvent)
 	QRect oHandle = style()->subControlRect(QStyle::CC_Slider, &oOpt, QStyle::SC_SliderHandle, this);
 
 	// draw tick marks manually
-	QPen oIncomplete(QColor("#A5A294"));
+	QPen oIncomplete(QColor("#FF0000"));
 	oIncomplete.setWidth(4);
 
-	QPen oComplete(QColor("#FFA500"));
+	QPen oComplete(QColor("#000000"));
 	oComplete.setWidth(4);
 
 	double dRange = static_cast<double>(maximum() - minimum());
