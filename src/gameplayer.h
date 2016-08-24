@@ -21,7 +21,8 @@
 
 #include "game.h"
 #include <QObject>
-#include <vector>
+#include <QMap>
+#include <QList>
 
 namespace gc
 {
@@ -70,6 +71,14 @@ namespace gc
 		 */
 		void stopGameplay();
 
+	protected:
+
+		/**
+		 * Adds a new game to the list of playable games.
+		 * @param pGame Instance of a Game with the new game to be added.
+		 */
+		void addGame(Game* pGame);
+
 	protected slots:
 
 		/**
@@ -103,8 +112,11 @@ namespace gc
 		/** Current game being used in the experiment. */
 		Game *m_pCurrentGame;
 
-		/** List of available games. */
-		std::vector<Game*> m_vGames;
+		/** Map of the available games. */
+		QMap<QString, Game*> m_mGames;
+
+		/** List with the order of the games played. */
+		QList<QString> m_lOrder;
 
 		/** Indicates that the game has been closed by the system instead of the user. */
 		bool m_bClosedBySystem;

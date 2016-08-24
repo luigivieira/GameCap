@@ -166,7 +166,6 @@ void gc::Application::newSubject()
 		oDir.mkdir(getSubjectDataFolder());
 
 	m_oGameplayData.setup(m_iGameplayTimeLimit, m_iGameplayReviewSamples, m_iGameplayReviewInterval);
-	m_pGamePlayer->selectNextGame();
 }
 
 // +-----------------------------------------------------------
@@ -184,6 +183,7 @@ void gc::Application::rejectSubject()
 void gc::Application::confirmSubject()
 {
 	m_oGameplayData.save(getSubjectDataFolder());
+	m_pGamePlayer->selectNextGame();
 
 	// Save the last subject processed
 	m_pSettings->beginGroup(GROUP_MAIN);

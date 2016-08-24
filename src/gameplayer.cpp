@@ -23,52 +23,83 @@
 #include "application.h"
 #include <QtGlobal>
 #include <algorithm>
+#include <ctime>
 #include <QFileInfo>
 
-using namespace std;
-
-// Macro for easy repetition of required code for new game handling
-#define ADD_GAME(GAMEPTR, VECTOR) connect(GAMEPTR, &Game::gameStarted, this, &GamePlayer::onGameStarted); \
-				                  connect(GAMEPTR, &Game::gameEnded, this, &GamePlayer::onGameEnded); \
-								  VECTOR.push_back(GAMEPTR);
+#define GROUP_GAMEPLAY           "Gameplay"
+#define SETTING_GAME_ORDER       "gameOrder"
+#define SETTING_LAST_PLAYED_GAME "lastPlayedGame"
 
 // +-----------------------------------------------------------
 gc::GamePlayer::GamePlayer(QObject *pParent): QObject(pParent)
 {
-	// Game: Cogs
-	Game *pGame = new GameCogs(this);
-	ADD_GAME(pGame, m_vGames)
+	// Create the games
+	addGame(new GameCogs(this));
+	addGame(new GameKravenManor(this));
+	addGame(new GameMelterMan(this));
+
+	// Create or read the order of the games
+	QSettings *pSettings = static_cast<Application*>(qApp)->getSettings();
+
+	// Read the game settings
+	pSettings->beginGroup(GROUP_GAMEPLAY);
+	QString sOrder = pSettings->value(SETTING_GAME_ORDER, "").toString();
+	QString sLastPlayed = pSettings->value(SETTING_LAST_PLAYED_GAME, "").toString();
+
+	m_lOrder = sOrder.split(";");
+	if(sOrder.length() == 0 || m_lOrder.size() != m_mGames.size())
+	{
+		m_lOrder.clear();
+		QMap<QString, Game*>::const_iterator it;
+		for(it = m_mGames.cbegin(); it != m_mGames.cend(); ++it)
+			m_lOrder.push_back(it.value()->name());
+
+		// Randomly permutes the games so they are assigned to new participants in a random order.
+		std::srand(time(NULL));
+		std::random_shuffle(m_lOrder.begin(), m_lOrder.end());
+
+		sOrder = m_lOrder.join(";");
+		pSettings->setValue(SETTING_GAME_ORDER, sOrder);
+	}
+
+	pSettings->endGroup();
 	
-	// Game: Kraven Manor
-	pGame = new GameKravenManor(this);
-	ADD_GAME(pGame, m_vGames)
+	// Select the first playable game
+	int iIndex;
+	if(sLastPlayed.length() != 0 && m_lOrder.contains(sLastPlayed))
+	{
+		iIndex = m_lOrder.indexOf(sLastPlayed) + 1;
+		if(iIndex >= m_lOrder.size())
+			iIndex = 0;
+	}
+	else
+		iIndex = 0;
+	m_pCurrentGame = m_mGames[m_lOrder[iIndex]];
+}
 
-	// Game: MelterMan
-	pGame = new GameMelterMan(this);
-	ADD_GAME(pGame, m_vGames)
-
-	// Randomly permutes the games so they are assigned to new participants in a non-ordered fashion.
-	random_shuffle(m_vGames.begin(), m_vGames.end());
-
-	// Randomly select a game to start
-	m_pCurrentGame = NULL;
-	selectNextGame();
+// +-----------------------------------------------------------
+void gc::GamePlayer::addGame(Game* pGame)
+{
+	connect(pGame, &Game::gameStarted, this, &GamePlayer::onGameStarted); \
+	connect(pGame, &Game::gameEnded, this, &GamePlayer::onGameEnded); \
+	m_mGames.insert(pGame->name(), pGame);
 }
 
 // +-----------------------------------------------------------
 gc::Game* gc::GamePlayer::selectNextGame()
 {
-	int iIndex;
-	if (!m_pCurrentGame)
-		iIndex = qrand() % m_vGames.size();
-	else
-	{
-		vector<Game*>::iterator it = find(m_vGames.begin(), m_vGames.end(), m_pCurrentGame);
-		iIndex = (it - m_vGames.begin()) + 1;
-		if (iIndex >= (int) m_vGames.size())
-			iIndex = 0;
-	}
-	m_pCurrentGame = m_vGames[iIndex];
+	// Save the last played game
+	QSettings *pSettings = static_cast<Application*>(qApp)->getSettings();
+	pSettings->beginGroup(GROUP_GAMEPLAY);
+	pSettings->setValue(SETTING_LAST_PLAYED_GAME, m_pCurrentGame->name());
+	pSettings->endGroup();
+
+	// Select the next game in the order list
+	int iIndex = m_lOrder.indexOf(m_pCurrentGame->name()) + 1;
+	if(iIndex >= m_lOrder.size())
+		iIndex = 0;
+	m_pCurrentGame = m_mGames[m_lOrder[iIndex]];
+
 	return m_pCurrentGame;
 }
 
