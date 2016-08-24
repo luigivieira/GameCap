@@ -16,17 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GAME_PINGUS_H
-#define GAME_PINGUS_H
+#ifndef GAME_COGS_H
+#define GAME_COGS_H
 
 #include "game.h"
 
 namespace gc
 {
 	/**
-	 * Class used to access the game Pingus.
+	 * Class used to access the game Cogs.
 	 */
-	class GamePingus: public Game
+	class GameCogs: public Game
 	{
 		Q_OBJECT
 	public:
@@ -35,7 +35,7 @@ namespace gc
 		 * Class constructor.
 		 * @param pParent Instance for the QObject that is the parent of this one. Default is NULL.
 		 */
-		GamePingus(QObject *pParent = NULL);
+		GameCogs(QObject *pParent = NULL);
 
 		/**
 		 * Queries the name of the game.
@@ -63,4 +63,4 @@ namespace gc
 	};
 }
 
-#endif // GAME_PINGUS_H
+#endif // GAME_MELTER_MAN_H

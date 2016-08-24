@@ -21,6 +21,7 @@
 #include <QFileInfo>
 
 #define SETTING_FILE_NAME "fileName"
+#define SETTING_PARAMS    "parameters"
 
 // +-----------------------------------------------------------
 gc::Game::Game(QObject *pParent): QObject(pParent)
@@ -38,6 +39,7 @@ void gc::Game::setup()
 	// Read the game settings
 	pSettings->beginGroup(name());
 	m_sFileName = pSettings->value(SETTING_FILE_NAME).toString();
+	m_sParameters = pSettings->value(SETTING_PARAMS).toString();
 	pSettings->endGroup();
 
 	if (!m_sFileName.length())
@@ -60,7 +62,10 @@ void gc::Game::start()
 	if (!running())
 	{
 		m_oProcess.setWorkingDirectory(QFileInfo(m_sFileName).absolutePath());
-		m_oProcess.start(m_sFileName, QStringList());
+		if(m_sParameters.length() == 0)
+			m_oProcess.start(m_sFileName, QStringList());
+		else
+			m_oProcess.start(m_sFileName, m_sParameters.split(" "));
 	}
 }
 

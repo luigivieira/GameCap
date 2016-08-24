@@ -16,34 +16,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "gameslender.h"
+#include "gamecogs.h"
 
  // +-----------------------------------------------------------
-gc::GameSlender::GameSlender(QObject *pParent): Game(pParent)
+gc::GameCogs::GameCogs(QObject *pParent): Game(pParent)
 {
 	setup();
 }
 
 // +-----------------------------------------------------------
-QString gc::GameSlender::name()
+QString gc::GameCogs::name()
 {
-	return "Slender";
+	return "Cogs";
 }
 
 // +-----------------------------------------------------------
-QString gc::GameSlender::genre()
+QString gc::GameCogs::genre()
 {
-	return tr("horror");
+	return tr("puzzle");
 }
 
 // +-----------------------------------------------------------
-QString gc::GameSlender::goal()
+QString gc::GameCogs::goal()
 {
-	return tr("to collect all 8 letters without looking at or being caught by the Slender Man");
+	return tr("to take all the penguins to safety");
 }
 
 // +-----------------------------------------------------------
-QString gc::GameSlender::howToPlay()
+QString gc::GameCogs::howToPlay()
 {
-	return tr("move around with the W-A-S-D keys (press shift to run), turn the torch on and off with the left mouse button, and collect the letters by clicking them with right mouse button");
+	return tr("with the right button of the mouse, select an ability and then select a penguin to do it");
 }

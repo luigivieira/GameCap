@@ -140,6 +140,9 @@ namespace gc
 		/** Path and filename of the game's executable. */
 		QString m_sFileName;
 
+		/** Parameters to pass to the game's executable. */
+		QString m_sParameters;
+
 		/** Handles the process used to run the game. */
 		QProcess m_oProcess;
 	};

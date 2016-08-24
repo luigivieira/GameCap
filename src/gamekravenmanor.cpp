@@ -16,34 +16,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "gamepingus.h"
+#include "gamekravenmanor.h"
 
  // +-----------------------------------------------------------
-gc::GamePingus::GamePingus(QObject *pParent): Game(pParent)
+gc::GameKravenManor::GameKravenManor(QObject *pParent): Game(pParent)
 {
 	setup();
 }
 
 // +-----------------------------------------------------------
-QString gc::GamePingus::name()
+QString gc::GameKravenManor::name()
 {
-	return "Pingus";
+	return "Kraven Manor";
 }
 
 // +-----------------------------------------------------------
-QString gc::GamePingus::genre()
+QString gc::GameKravenManor::genre()
 {
-	return tr("puzzle");
+	return tr("horror");
 }
 
 // +-----------------------------------------------------------
-QString gc::GamePingus::goal()
+QString gc::GameKravenManor::goal()
 {
-	return tr("to take all the penguins to safety");
+	return tr("to collect all 8 letters without looking at or being caught by the Slender Man");
 }
 
 // +-----------------------------------------------------------
-QString gc::GamePingus::howToPlay()
+QString gc::GameKravenManor::howToPlay()
 {
-	return tr("with the right button of the mouse, select an ability and then select a penguin to do it");
+	return tr("move around with the W-A-S-D keys (press shift to run), turn the torch on and off with the left mouse button, and collect the letters by clicking them with right mouse button");
 }

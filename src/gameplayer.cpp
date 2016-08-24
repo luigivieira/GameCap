@@ -17,8 +17,9 @@
  */
 
 #include "gameplayer.h"
-#include "gamepingus.h"
-#include "gameslender.h"
+#include "gamekravenmanor.h"
+#include "gamecogs.h"
+#include "gamemelterman.h"
 #include "application.h"
 #include <QtGlobal>
 #include <algorithm>
@@ -34,12 +35,16 @@ using namespace std;
 // +-----------------------------------------------------------
 gc::GamePlayer::GamePlayer(QObject *pParent): QObject(pParent)
 {
-	// Game: Pingus
-	Game *pGame = new GamePingus(this);
+	// Game: Cogs
+	Game *pGame = new GameCogs(this);
 	ADD_GAME(pGame, m_vGames)
 	
-	// Game: Slender
-	pGame = new GameSlender(this);
+	// Game: Kraven Manor
+	pGame = new GameKravenManor(this);
+	ADD_GAME(pGame, m_vGames)
+
+	// Game: MelterMan
+	pGame = new GameMelterMan(this);
 	ADD_GAME(pGame, m_vGames)
 
 	// Randomly permutes the games so they are assigned to new participants in a non-ordered fashion.

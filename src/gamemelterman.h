@@ -16,27 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GAME_SLENDER_H
-#define GAME_SLENDER_H
+#ifndef GAME_MELTER_MAN_H
+#define GAME_MELTER_MAN_H
 
 #include "game.h"
 
 namespace gc
 {
 	/**
-	 * Class used to access the game Slender.
+	 * Class used to access the game MelterMan.
 	 */
-	class GameSlender: public Game
+	class GameMelterMan: public Game
 	{
 		Q_OBJECT
-	
 	public:
 
 		/**
 		 * Class constructor.
 		 * @param pParent Instance for the QObject that is the parent of this one. Default is NULL.
 		 */
-		GameSlender(QObject *pParent = NULL);
+		GameMelterMan(QObject *pParent = NULL);
 
 		/**
 		 * Queries the name of the game.
@@ -64,4 +63,4 @@ namespace gc
 	};
 }
 
-#endif // GAME_SLENDER_H
+#endif // GAME_MELTER_MAN_H
