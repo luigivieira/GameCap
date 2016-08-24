@@ -35,5 +35,5 @@ gc::EndPage::EndPage(QWidget *pParent) : BasePage(pParent)
 // +-----------------------------------------------------------
 void gc::EndPage::initializePage()
 {
-	m_pText->setText(tr("Thank you very much for your help.\n\nPlease click on Conclude to save your data and end your participation.\nAfter that you are free to go."));
+	m_pText->setText(tr("That was all. Thank you very much for your help.\n\nPlease click on Finish to save your data and conclude your participation."));
 }

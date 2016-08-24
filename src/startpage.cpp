@@ -125,7 +125,7 @@ void gc::StartPage::checkLanguageButton(Application::Language eLanguage)
 void gc::StartPage::languageToggled(int iId, bool bChecked)
 {
 	if (bChecked)
-		((Application*) qApp)->setLanguage((Application::Language) iId);
+		static_cast<Application*>(qApp)->setLanguage((Application::Language) iId);
 }
 
 // +-----------------------------------------------------------

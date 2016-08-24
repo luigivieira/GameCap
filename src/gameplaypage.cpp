@@ -47,17 +47,17 @@ gc::GameplayPage::GameplayPage(QWidget *pParent) : BasePage(pParent)
 	pLayout->addStretch();
 
 	// Connect to the required signals
-	connect(((Application*) qApp), &Application::gameplayTimeRemaining, this, &GameplayPage::onGameplayTimeRemaining);
-	connect(((Application*) qApp), &Application::gameplayCompleted, this, &GameplayPage::onGameplayCompleted);
-	connect(((Application*) qApp), &Application::gameplayCancelled, this, &GameplayPage::onGameplayCancelled);
-	connect(((Application*) qApp), &Application::gameplayFailed, this, &GameplayPage::onGameplayFailed);
+	connect(static_cast<Application*>(qApp), &Application::gameplayTimeRemaining, this, &GameplayPage::onGameplayTimeRemaining);
+	connect(static_cast<Application*>(qApp), &Application::gameplayCompleted, this, &GameplayPage::onGameplayCompleted);
+	connect(static_cast<Application*>(qApp), &Application::gameplayCancelled, this, &GameplayPage::onGameplayCancelled);
+	connect(static_cast<Application*>(qApp), &Application::gameplayFailed, this, &GameplayPage::onGameplayFailed);
 }
 
 // +-----------------------------------------------------------
 void gc::GameplayPage::initializePage()
 {
-	Game *pGame = ((Application*) qApp)->gamePlayer()->currentGame();
-	m_pMessage->setText(tr("You are now playing %1. If you wish to quit the experiment, please quit from the game first.").arg(pGame->name()));
+	Game *pGame = static_cast<Application*>(qApp)->gamePlayer()->currentGame();
+	m_pMessage->setText(tr("You are playing %1. If you wish to quit the experiment, please quit from the game.").arg(pGame->name()));
 	m_pRemainingTime->setText("");
 	
 	// Starts the gameplay with a timer, in order to prevent disturbing the
@@ -87,7 +87,7 @@ void gc::GameplayPage::onGameplayCompleted()
 // +-----------------------------------------------------------
 void gc::GameplayPage::onGameplayCancelled()
 {
-	Game *pGame = ((Application*) qApp)->gamePlayer()->currentGame();
+	Game *pGame = static_cast<Application*>(qApp)->gamePlayer()->currentGame();
 	MessageBox::infoMessage(this, tr("You have quit the game %1 before the required play time, hence quitting the experiment. Nevertheless, thank you very much for your time.").arg(pGame->name()));
 	wizard()->reject();
 }

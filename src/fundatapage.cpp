@@ -39,7 +39,7 @@ void gc::FunDataPage::initializePage()
 	Game *pGame = static_cast<Application*>(qApp)->gamePlayer()->currentGame();
 
 	m_pQuestionnaire->setTitle(tr("Experience with the Game"));
-	m_pQuestionnaire->setDescription(tr("Please answer the questions bellow, considering your whole experience playing %1 (the game you just played).").arg(pGame->name()));
+	m_pQuestionnaire->setDescription(tr("Please answer the questions bellow considering how you felt about your whole experience playing %1.").arg(pGame->name()));
 
 	QStringList lQuestions = QStringList({
 		tr("1. I felt content"),

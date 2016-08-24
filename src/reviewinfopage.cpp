@@ -36,20 +36,20 @@ gc::ReviewInfoPage::ReviewInfoPage(QWidget *pParent) : BasePage(pParent)
 // +-----------------------------------------------------------
 void gc::ReviewInfoPage::initializePage()
 {
-	Game *pGame = ((Application*) qApp)->gamePlayer()->currentGame();
+	Game *pGame = static_cast<Application*>(qApp)->gamePlayer()->currentGame();
 	QString sText = tr("\
-Now please review the video of the last 5 minutes of your game session while you answer a few \
-questions.\
+You will now review your game session and answer a few questions about it.\
 \n\
 \n\
-The following screen will present the video with the same controls you would find in Youtube, \
-allowing you to play, pause and rewind the video. Also, as you play it, the video will \
-automatically stop a few times for you to answer 3 questions related to the levels of fun, \
-frustration and involvement you experienced with the game.\
+The following screen will present the recorded video of your game session, with \
+the same controls you are used to find in Youtube: you can play, pause and seek \
+through the video. During the playback the video will automatically stop a few \
+times in the moments marked by vertical red bars, so you can answer 3 questions \
+related to how you were feeling at that particular moment.\
 \n\
 \n\
-When answering the questions, please consider the feelings you were having with the game at \
-the moment the video paused.\
+While in playback, the Continue button of the following screen will only be enabled \
+once you have answered all 3 questions for all marked moments.\
 ");
 
 	m_pMessage->setText(sText);

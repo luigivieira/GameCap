@@ -33,7 +33,7 @@ gc::Game::Game(QObject *pParent): QObject(pParent)
 // +-----------------------------------------------------------
 void gc::Game::setup()
 {
-	QSettings *pSettings = ((Application*) qApp)->getSettings();
+	QSettings *pSettings = static_cast<Application*>(qApp)->getSettings();
 
 	// Read the game settings
 	pSettings->beginGroup(name());

@@ -36,21 +36,22 @@ gc::IntroPage::IntroPage(QWidget *pParent) : BasePage(pParent)
 void gc::IntroPage::initializePage()
 {
 	QString sText = tr("\
-Welcome.\
+Welcome and thank you for your participation.\
 \n\
 \n\
-Thank you for your participation. The whole experiment will take around 20 minutes to complete, \
-in which you will have to play a game (10 minutes), review a video of your game session (5 minutes) \
-and then answer a short questionnaire (5 minutes).\
+This experiment will take around 20 minutes to be completed. \
+You will have to play a randomly assigned digital game (10 minutes), review a video of your \
+game session (5 minutes) and then answer two short questionnaires (5 minutes).\
 \n\
 \n\
-You should have received, read and signed a term of consent explaining the details of this \
-experiment and the ethics rules applicable. If you have not received it or if you still have \
-any doubts, then please do not proceed.\
+You should have received, read and signed a term of consent explaining the details of the \
+experiment and the ethics rules applicable. If you have not received it or if you still \
+have doubts, then please do not proceed.\
 \n\
 \n\
-Finally, please remember that if you no longer wish to participate you can quit at any moment, \
-with no explanation or justification required.\
+You can quit at any time of the experiment if you no longer wish to participate, \
+with no explanation or justification required. In that case, any data collected from you \
+so far will be automatically removed.\
 ");
 
 	m_pText->setText(sText);

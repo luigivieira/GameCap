@@ -23,8 +23,10 @@
 #include "gameplaypage.h"
 #include "reviewinfopage.h"
 #include "gamereviewpage.h"
-#include "etnodatapage.h"
+#include "ethnodatapage.h"
 #include "fundatapage.h"
+#include "ethnodatainfopage.h"
+#include "fundatainfopage.h"
 #include "endpage.h"
 #include "application.h"
 #include "messagebox.h"
@@ -59,8 +61,10 @@ gc::Window::Window(QWidget *pParent) : QWizard(pParent)
 	setPage(Page_GamePlay, new GameplayPage(this));
 	setPage(Page_ReviewInfo, new ReviewInfoPage(this));
 	setPage(Page_GameReview, new GameReviewPage(this));
-	setPage(Page_EtnoData, new EtnoDataPage(this));
+	setPage(Page_FunDataInfo, new FunDataInfoPage(this));
 	setPage(Page_FunData, new FunDataPage(this));
+	setPage(Page_EthnoDataInfo, new EthnoDataInfoPage(this));
+	setPage(Page_EthnoData, new EthnoDataPage(this));
 	setPage(Page_End, new EndPage(this));
 
 	setStartId(Page_Start);
@@ -119,9 +123,8 @@ void gc::Window::pageChanged(int iPageID)
 // +-----------------------------------------------------------
 void gc::Window::languageChanged(Application::Language eLanguage)
 {
-	setButtonText(QWizard::BackButton, tr("Go Back"));
 	setButtonText(QWizard::NextButton, tr("Continue"));
-	setButtonText(QWizard::FinishButton, tr("Conclude"));
+	setButtonText(QWizard::FinishButton, tr("Finish"));
 	setButtonText(QWizard::CancelButton, tr("Quit"));
 }
 
@@ -155,7 +158,7 @@ void gc::Window::reject()
 				if(currentId() == Page_GameReview)
 					currentPage()->validatePage();
 
-				oBox.infoMessage(tr("You have chosen to quit the experiment. Nevertheless, thank you very much for your time."));
+				oBox.infoMessage(tr("All your data has been removed. If you have further questions, you can ask the researcher in charge.\nThank you very much for your time."));
 				static_cast<Application*>(qApp)->rejectSubject();
 				restart();
 			}
@@ -192,6 +195,9 @@ bool gc::Window::eventFilter(QObject *pSender, QEvent *pEvent)
 				{
 					if(currentId() == Page_GameReview)
 						currentPage()->validatePage();
+					else if(currentId() == Page_GamePlay)
+						static_cast<Application*>(qApp)->stopGameplay();
+
 					static_cast<Application*>(qApp)->rejectSubject();
 					Application::quit();
 				}

@@ -294,8 +294,8 @@ void gc::Application::handleLogOutput(QtMsgType eType, const QMessageLogContext 
 	LogLevel eLevel = (LogLevel) (eType == QtDebugMsg ? 4 : (eType == QtInfoMsg ? 3 : std::abs(eType - QtFatalMsg)));
 
 	// Do not log the message if its level is bigger then the maximum configured.
-	LogLevel eMax = ((Application*) qApp)->m_eLogLevel;
-	if(eLevel > ((Application*) qApp)->m_eLogLevel)
+	LogLevel eMax = static_cast<Application*>(qApp)->m_eLogLevel;
+	if(eLevel > static_cast<Application*>(qApp)->m_eLogLevel)
 		return;
 
 	QString sNow = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz");
@@ -333,8 +333,8 @@ void gc::Application::handleLogOutput(QtMsgType eType, const QMessageLogContext 
 			break;
 	}
 
-	((Application*) qApp)->m_oLogFile << qPrintable(sNow) << qPrintable(sDebugInfo) << qPrintable(sLevel) << qPrintable(sMsg) << endl;
-	((Application*) qApp)->m_oLogFile.flush();
+	static_cast<Application*>(qApp)->m_oLogFile << qPrintable(sNow) << qPrintable(sDebugInfo) << qPrintable(sLevel) << qPrintable(sMsg) << endl;
+	static_cast<Application*>(qApp)->m_oLogFile.flush();
 
 	if (eType == QtFatalMsg)
 	{
