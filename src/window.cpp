@@ -198,7 +198,9 @@ bool gc::Window::eventFilter(QObject *pSender, QEvent *pEvent)
 					else if(currentId() == Page_GamePlay)
 						static_cast<Application*>(qApp)->stopGameplay();
 
-					static_cast<Application*>(qApp)->rejectSubject();
+					if(currentId() != Page_Start)
+						static_cast<Application*>(qApp)->rejectSubject();
+
 					Application::quit();
 				}
 				else // Wrong sequence

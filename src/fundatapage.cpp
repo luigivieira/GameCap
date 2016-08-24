@@ -67,7 +67,7 @@ void gc::FunDataPage::initializePage()
 		tr("23. I felt pressured"),
 		tr("24. I felt irritable"),
 		tr("25. I lost track of time"),
-		tr("27. I felt challenged"),
+		tr("26. I felt challenged"),
 		tr("27. I found it impressive"),
 		tr("28. I was deeply concentrated in the game"),
 		tr("29. I felt frustrated"),
@@ -85,7 +85,6 @@ void gc::FunDataPage::initializePage()
 		tr("extremely")
 	};
 
-	//for(int i = (GEQ_SIZE - 1); i >= 0; i--)
 	for(int i = 0; i < GEQ_SIZE; i++)
 	{
 		m_pQuestionnaire->setQuestionTitle(i, lQuestions[i]);

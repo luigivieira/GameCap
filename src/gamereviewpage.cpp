@@ -35,6 +35,7 @@ void gc::GameReviewPage::initializePage()
 	m_bCompleted = false;
 	emit completeChanged();
 	QString sFile = static_cast<Application*>(qApp)->getGameplayFile();
+	m_pReviewer->initializeQuestionnaire();
 	m_pReviewer->playVideo(sFile);
 }
 

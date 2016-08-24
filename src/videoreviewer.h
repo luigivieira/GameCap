@@ -59,6 +59,11 @@ namespace gc
 		 */
 		void stopVideo();
 
+		/**
+		 * Initializes the questionnaire translations.
+		 */
+		void initializeQuestionnaire();
+
 	signals:
 
 		/**

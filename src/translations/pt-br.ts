@@ -181,7 +181,7 @@ O botão Continuar da tela seguinte somente será habilitado quando você tiver 
     <message>
         <location filename="../fundatapage.cpp" line="48"/>
         <source>4. I thought it was fun</source>
-        <translation>4. I achei que foi divertido</translation>
+        <translation>4. Eu achei que foi divertido</translation>
     </message>
     <message>
         <location filename="../fundatapage.cpp" line="49"/>
@@ -290,7 +290,7 @@ O botão Continuar da tela seguinte somente será habilitado quando você tiver 
     </message>
     <message>
         <location filename="../fundatapage.cpp" line="70"/>
-        <source>27. I felt challenged</source>
+        <source>26. I felt challenged</source>
         <translation>26. Eu me senti desafiado(a)</translation>
     </message>
     <message>
@@ -331,7 +331,7 @@ O botão Continuar da tela seguinte somente será habilitado quando você tiver 
     <message>
         <location filename="../fundatapage.cpp" line="81"/>
         <source>not at all</source>
-        <translation>de forma alguma</translation>
+        <translation>de jeito nenhum</translation>
     </message>
     <message>
         <location filename="../fundatapage.cpp" line="82"/>
@@ -481,7 +481,7 @@ The following screen will present the recorded video of your game session, with 
 While in playback, the Continue button of the following screen will only be enabled once you have answered all 3 questions for all marked moments.</source>
         <translation>Você irá agora revisar a sua sessão de jogo e responder a algumas questões sobre ela.
 
-A tela seguinte irá apresentar o vídeo gravado da sua sessão de jogo, com os mesmos controles que você está acostumado a encontrar no Youtube: você pode tocar, pausar e navegar pela duração do vídeo. Durante a reprodução o vídeo irá parar automaticamente algumas vezes nos momentos marcados por barras verticais vermelhas, para que você possa responder a 3 questões relacionadas a como você estava se sentindo naquele momento em particular.
+A tela seguinte irá apresentar o vídeo gravado da sua sessão de jogo, com os mesmos controles que você está acostumado a encontrar no Youtube: você pode dar play, pausar e navegar pela duração do vídeo. Durante a reprodução o vídeo irá parar automaticamente algumas vezes nos momentos marcados por barras verticais vermelhas, para que você possa responder a 3 questões relacionadas a como você estava se sentindo naquele momento em particular.
 
 Durante a reprodução, o botão Continuar da tela seguinte somente será habilitado após você ter respondido a todas as 3 questões em todos os momentos marcados.</translation>
     </message>
@@ -508,52 +508,52 @@ imagens das bandeiras de %2</translation>
 <context>
     <name>gc::VideoReviewer</name>
     <message>
-        <location filename="../videoreviewer.cpp" line="83"/>
+        <location filename="../videoreviewer.cpp" line="99"/>
         <source>How were you feeling at that time?</source>
         <translation>Como você estava se sentindo neste momento?</translation>
     </message>
     <message>
-        <location filename="../videoreviewer.cpp" line="84"/>
+        <location filename="../videoreviewer.cpp" line="100"/>
         <source>Please indicate how you were feeling while playing the game at the time the video is paused, for each of the following items.</source>
-        <translation>Por favor indique como você estava se sentindo enquanto jogava o jogo no momento em que o vídeo está parado, para cada um dos itens seguintes.</translation>
+        <translation>Por favor indique como você estava se sentindo enquanto jogava no momento em que o vídeo está parado, para cada um dos itens seguintes.</translation>
     </message>
     <message>
-        <location filename="../videoreviewer.cpp" line="88"/>
-        <source>1. I was feeling frustrated.</source>
+        <location filename="../videoreviewer.cpp" line="102"/>
+        <source>1. I was feeling frustrated</source>
         <translation>1. Eu me sentia frustrado</translation>
     </message>
     <message>
-        <location filename="../videoreviewer.cpp" line="90"/>
-        <source>2. I was feeling involved.</source>
+        <location filename="../videoreviewer.cpp" line="103"/>
+        <source>2. I was feeling involved</source>
         <translation>2. Eu me sentia envolvido</translation>
     </message>
     <message>
-        <location filename="../videoreviewer.cpp" line="92"/>
-        <source>3. I was having fun.</source>
+        <location filename="../videoreviewer.cpp" line="104"/>
+        <source>3. I was having fun</source>
         <translation>3. Eu estava me divertindo</translation>
     </message>
     <message>
-        <location filename="../videoreviewer.cpp" line="95"/>
+        <location filename="../videoreviewer.cpp" line="107"/>
         <source>not at all</source>
-        <translation>de forma alguma</translation>
+        <translation>de jeito nenhum</translation>
     </message>
     <message>
-        <location filename="../videoreviewer.cpp" line="96"/>
+        <location filename="../videoreviewer.cpp" line="108"/>
         <source>slightly</source>
         <translation>levemente</translation>
     </message>
     <message>
-        <location filename="../videoreviewer.cpp" line="97"/>
+        <location filename="../videoreviewer.cpp" line="109"/>
         <source>moderately</source>
         <translation>moderadamente</translation>
     </message>
     <message>
-        <location filename="../videoreviewer.cpp" line="98"/>
+        <location filename="../videoreviewer.cpp" line="110"/>
         <source>fairly</source>
         <translation>bastante</translation>
     </message>
     <message>
-        <location filename="../videoreviewer.cpp" line="99"/>
+        <location filename="../videoreviewer.cpp" line="111"/>
         <source>extremely</source>
         <translation>extremamente</translation>
     </message>

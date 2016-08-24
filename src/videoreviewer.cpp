@@ -80,16 +80,28 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 
 	// Create the sample questionnaire
 	m_pQuestionnaire = new Questionnaire(this);
-	m_pQuestionnaire->setTitle(tr("How were you feeling at that time?"));
-	m_pQuestionnaire->setDescription(tr("Please indicate how you were feeling while playing the game at the time the video is paused, for each of the following items."));
 	pLayout->addWidget(m_pQuestionnaire);
 
 	m_pQuestionnaire->addQuestion(Questionnaire::Likert, 5);
-	m_pQuestionnaire->setQuestionTitle(0, tr("1. I was feeling frustrated."));
 	m_pQuestionnaire->addQuestion(Questionnaire::Likert, 5);
-	m_pQuestionnaire->setQuestionTitle(1, tr("2. I was feeling involved."));
 	m_pQuestionnaire->addQuestion(Questionnaire::Likert, 5);
-	m_pQuestionnaire->setQuestionTitle(2, tr("3. I was having fun."));
+
+	connect(m_pQuestionnaire, &Questionnaire::questionChanged, this, &VideoReviewer::onQuestionChanged);
+	connect(m_pQuestionnaire, &Questionnaire::completed, this, &VideoReviewer::onQuestionnaireCompleted);
+
+	m_pQuestionnaire->hide();
+	m_pData = static_cast<Application*>(qApp)->getGameplayData();
+}
+
+// +-----------------------------------------------------------
+void gc::VideoReviewer::initializeQuestionnaire()
+{
+	m_pQuestionnaire->setTitle(tr("How were you feeling at that time?"));
+	m_pQuestionnaire->setDescription(tr("Please indicate how you were feeling while playing the game at the time the video is paused, for each of the following items."));
+
+	m_pQuestionnaire->setQuestionTitle(0, tr("1. I was feeling frustrated"));
+	m_pQuestionnaire->setQuestionTitle(1, tr("2. I was feeling involved"));
+	m_pQuestionnaire->setQuestionTitle(2, tr("3. I was having fun"));
 
 	QStringList lOptions = {
 		tr("not at all"),
@@ -100,12 +112,6 @@ gc::VideoReviewer::VideoReviewer(QWidget *pParent) : QWidget(pParent)
 	};
 	for(uint i = 0; i < m_pQuestionnaire->getNumberOfQuestions(); i++)
 		m_pQuestionnaire->setLikertOptionTitles(i, lOptions);
-
-	connect(m_pQuestionnaire, &Questionnaire::questionChanged, this, &VideoReviewer::onQuestionChanged);
-	connect(m_pQuestionnaire, &Questionnaire::completed, this, &VideoReviewer::onQuestionnaireCompleted);
-
-	m_pQuestionnaire->hide();
-	m_pData = static_cast<Application*>(qApp)->getGameplayData();
 }
 
 // +-----------------------------------------------------------
