@@ -179,6 +179,12 @@ namespace gc
 		 */
 		GameplayData* getGameplayData();
 
+		/**
+		 * Sets the reference to the main window.
+		 * @param pMainWindow Instance of QWidget with the pointer to the main window.
+		 */
+		void setMainWindow(QWidget *pMainWindow);
+
 	protected slots:
 
 		/**
@@ -331,6 +337,9 @@ namespace gc
 		 * started once the videos are in fact being captured.
 		 */
 		bool m_bWaitingForVideoFiles;
+
+		/** Reference to the main window. */
+		QWidget *m_pMainWindow;
 	};
 }
 

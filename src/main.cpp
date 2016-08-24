@@ -30,6 +30,8 @@ int main(int argc, char** argv)
 	oMain.show();
 	oMain.resize(QApplication::primaryScreen()->size());
 	oMain.move(0, 0);
+
+	oApp.setMainWindow(&oMain);
     
 	return oApp.exec();
 }

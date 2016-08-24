@@ -352,12 +352,13 @@ void gc::Application::onTimeout()
 	{
 		// Wait for the two videos to appear in the configured path,
 		// so the amount of time configured for gameplay is recorded *exactly*
+		// and the game can be started AFTER the OBS windows (in order to not
+		// lose the focus)
 		if(m_pVideoCapturer->getCapturedVideoFiles().size() == 2)
 		{
 			m_bWaitingForVideoFiles = false;
-			m_iTimeRemaining = m_iGameplayTimeLimit;
-			m_oTimer.setInterval(1000);
-			emit gameplayTimeRemaining(m_iTimeRemaining);
+			m_oTimer.stop();
+			m_pGamePlayer->startGameplay();
 		}
 	}
 	else
@@ -373,6 +374,12 @@ void gc::Application::onTimeout()
 // +-----------------------------------------------------------
 void gc::Application::startGameplay()
 {
+#ifndef _DEBUG
+	m_pMainWindow->setWindowFlags(m_pMainWindow->windowFlags() & ~Qt::WindowStaysOnTopHint);
+	m_pMainWindow->setWindowFlags(m_pMainWindow->windowFlags() | Qt::WindowStaysOnBottomHint);
+	m_pMainWindow->show();
+#endif
+	
 	m_sGameplayFile = getSubjectDataFolder() + "gameplay.mp4";
 	m_sPlayerFile = getSubjectDataFolder() + "player.mp4";
 	m_bFailureSignalled = false;
@@ -396,8 +403,13 @@ void gc::Application::stopGameplay()
 // +-----------------------------------------------------------
 void gc::Application::onGameplayStarted()
 {
-	m_oTimer.start(100);
-	m_bWaitingForVideoFiles = true;
+	m_bWaitingForVideoFiles = false;
+
+	m_iTimeRemaining = m_iGameplayTimeLimit;
+	emit gameplayTimeRemaining(m_iTimeRemaining);
+
+	m_oTimer.setInterval(1000);
+	m_oTimer.start();
 }
 
 // +-----------------------------------------------------------
@@ -427,7 +439,8 @@ void gc::Application::onGameplayEnded(GamePlayer::GameplayResult eResult)
 // +-----------------------------------------------------------
 void gc::Application::onCaptureStarted()
 {
-	m_pGamePlayer->startGameplay();
+	m_bWaitingForVideoFiles = true;
+	m_oTimer.start(100);
 }
 
 // +-----------------------------------------------------------
@@ -468,4 +481,16 @@ uint gc::Application::getGameplayReviewInterval() const
 gc::GameplayData* gc::Application::getGameplayData()
 {
 	return &m_oGameplayData;
+}
+
+// +-----------------------------------------------------------
+void gc::Application::setMainWindow(QWidget *pMainWindow)
+{
+	m_pMainWindow = pMainWindow;
+
+#ifndef _DEBUG
+	m_pMainWindow->setWindowFlags(m_pMainWindow->windowFlags() & ~Qt::WindowStaysOnBottomHint);
+	m_pMainWindow->setWindowFlags(m_pMainWindow->windowFlags() | Qt::WindowStaysOnTopHint);
+	m_pMainWindow->show();
+#endif
 }
