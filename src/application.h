@@ -185,6 +185,16 @@ namespace gc
 		 */
 		void setMainWindow(QWidget *pMainWindow);
 
+		/**
+		 * Setups the game data based on the real duration of the video recorded.
+		 * Since it is very difficult to guarantee the duration of the videos recorded,
+		 * this method setups the samples in the game data for gameplay review considering
+		 * as the end the real duration of the video recorded.
+		 * @param iGameplayTime Unsigned integer with the real duration of the gameplay
+		 * video in seconds.
+		 */
+		void setupGameData(uint iGameplayTime);
+
 	protected slots:
 
 		/**

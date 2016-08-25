@@ -165,7 +165,7 @@ void gc::Application::newSubject()
 	if(!oDir.exists())
 		oDir.mkdir(getSubjectDataFolder());
 
-	m_oGameplayData.setup(m_iGameplayTimeLimit, m_iGameplayReviewSamples, m_iGameplayReviewInterval);
+	setupGameData(m_iGameplayTimeLimit);
 }
 
 // +-----------------------------------------------------------
@@ -176,7 +176,13 @@ void gc::Application::rejectSubject()
 		oDir.removeRecursively();
 	m_iSubjectID--;
 
-	m_oGameplayData.setup(m_iGameplayTimeLimit, m_iGameplayReviewSamples, m_iGameplayReviewInterval);
+	setupGameData(m_iGameplayTimeLimit);
+}
+
+// +-----------------------------------------------------------
+void gc::Application::setupGameData(uint iGameplayTime)
+{
+	m_oGameplayData.setup(iGameplayTime, m_iGameplayReviewSamples, m_iGameplayReviewInterval);
 }
 
 // +-----------------------------------------------------------
