@@ -23,7 +23,7 @@ project (GameCap)
 
 # Version data and header file
 set (GC_VERSION_MAJOR 1)
-set (GC_VERSION_MINOR 0)
+set (GC_VERSION_MINOR 1)
 set (GC_VERSION_PATCH 0)
 set (GC_VERSION "${GC_VERSION_MAJOR}.${GC_VERSION_MINOR}.${GC_VERSION_PATCH}")
 configure_file (
