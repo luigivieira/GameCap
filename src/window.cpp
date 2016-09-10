@@ -30,6 +30,7 @@
 #include "endpage.h"
 #include "application.h"
 #include "messagebox.h"
+#include "webcampreview.h"
 #include <QDir>
 #include <QFile>
 #include <QCoreApplication>
@@ -178,6 +179,13 @@ bool gc::Window::eventFilter(QObject *pSender, QEvent *pEvent)
 	if(pSender == this && pEvent->type() == QEvent::KeyPress)
 	{
 		QKeyEvent *pKeyEvent = (QKeyEvent*) pEvent;
+
+		if(pKeyEvent->key() == Qt::Key_F1 && currentId() == Page_Start)
+		{
+			WebcamPreview *pPreview = new WebcamPreview(this);
+			pPreview->showFullScreen();
+			return QWizard::eventFilter(pSender, pEvent);
+		}
 
 		// The Ctrl or the Q keys clean up the hooking buffer
 		if(pKeyEvent->key() == Qt::Key_Control || pKeyEvent->key() == Qt::Key_Q)
