@@ -140,9 +140,12 @@ void gc::VideoReviewer::onBufferStatusChanged(int iPercentFilled)
 void gc::VideoReviewer::onDurationChanged(qint64 iDuration)
 {
 	qDebug() << "onDurationChanged(" << iDuration << ")";
-	uint iGameplayTime = static_cast<uint>(iDuration / 1000);
-	m_pProgressSlider->setMaximum(iGameplayTime);
-	static_cast<Application*>(qApp)->setupGameData(iGameplayTime);
+	if(iDuration != 0)
+	{
+		uint iGameplayTime = static_cast<uint>(iDuration / 1000);
+		m_pProgressSlider->setMaximum(iGameplayTime);
+		static_cast<Application*>(qApp)->setupGameData(iGameplayTime);
+	}
 }
 
 // +-----------------------------------------------------------
