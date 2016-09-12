@@ -132,7 +132,8 @@ void gc::StartPage::languageToggled(int iId, bool bChecked)
 void gc::StartPage::languageChanged(Application::Language eLanguage)
 {
 	m_pMessage->setText(tr("Please choose the language to be used in the experiment:"));
-	m_pInfo->setText(tr("version %1").arg(GC_VERSION));
+	uint iID = static_cast<Application*>(qApp)->getSubjectID();
+	m_pInfo->setText(tr("version %1").arg(GC_VERSION) + "  -  " + QString("ns: %2").arg(iID+1));
 	switch (eLanguage)
 	{
 		case Application::EN_UK:
@@ -143,4 +144,11 @@ void gc::StartPage::languageChanged(Application::Language eLanguage)
 			m_pLogo->setPixmap(QPixmap(":/resources/br_logo.png"));
 			break;
 	}
+}
+
+// +-----------------------------------------------------------
+void gc::StartPage::initializePage()
+{
+	uint iID = static_cast<Application*>(qApp)->getSubjectID();
+	m_pInfo->setText(tr("version %1").arg(GC_VERSION) + "  -  " + QString("ns: %2").arg(iID + 1));
 }

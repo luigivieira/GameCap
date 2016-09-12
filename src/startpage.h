@@ -49,6 +49,13 @@ namespace gc
 		 */
 		void checkLanguageButton(Application::Language eLanguage);
 	
+	protected:
+
+		/**
+		 * Initialization method called everytime the page is displayed.
+		 */
+		void initializePage();
+
 	protected slots:
 	
 		/**
@@ -73,7 +80,7 @@ namespace gc
 		/** Message about selecting the language. */
 		QLabel *m_pMessage;
 
-		/** Version information. */
+		/** Version and subject number information. */
 		QLabel *m_pInfo;
 
 		/**
